@@ -9,6 +9,7 @@ interface Props {
 }
 </script>
 
-<div class="rounded-lg bg-white shadow-lg {clazz}">
+<div
+	class="rounded-lg border border-white/[0.3] bg-gradient-to-t from-teal-400/[0.05] to-emerald-400/[0.15] p-4 shadow-lg backdrop-blur {clazz}">
 	{@render children()}
 </div>

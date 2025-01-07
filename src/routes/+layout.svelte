@@ -15,12 +15,30 @@ import '../app.css';
 </script>
 
 <ParaglideJS {i18n}>
-	<div class="relative min-h-[100vh] w-full bg-[#fffde8]">
-		<div class="relative z-10">
+	<div class="grid">
+		<div class="cell-1 z-10">
 			{@render children()}
 		</div>
-		<div class="absolute bottom-0 left-0 w-full overflow-x-clip">
-			<div class="grid origin-bottom scale-x-[1.8] scale-y-[4] md:scale-[1.2]">
+		<div class="cell-1 fixed h-[100vh] w-full bg-[#fffde8]">
+			{@render bg()}
+		</div>
+	</div>
+</ParaglideJS>
+
+{#snippet bg()}
+	<div class="relative h-full w-full">
+		<div class="absolute bottom-0 w-full overflow-x-clip">
+			<div class="grid origin-bottom scale-x-[1.8] scale-y-[4] md:scale-[1.5]">
+				<svg
+					class="cell-1 waves origin-bottom translate-x-[200px] scale-x-[1.5] scale-y-[1.4] lg:translate-x-[100px] lg:scale-x-[1] lg:scale-y-[1.8]"
+					xmlns="http://www.w3.org/2000/svg"
+					viewBox="0 0 1440 320">
+					<path
+						fill="#e4d5b7"
+						fill-opacity="1"
+						d="M0,224L30,186.7C60,149,120,75,180,69.3C240,64,300,128,360,160C420,192,480,192,540,202.7C600,213,660,235,720,218.7C780,203,840,149,900,149.3C960,149,1020,203,1080,229.3C1140,256,1200,256,1260,234.7C1320,213,1380,171,1410,149.3L1440,128L1440,320L1410,320C1380,320,1320,320,1260,320C1200,320,1140,320,1080,320C1020,320,960,320,900,320C840,320,780,320,720,320C660,320,600,320,540,320C480,320,420,320,360,320C300,320,240,320,180,320C120,320,60,320,30,320L0,320Z">
+					</path>
+				</svg>
 				<svg class="cell-1 waves" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1440 320">
 					<path
 						fill="#fff0db"
@@ -38,7 +56,7 @@ import '../app.css';
 			</div>
 		</div>
 	</div>
-</ParaglideJS>
+{/snippet}
 
 <style>
 .waves {
