@@ -99,8 +99,7 @@ async function makeUser(tokenData: TokenData, email: string) {
 	await e
 		.insert(e.User, {
 			email,
-			identity: getIdentity,
-			settings: e.insert(e.UserSettings, {})
+			identity: getIdentity
 		})
 		.unlessConflict((user) => ({
 			on: user.email,
