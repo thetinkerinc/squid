@@ -2,6 +2,7 @@ using extension auth;
 
 module default {
 	scalar type EntryType extending enum<expense, income, withdrawal>;
+	scalar type AccountType extending enum<bank, cash>;
 
 	type User {
 		required multi identity: ext::auth::Identity;
@@ -16,12 +17,13 @@ module default {
 	}
 
 	type Entry {
+		required user: User;
 		required created: datetime {
 			readonly := true;
 			default := datetime_current();
 		}
-		required user: User;
 		required type: EntryType;
+		required account: AccountType;
 		required amount: float32;
 		required category: str;
 		description: str;

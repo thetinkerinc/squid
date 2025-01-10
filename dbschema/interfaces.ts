@@ -80,12 +80,28 @@ export namespace cfg {
 	}
 }
 export namespace $default {
+	export type AccountType = 'bank' | 'cash';
+	export interface Entry extends std.$Object {
+		user: User;
+		created: Date;
+		type: EntryType;
+		amount: number;
+		category: string;
+		description?: string | null;
+		account: AccountType;
+	}
+	export type EntryType = 'expense' | 'income' | 'withdrawal';
 	export interface User extends std.$Object {
 		identity: ext.auth.Identity[];
 		email: string;
 		is_admin: boolean;
+		entries: Entry[];
+		partners: User[];
 	}
 }
+export type AccountType = $default.AccountType;
+export type Entry = $default.Entry;
+export type EntryType = $default.EntryType;
 export type User = $default.User;
 export namespace ext {
 	export namespace auth {
@@ -612,6 +628,9 @@ export interface types {
 		mTLS: cfg.mTLS;
 	};
 	default: {
+		AccountType: $default.AccountType;
+		Entry: $default.Entry;
+		EntryType: $default.EntryType;
 		User: $default.User;
 	};
 	ext: {

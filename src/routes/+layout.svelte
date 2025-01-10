@@ -5,6 +5,8 @@ import { ParaglideJS } from '@inlang/paraglide-sveltekit';
 
 import { i18n } from '$lib/i18n';
 
+import * as Tooltip from '$components/ui/tooltip';
+
 import type { Snippet } from 'svelte';
 
 interface Props {
@@ -17,7 +19,9 @@ import '../app.css';
 <ParaglideJS {i18n}>
 	<div class="grid">
 		<div class="cell-1 z-10">
-			{@render children()}
+			<Tooltip.Provider>
+				{@render children()}
+			</Tooltip.Provider>
 		</div>
 		<div class="cell-1 fixed h-[100vh] w-full bg-[#fffde8]">
 			{@render bg()}

@@ -7,7 +7,7 @@ declare global {
 			auth: ServerRequestAuth;
 			client: Client;
 			authenticated: boolean;
-			user?: Omit<User, 'identity'>;
+			user?: Omit<User, 'identity', 'partners'>;
 		}
 	}
 }
