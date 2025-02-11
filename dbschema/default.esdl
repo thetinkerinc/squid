@@ -28,4 +28,14 @@ module default {
 		required category: str;
 		description: str;
 	}
+
+	type Invitation {
+		required from: User;
+		required to: User;
+		required sent: datetime {
+			readonly := true;
+			default := datetime_current();
+		}
+		accepted: bool;
+	}
 }

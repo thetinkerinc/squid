@@ -9,8 +9,9 @@ import Totals from './totals.svelte';
 import Income from './income.svelte';
 import Expense from './expense.svelte';
 import Withdrawal from './withdrawal.svelte';
-import Breakdown from './breakdown.svelte';
 import Entries from './entries.svelte';
+import Breakdown from './breakdown.svelte';
+import Partners from './partners.svelte';
 </script>
 
 <div class="px-8 pb-10 pt-4">
@@ -38,8 +39,13 @@ import Entries from './entries.svelte';
 				<Entries />
 			</Card>
 		</div>
-		<Card>
-			<Breakdown />
-		</Card>
+		<div>
+			<Card class="mb-6">
+				<Breakdown />
+			</Card>
+			<Card>
+				<Partners />
+			</Card>
+		</div>
 	</div>
 </div>

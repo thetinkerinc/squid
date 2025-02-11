@@ -5,6 +5,7 @@ import { ParaglideJS } from '@inlang/paraglide-sveltekit';
 
 import { i18n } from '$lib/i18n';
 
+import { Toaster } from '$components/ui/sonner';
 import * as Tooltip from '$components/ui/tooltip';
 
 import type { Snippet } from 'svelte';
@@ -17,6 +18,7 @@ import '../app.css';
 </script>
 
 <ParaglideJS {i18n}>
+	<Toaster theme="light" position="top-right" closeButton richColors />
 	<div class="grid">
 		<div class="cell-1 z-10">
 			<Tooltip.Provider>

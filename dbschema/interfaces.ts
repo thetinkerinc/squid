@@ -91,6 +91,12 @@ export namespace $default {
 		account: AccountType;
 	}
 	export type EntryType = 'expense' | 'income' | 'withdrawal';
+	export interface Invitation extends std.$Object {
+		from: User;
+		to: User;
+		accepted?: boolean | null;
+		sent: Date;
+	}
 	export interface User extends std.$Object {
 		identity: ext.auth.Identity[];
 		email: string;
@@ -102,6 +108,7 @@ export namespace $default {
 export type AccountType = $default.AccountType;
 export type Entry = $default.Entry;
 export type EntryType = $default.EntryType;
+export type Invitation = $default.Invitation;
 export type User = $default.User;
 export namespace ext {
 	export namespace auth {
@@ -631,6 +638,7 @@ export interface types {
 		AccountType: $default.AccountType;
 		Entry: $default.Entry;
 		EntryType: $default.EntryType;
+		Invitation: $default.Invitation;
 		User: $default.User;
 	};
 	ext: {

@@ -7,7 +7,7 @@ import type { PageServerLoad } from './$types';
 
 type Users = $expr_Select<{
 	__element__: ObjectType<'default::User'>;
-	__cardinality__: Cardinality.AtMostOne;
+	__cardinality__: Cardinality.Many;
 }>;
 
 async function getTotals(client: Client, user: Users) {
@@ -70,6 +70,27 @@ async function getEntries(client: Client, user: Users) {
 		.run(client);
 }
 
+async function getInvitations(client: Client, user: Users) {
+	return await e
+		.select(e.Invitation, (invitation) => ({
+			id: true,
+			from: {
+				email: true
+			},
+			sent: true,
+			filter: e.op(
+				e.op(invitation.to, '=', user),
+				'and',
+				e.op('not', e.op('exists', invitation.accepted))
+			),
+			order_by: {
+				expression: invitation.sent,
+				direction: e.DESC
+			}
+		}))
+		.run(client);
+}
+
 export const load: PageServerLoad = async (event) => {
 	if (event.locals.authenticated) {
 		const user = e.select(e.User, () => ({
@@ -77,9 +98,17 @@ export const load: PageServerLoad = async (event) => {
 				id: event.locals.user.id
 			}
 		}));
+		const users = e.select(e.User, (u) => {
+			const isUser = e.op(u, '=', user);
+			const isPartner = e.op(u, 'in', user.partners);
+			return {
+				filter: e.op(isUser, 'or', isPartner)
+			};
+		});
 		return {
-			totals: await getTotals(event.locals.client, user),
-			entries: await getEntries(event.locals.client, user)
+			totals: await getTotals(event.locals.client, users),
+			entries: await getEntries(event.locals.client, users),
+			invitations: await getInvitations(event.locals.client, users)
 		};
 	}
 };

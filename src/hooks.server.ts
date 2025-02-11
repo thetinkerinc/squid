@@ -26,6 +26,9 @@ const handleAuth: Handle = async ({ event, resolve }) => {
 				id: true,
 				email: true,
 				is_admin: true,
+				partners: {
+					email: true
+				},
 				filter_single: e.op(user.identity, '=', e.ext.auth.global.ClientTokenIdentity)
 			}))
 			.run(event.locals.client);
