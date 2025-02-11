@@ -25,6 +25,8 @@ module default {
 		required type: EntryType;
 		required account: AccountType;
 		required amount: float32;
+		required enteredAmount: float32;
+		required enteredCurrency: str;
 		required category: str;
 		description: str;
 	}
@@ -37,5 +39,12 @@ module default {
 			default := datetime_current();
 		}
 		accepted: bool;
+	}
+
+	type Currency {
+		required code: str;
+		required name: str;
+		required symbol: str;
+		required value: float32;
 	}
 }

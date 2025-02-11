@@ -1,6 +1,10 @@
 import dayjs from 'dayjs';
 
+import local from '$utils/local';
+import currencies from '$utils/currencies';
+
 import type { ConfigType } from 'dayjs';
+import type { Currency } from '$utils/currencies';
 
 function date(d: ConfigType, format?: string): string {
 	const day = dayjs(d);
@@ -15,11 +19,12 @@ function date(d: ConfigType, format?: string): string {
 }
 
 function money(amount: number): string {
-	return new Intl.NumberFormat('en-CA', {
+	const currency: Currency = local.get('currency', 'CAD');
+	return new Intl.NumberFormat('en', {
 		style: 'currency',
-		currency: 'CAD',
-		currencyDisplay: 'narrowSymbol'
-	}).format(amount);
+		currencyDisplay: 'narrowSymbol',
+		currency
+	}).format(amount * currencies[currency].value);
 }
 
 export default {

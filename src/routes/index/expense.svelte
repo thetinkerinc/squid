@@ -9,12 +9,25 @@ import { Input } from '$components/ui/input';
 import { Label } from '$components/ui/label';
 import * as RadioGroup from '$components/ui/radio-group';
 
-import type { AccountType } from '$models';
+import AmountInput from './amount-input.svelte';
 
-const categories = ['rent', 'groceries', 'food', 'transportation', 'pets', 'clothes'];
+import type { AccountType } from '$models';
+import type { Currency } from '$utils/currencies';
+
+const categories = [
+	'rent',
+	'groceries',
+	'restaurant',
+	'transportation',
+	'entertainment',
+	'pets',
+	'clothes'
+];
 
 let open = $state<boolean>(false);
 let amount = $state<number>();
+let enteredAmount = $state<number>();
+let enteredCurrency = $state<Currency>('CAD');
 let account = $state<AccountType>('bank');
 let category = $state<string>();
 let addingCategory = $state<boolean>(false);
@@ -43,13 +56,15 @@ function addCategory() {
 }
 
 async function save() {
-	if (amount == null || !account || category == null) {
+	if (amount == null || enteredAmount == null || !account || category == null) {
 		return;
 	}
 	await client.entry.create.mutate({
 		type: 'expense',
 		account,
 		amount,
+		enteredAmount,
+		enteredCurrency,
 		category,
 		description
 	});
@@ -66,7 +81,7 @@ async function save() {
 	</AlertDialog.Trigger>
 	<AlertDialog.Content class="border border-white/[0.8] bg-white/[0.3] backdrop-blur">
 		<AlertDialog.Title>Register an expense</AlertDialog.Title>
-		<Input type="number" min={0} placeholder="Amount" bind:value={amount} />
+		<AmountInput bind:amount bind:enteredAmount bind:enteredCurrency />
 		<div>
 			<RadioGroup.Root class="flex flex-wrap gap-4" bind:value={account}>
 				<div class="flex items-center gap-2">

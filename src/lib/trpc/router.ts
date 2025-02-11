@@ -12,6 +12,8 @@ export const app = router({
 					type: z.enum(['income', 'expense', 'withdrawal']),
 					account: z.enum(['bank', 'cash']),
 					amount: z.number().min(0),
+					enteredAmount: z.number().min(0),
+					enteredCurrency: z.string(),
 					category: z.string().toLowerCase(),
 					description: z.string().optional()
 				})

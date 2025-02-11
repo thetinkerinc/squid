@@ -1,9 +1,13 @@
 <script lang="ts">
+import { invalidateAll } from '$app/navigation';
 import { LogOut } from 'lucide-svelte';
 
 import auth from '$lib/auth';
 
+import local from '$utils/local';
+
 import Card from '$components/card.svelte';
+import CurrencySelector from '$components/currency-selector.svelte';
 
 import Totals from './totals.svelte';
 import Income from './income.svelte';
@@ -12,6 +16,11 @@ import Withdrawal from './withdrawal.svelte';
 import Entries from './entries.svelte';
 import Breakdown from './breakdown.svelte';
 import Partners from './partners.svelte';
+
+async function updateCurrency(newCurrency: string) {
+	local.set('currency', newCurrency);
+	await invalidateAll();
+}
 </script>
 
 <div class="px-8 pb-10 pt-4">
@@ -19,7 +28,8 @@ import Partners from './partners.svelte';
 		<div class="flex-auto">
 			<img src="/squid.png" alt="Cartoon squid with money" class="w-[70px]" />
 		</div>
-		<div>
+		<div class="flex items-center gap-4">
+			<CurrencySelector onupdate={updateCurrency} />
 			<a href={auth.getSignoutUrl()}>
 				<LogOut size={30} />
 			</a>

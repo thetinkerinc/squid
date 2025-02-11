@@ -9,13 +9,18 @@ import { Input } from '$components/ui/input';
 import { Label } from '$components/ui/label';
 import * as RadioGroup from '$components/ui/radio-group';
 
+import AmountInput from './amount-input.svelte';
+
 import type { AccountType } from '$models';
+import type { Currency } from '$utils/currencies';
 
 const categories = ['paycheck', 'misc'];
 
 let open = $state<boolean>(false);
 let amount = $state<number>();
 let account = $state<AccountType>('bank');
+let enteredAmount = $state<number>();
+let enteredCurrency = $state<Currency>('CAD');
 let category = $state<string>();
 let addingCategory = $state<boolean>(false);
 let description = $state<string>();
@@ -43,13 +48,15 @@ function addCategory() {
 }
 
 async function save() {
-	if (amount == null || !account || category == null) {
+	if (amount == null || enteredAmount == null || !account || category == null) {
 		return;
 	}
 	await client.entry.create.mutate({
 		type: 'income',
 		account,
 		amount,
+		enteredAmount,
+		enteredCurrency,
 		category,
 		description
 	});
@@ -66,7 +73,7 @@ async function save() {
 	</AlertDialog.Trigger>
 	<AlertDialog.Content class="border border-white/[0.8] bg-white/[0.3] backdrop-blur">
 		<AlertDialog.Title>Add income to your account</AlertDialog.Title>
-		<Input type="number" min={0} placeholder="Amount" bind:value={amount} />
+		<AmountInput bind:amount bind:enteredAmount bind:enteredCurrency />
 		<div>
 			<RadioGroup.Root class="flex flex-wrap gap-4" bind:value={account}>
 				<div class="flex items-center gap-2">

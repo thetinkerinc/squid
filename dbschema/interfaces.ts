@@ -81,6 +81,12 @@ export namespace cfg {
 }
 export namespace $default {
 	export type AccountType = 'bank' | 'cash';
+	export interface Currency extends std.$Object {
+		code: string;
+		name: string;
+		symbol: string;
+		value: number;
+	}
 	export interface Entry extends std.$Object {
 		user: User;
 		created: Date;
@@ -89,6 +95,8 @@ export namespace $default {
 		category: string;
 		description?: string | null;
 		account: AccountType;
+		enteredAmount: number;
+		enteredCurrency: string;
 	}
 	export type EntryType = 'expense' | 'income' | 'withdrawal';
 	export interface Invitation extends std.$Object {
@@ -106,6 +114,7 @@ export namespace $default {
 	}
 }
 export type AccountType = $default.AccountType;
+export type Currency = $default.Currency;
 export type Entry = $default.Entry;
 export type EntryType = $default.EntryType;
 export type Invitation = $default.Invitation;
@@ -636,6 +645,7 @@ export interface types {
 	};
 	default: {
 		AccountType: $default.AccountType;
+		Currency: $default.Currency;
 		Entry: $default.Entry;
 		EntryType: $default.EntryType;
 		Invitation: $default.Invitation;

@@ -6,6 +6,7 @@ import serverAuth from '@edgedb/auth-sveltekit/server';
 import e from '$eql';
 import { i18n } from '$lib/i18n';
 import { options } from '$lib/auth';
+import { addLocalStorage } from '$utils/local';
 
 import type { Handle } from '@sveltejs/kit';
 import type { AuthRouteHandlers, TokenData } from '@edgedb/auth-sveltekit/server';
@@ -114,6 +115,7 @@ async function makeUser(tokenData: TokenData, email: string) {
 
 export const handle: Handle = sequence(
 	i18n.handle(),
+	addLocalStorage,
 	handleAuth,
 	createAuthRouteHook(authRouteHandlers)
 );

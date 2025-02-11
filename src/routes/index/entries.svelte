@@ -1,4 +1,4 @@
-<script>
+<script lang="ts">
 import { page } from '$app/state';
 import { ArrowUp, ArrowDown, Redo } from 'lucide-svelte';
 
