@@ -12,7 +12,8 @@ export default ts.config(
 			'dist/',
 			'src/lib/components/ui/',
 			'dbschema/',
-			'src/lib/paraglide/'
+			'src/lib/paraglide/',
+			'.trigger/'
 		]
 	},
 	js.configs.recommended,

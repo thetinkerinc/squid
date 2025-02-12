@@ -1,0 +1,59 @@
+import { schedules } from '@trigger.dev/sdk/v3';
+import * as edgedb from 'edgedb';
+
+import e from '$eql';
+
+type CurrencyCode = 'EUR' | 'USD' | 'CAD' | 'MXN';
+type CurrencyInfo = {
+	symbol: string;
+	name: string;
+	symbol_native: string;
+	decimal_digits: number;
+	rounding: number;
+	code: CurrencyCode;
+	name_plural: string;
+	type: string;
+};
+type CurrencyInfoResponse = Record<CurrencyCode, CurrencyInfo>;
+type CurrencyValueResponse = Record<CurrencyCode, number>;
+
+export const updateCurrencies = schedules.task({
+	id: 'update-currencies',
+	cron: {
+		pattern: '0 6 * * *',
+		timezone: 'America/Edmonton'
+	},
+	run: async () => {
+		const info = await getCurrencyInfo();
+		const values = await getCurrencyValues();
+		const currencies = Object.values(info).map((data) => ({
+			code: data.code,
+			name: data.name,
+			symbol: data.symbol_native,
+			value: values[data.code]
+		}));
+		const client = edgedb.createClient();
+		await client.transaction(async (tx) => {
+			await e.delete(e.Currency).run(tx);
+			for (const currency of currencies) {
+				await e.insert(e.Currency, currency).run(tx);
+			}
+		});
+	}
+});
+
+async function getCurrencyInfo(): Promise<CurrencyInfoResponse> {
+	const resp = await fetch(
+		`https://api.freecurrencyapi.com/v1/currencies?apikey=${process.env.CURRENCY_API_KEY}&currencies=EUR%2CUSD%2CCAD%2CMXN`
+	);
+	const json = await resp.json();
+	return json.data;
+}
+
+async function getCurrencyValues(): Promise<CurrencyValueResponse> {
+	const resp = await fetch(
+		`https://api.freecurrencyapi.com/v1/latest?apikey=${process.env.CURRENCY_API_KEY}&currencies=EUR%2CUSD%2CCAD%2CMXN&base_currency=CAD`
+	);
+	const json = await resp.json();
+	return json.data;
+}
