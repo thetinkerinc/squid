@@ -31,7 +31,7 @@
 		"autoprefixer": "^10.4.20",
 		"bits-ui": "^1.0.0-next.94",
 		"clsx": "^2.1.1",
-		"eslint": "^9.20.0",
+		"eslint": "^9.20.1",
 		"eslint-config-prettier": "^10.0.1",
 		"eslint-plugin-svelte": "^2.46.1",
 		"globals": "^15.14.0",
@@ -67,6 +67,6 @@
 		"edgedb": "^1.5.12",
 		"js-cookie": "^3.0.5",
 		"radashi": "^12.3.4",
-		"zod": "^3.24.1"
+		"zod": "^3.24.2"
 	}
 }

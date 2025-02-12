@@ -1,15 +1,18 @@
 <script lang="ts">
 let { onupdate } = $props();
 
+import { page } from '$app/state';
+
 import local from '$utils/local';
-import currencies from '$utils/currencies';
 
 import * as Select from '$components/ui/select';
 
+import type { Page } from '@sveltejs/kit';
+
 let currency = $state(local.get('currency', 'CAD'));
 
-function getCurrencies() {
-	return Object.entries(currencies).toSorted((a, b) => a[0].localeCompare(b[0]));
+function getCurrencies(): Page['data']['currencies'] {
+	return Object.entries(page.data.currencies).toSorted((a, b) => a[0].localeCompare(b[0]));
 }
 
 function updateCurrency(newCurrency: string) {

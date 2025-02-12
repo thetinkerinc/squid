@@ -12,7 +12,6 @@ import * as RadioGroup from '$components/ui/radio-group';
 import AmountInput from './amount-input.svelte';
 
 import type { AccountType } from '$models';
-import type { Currency } from '$utils/currencies';
 
 const categories = ['paycheck', 'misc'];
 
@@ -20,7 +19,7 @@ let open = $state<boolean>(false);
 let amount = $state<number>();
 let account = $state<AccountType>('bank');
 let enteredAmount = $state<number>();
-let enteredCurrency = $state<Currency>('CAD');
+let enteredCurrency = $state<string>('CAD');
 let category = $state<string>();
 let addingCategory = $state<boolean>(false);
 let description = $state<string>();
