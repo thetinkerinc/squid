@@ -1,52 +1,74 @@
 <script lang="ts">
 import { onMount } from 'svelte';
 import { page } from '$app/state';
-import Chart from 'chart.js/auto';
+import * as echarts from 'echarts';
+import * as _ from 'radashi';
 
-import type { Chart as ChartType } from 'chart.js';
+import formatter from '$utils/formatter';
+
 import type { Entry } from '$models';
+import type { ECharts } from 'echarts';
 
 onMount(() => {
-	chart = new Chart(document.getElementById('chart') as HTMLCanvasElement, {
-		type: 'pie',
-		data: {
-			labels: categories,
-			datasets: [
-				{
-					data: categories.map((c) => amounts[c])
-				}
-			]
+	chart = echarts.init(document.getElementById('chart'));
+	chart.setOption({
+		legend: {
+			orient: 'vertical',
+			top: 'center',
+			right: 0,
+			formatter: _.capitalize
 		},
-		options: {
-			plugins: {
-				legend: {
-					display: true,
-					position: 'right'
-				}
+		tooltip: {
+			trigger: 'item',
+			valueFormatter: formatter.money
+		},
+		series: [
+			{
+				type: 'pie',
+				name: 'breakdown',
+				center: [150, '50%'],
+				label: {
+					show: false
+				},
+				itemStyle: {
+					borderRadius: 5,
+					borderWidth: 2,
+					borderColor: '#fff'
+				},
+				data: entries
 			}
-		}
+		]
 	});
+
+	return () => {
+		chart.dispose();
+	};
 });
 
-let chart: ChartType;
+let chart: ECharts;
 
 let expenses = $derived(page.data.entries.filter((e: Entry) => e.type === 'expense'));
-let amounts = $derived(
+let amounts = $derived<Record<string, number>>(
 	expenses.reduce((a: { [key: string]: number }, v: Entry) => {
 		a[v.category] = a[v.category] ?? 0;
 		a[v.category] += v.amount;
 		return a;
 	}, {})
 );
-let categories = $derived(Object.keys(amounts));
+let entries = $derived(
+	_.listify(amounts, (name, value) => ({ name, value })).toSorted((a, b) => b.value - a.value)
+);
 
 $effect(() => {
-	chart.data.labels = categories;
-	chart.data.datasets[0].data = categories.map((c) => amounts[c]);
-	chart.update();
+	chart.setOption({
+		series: [
+			{
+				name: 'breakdown',
+				data: entries
+			}
+		]
+	});
 });
 </script>
 
-<div class="h-[300px] w-[300px]">
-	<canvas id="chart"></canvas>
-</div>
+<div id="chart" class="h-[300px] w-[400px]"></div>
