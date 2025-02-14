@@ -35,22 +35,26 @@ async function updateCurrency(newCurrency: string) {
 			</a>
 		</div>
 	</div>
-	<div class="grid grid-cols-[1fr_2fr] place-items-start justify-items-stretch gap-4">
-		<div>
-			<Card>
-				<Totals />
-			</Card>
-			<div class="my-4 flex justify-around">
-				<Income />
-				<Expense />
-				<Withdrawal />
+	<div
+		class="grid grid-rows-[auto_auto] place-items-start justify-items-stretch gap-4 lg:grid-cols-[1fr_2fr] lg:grid-rows-1">
+		<div
+			class="grid grid-rows-[auto_auto] gap-2 md:grid-cols-2 md:grid-rows-1 lg:grid-cols-1 lg:grid-rows-[auto_auto]">
+			<div>
+				<Card>
+					<Totals />
+				</Card>
+				<div class="my-4 flex justify-around">
+					<Income />
+					<Expense />
+					<Withdrawal />
+				</div>
 			</div>
 			<Card>
 				<Entries />
 			</Card>
 		</div>
 		<div>
-			<Card class="mb-6">
+			<Card class="mb-6 @container">
 				<Breakdown />
 			</Card>
 			<Card>

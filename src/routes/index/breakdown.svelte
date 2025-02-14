@@ -96,8 +96,8 @@ $effect(() => {
 });
 </script>
 
-<div class="grid grid-cols-2">
-	<div id="chart" class="h-[300px] w-[400px]"></div>
+<div class="grid grid-rows-[auto_auto] @3xl:grid-cols-2 @3xl:grid-rows-1">
+	<div id="chart" class="h-[300px] w-[400px] justify-self-center @3xl:justify-self-start"></div>
 	<ScrollArea class="flex max-h-[300px] flex-col">
 		{#each details as cat}
 			<div class="mb-3 rounded bg-white/[0.7] px-4 py-2 shadow">
