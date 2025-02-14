@@ -6,6 +6,8 @@ import * as _ from 'radashi';
 
 import formatter from '$utils/formatter';
 
+import { ScrollArea } from '$components/ui/scroll-area';
+
 import type { Entry } from '$models';
 import type { ECharts } from 'echarts';
 
@@ -96,9 +98,9 @@ $effect(() => {
 
 <div class="grid grid-cols-2">
 	<div id="chart" class="h-[300px] w-[400px]"></div>
-	<div class="flex flex-col gap-3">
+	<ScrollArea class="flex max-h-[300px] flex-col">
 		{#each details as cat}
-			<div class="rounded bg-white/[0.7] px-4 py-2 shadow">
+			<div class="mb-3 rounded bg-white/[0.7] px-4 py-2 shadow">
 				<div class="flex items-center gap-2 text-lg">
 					<div class="capitalize">{cat.name}</div>
 					<div>-</div>
@@ -115,5 +117,5 @@ $effect(() => {
 				</div>
 			</div>
 		{/each}
-	</div>
+	</ScrollArea>
 </div>

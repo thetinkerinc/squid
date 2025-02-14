@@ -4,12 +4,13 @@ import { ArrowUp, ArrowDown, Redo } from 'lucide-svelte';
 
 import formatter from '$utils/formatter';
 
+import { ScrollArea } from '$components/ui/scroll-area';
 import * as Tooltip from '$components/ui/tooltip';
 </script>
 
-<div class="flex flex-col gap-2">
+<ScrollArea class="flex max-h-[300px] flex-col">
 	{#each page.data.entries as entry (entry.id)}
-		<div class="flex items-center gap-4 rounded bg-white/[0.7] px-4 py-1 shadow">
+		<div class="mb-2 flex items-center gap-4 rounded bg-white/[0.7] px-4 py-1 shadow">
 			{#if entry.type === 'income'}
 				<div class="badge from-green-300 to-green-400">
 					<ArrowUp size={20} />
@@ -35,7 +36,7 @@ import * as Tooltip from '$components/ui/tooltip';
 			<div class="capitalize">{entry.category}</div>
 		</div>
 	{/each}
-</div>
+</ScrollArea>
 
 <style lang="postcss">
 .badge {
