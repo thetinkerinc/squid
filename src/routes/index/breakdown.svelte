@@ -10,7 +10,9 @@ import type { Entry } from '$models';
 import type { ECharts } from 'echarts';
 
 onMount(() => {
-	chart = echarts.init(document.getElementById('chart'));
+	chart = echarts.init(document.getElementById('chart'), null, {
+		height: 300
+	});
 	chart.setOption({
 		legend: {
 			orient: 'vertical',
@@ -35,7 +37,7 @@ onMount(() => {
 					borderWidth: 2,
 					borderColor: '#fff'
 				},
-				data: entries
+				data: slices
 			}
 		]
 	});
@@ -47,16 +49,37 @@ onMount(() => {
 
 let chart: ECharts;
 
-let expenses = $derived(page.data.entries.filter((e: Entry) => e.type === 'expense'));
-let amounts = $derived<Record<string, number>>(
-	expenses.reduce((a: { [key: string]: number }, v: Entry) => {
-		a[v.category] = a[v.category] ?? 0;
-		a[v.category] += v.amount;
+let expenses = $derived<Entry[]>(page.data.entries.filter((e: Entry) => e.type === 'expense'));
+let amounts = $derived(
+	expenses.reduce((a: { [key: string]: Record<string, number> }, v: Entry) => {
+		const description = v.description ?? 'No description';
+		a[v.category] = a[v.category] ?? {};
+		a[v.category].total = a[v.category].total ?? 0;
+		a[v.category][description] = a[v.category][description] ?? 0;
+		a[v.category].total += v.amount;
+		a[v.category][description] += v.amount;
 		return a;
 	}, {})
 );
-let entries = $derived(
-	_.listify(amounts, (name, value) => ({ name, value })).toSorted((a, b) => b.value - a.value)
+let slices = $derived(
+	_.listify(amounts, (name, values) => ({ name, value: values.total })).toSorted(
+		(a, b) => b.value - a.value
+	)
+);
+let details = $derived(
+	_.listify(amounts, (name, values) => {
+		const breakdown = _.listify(_.omit(values, ['total']), (name, value) => ({
+			name,
+			value
+		})).toSorted((a, b) => {
+			return b.value - a.value;
+		});
+		return {
+			name,
+			total: values.total,
+			breakdown
+		};
+	}).toSorted((a, b) => b.total - a.total)
 );
 
 $effect(() => {
@@ -64,11 +87,33 @@ $effect(() => {
 		series: [
 			{
 				name: 'breakdown',
-				data: entries
+				data: slices
 			}
 		]
 	});
 });
 </script>
 
-<div id="chart" class="h-[300px] w-[400px]"></div>
+<div class="grid grid-cols-2">
+	<div id="chart" class="h-[300px] w-[400px]"></div>
+	<div class="flex flex-col gap-3">
+		{#each details as cat}
+			<div class="rounded bg-white/[0.7] px-4 py-2 shadow">
+				<div class="flex items-center gap-2 text-lg">
+					<div class="capitalize">{cat.name}</div>
+					<div>-</div>
+					<div>{formatter.money(cat.total)}</div>
+				</div>
+				<div class="ml-4">
+					{#each cat.breakdown as sub}
+						<div class="flex items-center gap-2">
+							<span class="capitalize text-gray-500">{sub.name}</span>
+							<span>-</span>
+							<span>{formatter.money(sub.value)}</span>
+						</div>
+					{/each}
+				</div>
+			</div>
+		{/each}
+	</div>
+</div>

@@ -16,7 +16,7 @@ import type { AccountType } from '$models';
 const categories = [
 	'rent',
 	'groceries',
-	'restaurant',
+	'food',
 	'transportation',
 	'entertainment',
 	'pets',
