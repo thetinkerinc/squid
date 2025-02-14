@@ -56,6 +56,8 @@ async function getEntries(client: Client, user: Users) {
 			type: true,
 			account: true,
 			amount: true,
+			enteredAmount: true,
+			enteredCurrency: true,
 			category: true,
 			description: true,
 			user: {

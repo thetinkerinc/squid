@@ -1,45 +1,83 @@
 <script lang="ts">
 import { page } from '$app/state';
-import { ArrowUp, ArrowDown, Redo } from 'lucide-svelte';
+import { ArrowUp, ArrowDown, Redo, Info, X } from 'lucide-svelte';
 
 import formatter from '$utils/formatter';
 
 import { ScrollArea } from '$components/ui/scroll-area';
 import * as Tooltip from '$components/ui/tooltip';
+
+import type { Entry } from '$models';
+
+function rm(id: string) {
+	return async () => {
+		console.log('deleting');
+		console.log(id);
+	};
+}
 </script>
 
-<ScrollArea class="flex max-h-[300px] flex-col">
+<ScrollArea class="flex max-h-[300px] flex-col lg:max-h-[400px]">
 	{#each page.data.entries as entry (entry.id)}
-		<div class="mb-2 flex items-center gap-4 rounded bg-white/[0.7] px-4 py-1 shadow">
-			{#if entry.type === 'income'}
-				<div class="badge from-green-300 to-green-400">
-					<ArrowUp size={20} />
-				</div>
-			{:else if entry.type === 'expense'}
-				<div class="badge from-red-300 to-red-400">
-					<ArrowDown size={20} />
-				</div>
-			{:else if entry.type === 'withdrawal'}
-				<div class="badge from-blue-300 to-blue-400">
-					<Redo size={20} />
-				</div>
-			{/if}
+		<div class="entry mb-2 flex items-center gap-4 rounded bg-white/[0.7] px-4 py-1 shadow">
+			{@render badge(entry)}
 			<div>{formatter.money(entry.amount)}</div>
-			<Tooltip.Root delayDuration={100}>
-				<Tooltip.Trigger>
-					<div class="text-gray-500">{formatter.date(entry.created)}</div>
-				</Tooltip.Trigger>
-				<Tooltip.Content>
-					<div>{formatter.date(entry.created, 'h:mm a ddd MMM D, YYYY')}</div>
-				</Tooltip.Content>
-			</Tooltip.Root>
+			<div class="text-gray-500">{formatter.date(entry.created)}</div>
 			<div class="capitalize">{entry.category}</div>
+			<div class="actions flex flex-auto items-center justify-end gap-1 transition">
+				<Tooltip.Root>
+					<Tooltip.Trigger class="text-blue-500">
+						<Info />
+					</Tooltip.Trigger>
+					<Tooltip.Content class="flex flex-col gap-2 py-2 text-base">
+						<div class="flex items-center gap-2">
+							{@render badge(entry)}
+							<div>{formatter.money(entry.amount)}</div>
+							<div>({entry.enteredAmount} {entry.enteredCurrency})</div>
+						</div>
+						<div>{formatter.date(entry.created, 'h:mm a ddd MMM D, YYYY')}</div>
+						<div class="flex gap-1">
+							<div class="capitalize">{entry.category}</div>
+							<div>-</div>
+							<div class="text-gray-500">{entry.description ?? 'No description'}</div>
+						</div>
+						<div>{entry.user.email}</div>
+					</Tooltip.Content>
+				</Tooltip.Root>
+				<button class="text-red-500" onclick={rm(entry.id)}>
+					<X />
+				</button>
+			</div>
 		</div>
 	{/each}
 </ScrollArea>
 
+{#snippet badge(entry: Entry)}
+	{#if entry.type === 'income'}
+		<div class="badge from-green-300 to-green-400">
+			<ArrowUp size={20} />
+		</div>
+	{:else if entry.type === 'expense'}
+		<div class="badge from-red-300 to-red-400">
+			<ArrowDown size={20} />
+		</div>
+	{:else if entry.type === 'withdrawal'}
+		<div class="badge from-blue-300 to-blue-400">
+			<Redo size={20} />
+		</div>
+	{/if}
+{/snippet}
+
 <style lang="postcss">
 .badge {
 	@apply rounded bg-gradient-to-br p-[2px] shadow;
+}
+.entry .actions {
+	opacity: 0;
+	pointer-events: none;
+}
+.entry:hover .actions {
+	opacity: 1;
+	pointer-events: unset;
 }
 </style>

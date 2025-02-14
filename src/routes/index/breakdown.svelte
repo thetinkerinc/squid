@@ -54,7 +54,7 @@ let chart: ECharts;
 let expenses = $derived<Entry[]>(page.data.entries.filter((e: Entry) => e.type === 'expense'));
 let amounts = $derived(
 	expenses.reduce((a: { [key: string]: Record<string, number> }, v: Entry) => {
-		const description = v.description ?? 'No description';
+		const description = (v.description ?? 'no description').toLocaleLowerCase();
 		a[v.category] = a[v.category] ?? {};
 		a[v.category].total = a[v.category].total ?? 0;
 		a[v.category][description] = a[v.category][description] ?? 0;
