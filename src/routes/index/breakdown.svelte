@@ -29,7 +29,7 @@ onMount(() => {
 		series: [
 			{
 				type: 'pie',
-				name: 'breakdown',
+				name: 'Breakdown',
 				center: [150, '50%'],
 				label: {
 					show: false
@@ -88,7 +88,7 @@ $effect(() => {
 	chart.setOption({
 		series: [
 			{
-				name: 'breakdown',
+				name: 'Breakdown',
 				data: slices
 			}
 		]

@@ -56,6 +56,10 @@ function rm(id: string) {
 				</button>
 			</div>
 		</div>
+	{:else}
+		<div class="rounded bg-white/[0.7] px-4 py-1 shadow text-gray-500 text-center text-lg py-2">
+			No entries added yet
+		</div>
 	{/each}
 </ScrollArea>
 
