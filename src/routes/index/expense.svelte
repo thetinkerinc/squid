@@ -12,6 +12,7 @@ import { Label } from '$components/ui/label';
 import * as RadioGroup from '$components/ui/radio-group';
 
 import AmountInput from './amount-input.svelte';
+import DescriptionInput from './description-input.svelte';
 
 import type { AccountType, Entry } from '$models';
 
@@ -33,12 +34,21 @@ let enteredCurrency = $state<string>('CAD');
 let account = $state<AccountType>('bank');
 let category = $state<string>();
 let addingCategory = $state<boolean>(false);
-let description = $state<string>();
+let description = $state<string>('');
 
 let categories = $derived<string[]>(
 	_.unique(
 		defaultCategories.concat(
 			page.data.entries.filter((e: Entry) => e.type === 'expense').map((e: Entry) => e.category)
+		)
+	)
+);
+let descriptions = $derived<string[]>(
+	_.unique(
+		_.sift(
+			page.data.entries
+				.filter((e: Entry) => e.type === 'expense' && e.category === category)
+				.map((e: Entry) => e.description)
 		)
 	)
 );
@@ -130,7 +140,7 @@ async function save() {
 			<Input type="text" placeholder="New category" bind:value={category} />
 		{/if}
 		{#if category || addingCategory}
-			<Input type="text" placeholder="Description" bind:value={description} />
+			<DescriptionInput options={descriptions} bind:value={description} />
 		{/if}
 		<AlertDialog.Footer>
 			<AlertDialog.Cancel>Cancel</AlertDialog.Cancel>
