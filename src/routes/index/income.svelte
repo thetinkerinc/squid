@@ -1,5 +1,7 @@
 <script lang="ts">
+import { page } from '$app/state';
 import { invalidateAll } from '$app/navigation';
+import * as _ from 'radashi';
 
 import { client } from '$trpc/client';
 
@@ -11,9 +13,9 @@ import * as RadioGroup from '$components/ui/radio-group';
 
 import AmountInput from './amount-input.svelte';
 
-import type { AccountType } from '$models';
+import type { AccountType, Entry } from '$models';
 
-const categories = ['paycheck', 'misc'];
+const defaultCategories = ['paycheck', 'misc'];
 
 let open = $state<boolean>(false);
 let amount = $state<number>();
@@ -24,6 +26,13 @@ let category = $state<string>();
 let addingCategory = $state<boolean>(false);
 let description = $state<string>();
 
+let categories = $derived<string[]>(
+	_.unique(
+		defaultCategories.concat(
+			page.data.entries.filter((e: Entry) => e.type === 'income').map((e: Entry) => e.category)
+		)
+	)
+);
 let disabled = $derived(amount == null || !account || !category);
 
 function setCategory(cat: string) {
