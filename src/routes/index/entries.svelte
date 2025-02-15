@@ -1,8 +1,12 @@
 <script lang="ts">
 import { page } from '$app/state';
+import { invalidateAll } from '$app/navigation';
+import { flip } from 'svelte/animate';
+import { fade } from 'svelte/transition';
 import { ArrowUp, ArrowDown, Redo, Info, X } from 'lucide-svelte';
 
 import formatter from '$utils/formatter';
+import { client } from '$trpc/client';
 
 import { ScrollArea } from '$components/ui/scroll-area';
 import * as Tooltip from '$components/ui/tooltip';
@@ -11,15 +15,18 @@ import type { Entry } from '$models';
 
 function rm(id: string) {
 	return async () => {
-		console.log('deleting');
-		console.log(id);
+		await client.entry.delete.mutate({ id });
+		await invalidateAll();
 	};
 }
 </script>
 
 <ScrollArea class="flex max-h-[300px] flex-col lg:max-h-[400px]">
 	{#each page.data.entries as entry (entry.id)}
-		<div class="entry mb-2 flex items-center gap-4 rounded bg-white/[0.7] px-4 py-1 shadow">
+		<div
+			class="entry mb-2 flex items-center gap-4 rounded bg-white/[0.7] px-4 py-1 shadow"
+			animate:flip
+			transition:fade={{ duration: 200 }}>
 			{@render badge(entry)}
 			<div>{formatter.money(entry.amount)}</div>
 			<div class="text-gray-500">{formatter.date(entry.created)}</div>

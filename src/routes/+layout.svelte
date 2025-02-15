@@ -19,16 +19,16 @@ import '../app.css';
 
 <ParaglideJS {i18n}>
 	<Toaster theme="light" position="top-right" closeButton richColors />
-	<div class="grid">
-		<div class="cell-1 z-10">
-			<Tooltip.Provider>
+	<Tooltip.Provider>
+		<div class="grid">
+			<div class="cell-1 z-10">
 				{@render children()}
-			</Tooltip.Provider>
+			</div>
+			<div class="cell-1 fixed h-[100vh] w-full bg-[#fffde8]">
+				{@render bg()}
+			</div>
 		</div>
-		<div class="cell-1 fixed h-[100vh] w-full bg-[#fffde8]">
-			{@render bg()}
-		</div>
-	</div>
+	</Tooltip.Provider>
 </ParaglideJS>
 
 {#snippet bg()}

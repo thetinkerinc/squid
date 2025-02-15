@@ -15,7 +15,7 @@ export const app = router({
 					enteredAmount: z.number().min(0),
 					enteredCurrency: z.string(),
 					category: z.string().toLowerCase(),
-					description: z.string().optional()
+					description: z.string().toLowerCase().optional()
 				})
 			)
 			.mutation(async ({ input, ctx }) => {
@@ -31,6 +31,22 @@ export const app = router({
 						account: e.cast(e.AccountType, input.account),
 						user
 					})
+					.run(ctx.event.locals.client);
+			}),
+		delete: procedure
+			.input(
+				z.object({
+					id: z.string().uuid()
+				})
+			)
+			.mutation(async ({ input, ctx }) => {
+				const { id } = input;
+				await e
+					.delete(e.Entry, () => ({
+						filter_single: {
+							id
+						}
+					}))
 					.run(ctx.event.locals.client);
 			})
 	},
