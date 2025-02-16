@@ -15,7 +15,11 @@ export const app = router({
 					enteredAmount: z.number().min(0),
 					enteredCurrency: z.string(),
 					category: z.string().toLowerCase(),
-					description: z.string().toLowerCase().optional()
+					description: z
+						.string()
+						.toLowerCase()
+						.optional()
+						.transform((d) => (d === '' ? undefined : d))
 				})
 			)
 			.mutation(async ({ input, ctx }) => {
