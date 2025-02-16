@@ -1,6 +1,7 @@
 <script lang="ts">
 import { onMount } from 'svelte';
 import { page } from '$app/state';
+import dayjs from 'dayjs';
 import * as echarts from 'echarts';
 import * as _ from 'radashi';
 
@@ -10,6 +11,8 @@ import { ScrollArea } from '$components/ui/scroll-area';
 
 import type { Entry } from '$models';
 import type { ECharts } from 'echarts';
+
+let all = $state(true);
 
 onMount(() => {
 	chart = echarts.init(document.getElementById('chart'), null, {
@@ -51,7 +54,13 @@ onMount(() => {
 
 let chart: ECharts;
 
-let expenses = $derived<Entry[]>(page.data.entries.filter((e: Entry) => e.type === 'expense'));
+let expenses = $derived<Entry[]>(
+	page.data.entries.filter((e: Entry) => {
+		const isExpense = e.type === 'expense';
+		const isInRange = all ? true : dayjs().isSame(e.created, 'month');
+		return isExpense && isInRange;
+	})
+);
 let amounts = $derived(
 	expenses.reduce((a: { [key: string]: Record<string, number> }, v: Entry) => {
 		const description = (v.description ?? 'no description').toLocaleLowerCase();
@@ -96,6 +105,18 @@ $effect(() => {
 });
 </script>
 
+<div class="flex items-center gap-2 text-lg">
+	<button
+		class={['rounded px-4 py-2', all && 'bg-white/[0.7] shadow']}
+		onclick={() => (all = true)}>
+		All time
+	</button>
+	<button
+		class={['rounded px-4 py-2', !all && 'bg-white/[0.7] shadow']}
+		onclick={() => (all = false)}>
+		This month
+	</button>
+</div>
 <div class="grid grid-rows-[auto_auto] @3xl:grid-cols-2 @3xl:grid-rows-1">
 	<div id="chart" class="h-[300px] w-[400px] justify-self-center @3xl:justify-self-start"></div>
 	<ScrollArea class="flex max-h-[300px] flex-col">
