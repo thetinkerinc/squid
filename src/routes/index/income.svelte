@@ -27,21 +27,12 @@ let category = $state<string>();
 let addingCategory = $state<boolean>(false);
 let description = $state<string>('');
 
+let entries = $derived<Entry[]>(page.data.entries.filter((e: Entry) => e.type === 'income'));
 let categories = $derived<string[]>(
-	_.unique(
-		defaultCategories.concat(
-			page.data.entries.filter((e: Entry) => e.type === 'income').map((e: Entry) => e.category)
-		)
-	)
+	_.unique(defaultCategories.concat(entries.map((e) => e.category)))
 );
 let descriptions = $derived<string[]>(
-	_.unique(
-		_.sift(
-			page.data.entries
-				.filter((e: Entry) => e.type === 'income' && e.category === category)
-				.map((e: Entry) => e.description)
-		)
-	)
+	_.unique(_.sift(entries.filter((e) => e.category === category).map((e) => e.description)))
 );
 let disabled = $derived(amount == null || !account || !category);
 
