@@ -1,4 +1,5 @@
 import { z } from 'zod';
+import dayjs from 'dayjs';
 
 import e from '$eql';
 
@@ -12,6 +13,10 @@ export const app = router({
 					type: z.enum(['income', 'expense', 'withdrawal']),
 					account: z.enum(['bank', 'cash']),
 					amount: z.number().min(0),
+					created: z
+						.union([z.string().datetime(), z.date()])
+						.optional()
+						.transform((d: Date | string | undefined) => dayjs(d).toDate()),
 					enteredAmount: z.number().min(0),
 					enteredCurrency: z.string(),
 					category: z.string().toLowerCase(),
@@ -33,6 +38,7 @@ export const app = router({
 						...input,
 						type: e.cast(e.EntryType, input.type),
 						account: e.cast(e.AccountType, input.account),
+						created: e.cast(e.datetime, input.created),
 						user
 					})
 					.run(ctx.event.locals.client);

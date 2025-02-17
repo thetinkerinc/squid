@@ -19,7 +19,6 @@ module default {
 	type Entry {
 		required user: User;
 		required created: datetime {
-			readonly := true;
 			default := datetime_current();
 		}
 		required type: EntryType;
