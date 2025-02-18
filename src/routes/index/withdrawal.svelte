@@ -17,6 +17,13 @@ let description = $state<string>();
 
 let disabled = $derived(amount == null);
 
+function reset() {
+	amount = undefined;
+	enteredAmount = undefined;
+	enteredCurrency = 'CAD';
+	description = undefined;
+}
+
 async function save() {
 	if (amount == null || enteredAmount == null) {
 		return;
@@ -35,7 +42,7 @@ async function save() {
 }
 </script>
 
-<AlertDialog.Root bind:open>
+<AlertDialog.Root onOpenChange={reset} bind:open>
 	<AlertDialog.Trigger>
 		{#snippet child({ props })}
 			<Button {...props}>Withdrawal</Button>

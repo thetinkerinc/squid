@@ -15,6 +15,10 @@ import { Input } from '$components/ui/input';
 let open = $state<boolean>(false);
 let email = $state<string>('');
 
+function reset() {
+	email = '';
+}
+
 async function invite() {
 	if (email === '') {
 		return;
@@ -46,7 +50,7 @@ function respond(id: string, accepted: boolean) {
 </script>
 
 <div class="flex flex-wrap items-center gap-3">
-	<AlertDialog.Root bind:open>
+	<AlertDialog.Root onOpenChange={reset} bind:open>
 		<AlertDialog.Trigger>
 			{#snippet child({ props })}
 				<Button {...props}>

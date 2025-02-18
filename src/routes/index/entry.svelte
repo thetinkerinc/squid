@@ -46,6 +46,17 @@ let descriptions = $derived<string[]>(
 );
 let disabled = $derived(amount == null || !account || !category);
 
+function reset() {
+	amount = undefined;
+	enteredAmount = undefined;
+	enteredCurrency = 'CAD';
+	account = 'bank';
+	created = undefined;
+	category = undefined;
+	addingCategory = false;
+	description = '';
+}
+
 function setCategory(cat: string) {
 	return () => {
 		if (category === cat) {
@@ -85,7 +96,7 @@ async function save() {
 }
 </script>
 
-<AlertDialog.Root bind:open>
+<AlertDialog.Root onOpenChange={reset} bind:open>
 	<AlertDialog.Trigger>
 		{#snippet child({ props })}
 			<Button class="capitalize" {...props}>{entryType}</Button>
