@@ -1,6 +1,6 @@
 import { redirect } from '@sveltejs/kit';
 import { sequence } from '@sveltejs/kit/hooks';
-import { createClient } from 'edgedb';
+import { createClient } from 'gel';
 import serverAuth from '@edgedb/auth-sveltekit/server';
 
 import e from '$eql';

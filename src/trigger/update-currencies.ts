@@ -1,5 +1,5 @@
 import { schedules } from '@trigger.dev/sdk/v3';
-import * as edgedb from 'edgedb';
+import * as gel from 'gel';
 
 import e from '$eql';
 
@@ -32,7 +32,7 @@ export const updateCurrencies = schedules.task({
 			symbol: data.symbol_native,
 			value: values[data.code]
 		}));
-		const client = edgedb.createClient();
+		const client = gel.createClient();
 		await client.transaction(async (tx) => {
 			await e.delete(e.Currency).run(tx);
 			for (const currency of currencies) {

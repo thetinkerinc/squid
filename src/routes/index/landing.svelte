@@ -89,9 +89,9 @@ const entries = [
 		</div>
 	</div>
 </div>
-<div class="grid grid-cols-3 gap-4 mt-10 mx-auto w-[95%]">
+<div class="mx-auto mt-10 grid w-[95%] grid-cols-3 gap-4">
 	<Card>
-		<div class="text-center mb-4 text-lg">See your total balance at a glance</div>
+		<div class="mb-4 text-center text-lg">See your total balance at a glance</div>
 		<div class="mb-4 text-center text-3xl tracking-wider">
 			{formatter.money(2586)}
 		</div>
@@ -108,11 +108,11 @@ const entries = [
 		</div>
 	</Card>
 	<Card class="aspect-square">
-		<div class="text-lg mb-6 text-center">All your income, expenses, and withdrawals</div>
+		<div class="mb-6 text-center text-lg">All your income, expenses, and withdrawals</div>
 		{#each entries as entry (entry.id)}
 			<div
-				class="entry mb-2 flex items-center gap-4 rounded bg-white/[0.7] px-4 py-1 shadow leading-tight"
-					   animate:flip
+				class="entry mb-2 flex items-center gap-4 rounded bg-white/[0.7] px-4 py-1 leading-tight shadow"
+				animate:flip
 				transition:fade={{ duration: 200 }}>
 				{@render badge(entry)}
 				<div>{formatter.money(entry.amount)}</div>
@@ -146,11 +146,11 @@ const entries = [
 		{/each}
 	</Card>
 	<Card class="aspect-square">
-		<div class="text-center mb-4 text-lg">Breakdown of all time and monthly expenses</div>
+		<div class="mb-4 text-center text-lg">Breakdown of all time and monthly expenses</div>
 	</Card>
 </div>
 
-{#snippet badge(entry: typeof entries[0])}
+{#snippet badge(entry: (typeof entries)[0])}
 	{#if entry.type === 'income'}
 		<div class="badge from-green-300 to-green-400">
 			<ArrowUp size={20} />
@@ -167,15 +167,15 @@ const entries = [
 {/snippet}
 
 <style lang="postcss">
- .badge {
-	 @apply rounded bg-gradient-to-br p-[2px] shadow;
- }
- .entry .actions {
-	 opacity: 0;
-	 pointer-events: none;
- }
- .entry:hover .actions {
-	 opacity: 1;
-	 pointer-events: unset;
- }
+.badge {
+	@apply rounded bg-gradient-to-br p-[2px] shadow;
+}
+.entry .actions {
+	opacity: 0;
+	pointer-events: none;
+}
+.entry:hover .actions {
+	opacity: 1;
+	pointer-events: unset;
+}
 </style>

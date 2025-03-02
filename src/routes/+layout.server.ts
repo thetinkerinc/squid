@@ -4,7 +4,7 @@ import e from '$eql';
 
 import { getPageData } from '$utils/local';
 
-import type { Client } from 'edgedb';
+import type { Client } from 'gel';
 import type { LayoutServerLoad } from './$types';
 
 async function getCurrencies(client: Client) {

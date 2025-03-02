@@ -1,6 +1,6 @@
 import e from '$eql';
 
-import type { Client } from 'edgedb';
+import type { Client } from 'gel';
 import type { $expr_Select } from '$eql/select';
 import type { Cardinality, ObjectType } from '$eql/reflection';
 import type { PageServerLoad } from './$types';
