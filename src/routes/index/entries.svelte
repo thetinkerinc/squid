@@ -4,7 +4,7 @@ let { entries, canDelete = true } = $props();
 import { invalidateAll } from '$app/navigation';
 import { flip } from 'svelte/animate';
 import { fade } from 'svelte/transition';
-import { ArrowUp, ArrowDown, Redo, Info, X } from 'lucide-svelte';
+import { ArrowUp, ArrowDown, Redo, Info, X, Landmark, Banknote } from 'lucide-svelte';
 
 import formatter from '$utils/formatter';
 import { client } from '$trpc/client';
@@ -45,6 +45,11 @@ function rm(id: string) {
 							{@render badge(entry)}
 							<div>{formatter.money(entry.amount)}</div>
 							<div>({entry.enteredAmount} {entry.enteredCurrency})</div>
+							{#if entry.account === 'bank'}
+								<Landmark />
+							{:else if entry.account === 'cash'}
+								<Banknote />
+							{/if}
 						</div>
 						<div>{formatter.date(entry.created, 'h:mm a ddd MMM D, YYYY')}</div>
 						<div class="flex gap-1">
