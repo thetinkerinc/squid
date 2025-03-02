@@ -1,8 +1,7 @@
 import dayjs from 'dayjs';
 
 import { page } from '$app/state';
-
-import local from '$utils/local';
+import local from '@thetinkerinc/isolocal';
 
 import type { ConfigType } from 'dayjs';
 

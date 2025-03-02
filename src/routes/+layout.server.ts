@@ -1,8 +1,7 @@
+import { getPageData } from '@thetinkerinc/isolocal';
 import * as _ from 'radashi';
 
 import e from '$eql';
-
-import { getPageData } from '$utils/local';
 
 import type { Client } from 'gel';
 import type { LayoutServerLoad } from './$types';

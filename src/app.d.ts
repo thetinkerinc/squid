@@ -1,6 +1,6 @@
 import type { ServerRequestAuth, Client } from '@gel/auth-sveltekit/server';
+import type { LocalStorage } from '@thetinkerinc/isolocal';
 import type { User } from '$models';
-import type { LocalStorage } from '$utils/local';
 
 declare global {
 	namespace App {

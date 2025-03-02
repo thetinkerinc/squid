@@ -1,11 +1,10 @@
 <script lang="ts">
 import { page } from '$app/state';
 import { invalidateAll } from '$app/navigation';
+import local from '@thetinkerinc/isolocal';
 import { LogOut } from 'lucide-svelte';
 
 import auth from '$lib/auth';
-
-import local from '$utils/local';
 
 import Card from '$components/card.svelte';
 import CurrencySelector from '$components/currency-selector.svelte';

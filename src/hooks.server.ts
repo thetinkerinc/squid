@@ -2,11 +2,11 @@ import { redirect } from '@sveltejs/kit';
 import { sequence } from '@sveltejs/kit/hooks';
 import { createClient } from 'gel';
 import serverAuth from '@gel/auth-sveltekit/server';
+import { addLocalStorage } from '@thetinkerinc/isolocal';
 
 import e from '$eql';
 import { i18n } from '$lib/i18n';
 import { options } from '$lib/auth';
-import { addLocalStorage } from '$utils/local';
 
 import type { Handle } from '@sveltejs/kit';
 import type { AuthRouteHandlers, TokenData } from '@gel/auth-sveltekit/server';

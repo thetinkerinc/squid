@@ -2,8 +2,7 @@
 let { onupdate } = $props();
 
 import { page } from '$app/state';
-
-import local from '$utils/local';
+import local from '@thetinkerinc/isolocal';
 
 import * as Select from '$components/ui/select';
 
