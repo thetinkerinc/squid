@@ -1,5 +1,5 @@
 <script lang="ts">
-import Entry from './entry.svelte';
+import AddEntry from './add-entry.svelte';
 
 const defaultCategories = [
 	'rent',
@@ -13,4 +13,4 @@ const defaultCategories = [
 ];
 </script>
 
-<Entry {defaultCategories} entryType="expense" title="Register an expense" />
+<AddEntry {defaultCategories} entryType="expense" title="Register an expense" />
