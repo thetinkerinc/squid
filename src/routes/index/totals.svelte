@@ -1,10 +1,10 @@
 <script lang="ts">
-import { page } from '$app/state';
+let { totals } = $props();
+
 import { Landmark, Banknote } from 'lucide-svelte';
 
 import formatter from '$utils/formatter';
 
-let totals = $derived(page.data.totals);
 let total = $derived(totals.income - totals.expense);
 let bank = $derived(totals.bankIncome - totals.withdrawal - totals.bankExpense);
 let cash = $derived(totals.cashIncome + totals.withdrawal - totals.cashExpense);

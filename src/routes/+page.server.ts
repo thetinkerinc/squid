@@ -5,14 +5,19 @@ import type { $expr_Select } from '$eql/select';
 import type { Cardinality, ObjectType } from '$eql/reflection';
 import type { PageServerLoad } from './$types';
 
+type User = $expr_Select<{
+	__element__: ObjectType<'default::User'>;
+	__cardinality__: Cardinality.AtMostOne;
+}>;
+
 type Users = $expr_Select<{
 	__element__: ObjectType<'default::User'>;
 	__cardinality__: Cardinality.Many;
 }>;
 
-async function getTotals(client: Client, user: Users) {
+async function getTotals(client: Client, partners: Users) {
 	const entries = e.select(e.Entry, (entry) => ({
-		filter: e.op(entry.user, '=', user)
+		filter: e.op(entry.user, 'in', partners)
 	}));
 	const income = e.select(entries, (entry) => ({
 		filter: e.op(entry.type, '=', e.EntryType.income)
@@ -48,7 +53,7 @@ async function getTotals(client: Client, user: Users) {
 		.run(client);
 }
 
-async function getEntries(client: Client, user: Users) {
+async function getEntries(client: Client, partners: Users) {
 	return await e
 		.select(e.Entry, (entry) => ({
 			id: true,
@@ -63,7 +68,7 @@ async function getEntries(client: Client, user: Users) {
 			user: {
 				email: true
 			},
-			filter: e.op(entry.user, '=', user),
+			filter: e.op(entry.user, 'in', partners),
 			order_by: {
 				expression: entry.created,
 				direction: e.DESC
@@ -72,7 +77,7 @@ async function getEntries(client: Client, user: Users) {
 		.run(client);
 }
 
-async function getInvitations(client: Client, user: Users) {
+async function getInvitations(client: Client, user: User) {
 	return await e
 		.select(e.Invitation, (invitation) => ({
 			id: true,
@@ -100,7 +105,7 @@ export const load: PageServerLoad = async (event) => {
 				id: event.locals.user.id
 			}
 		}));
-		const users = e.select(e.User, (u) => {
+		const partners = e.select(e.User, (u) => {
 			const isUser = e.op(u, '=', user);
 			const isPartner = e.op(u, 'in', user.partners);
 			return {
@@ -108,9 +113,9 @@ export const load: PageServerLoad = async (event) => {
 			};
 		});
 		return {
-			totals: await getTotals(event.locals.client, users),
-			entries: await getEntries(event.locals.client, users),
-			invitations: await getInvitations(event.locals.client, users)
+			totals: await getTotals(event.locals.client, partners),
+			entries: await getEntries(event.locals.client, partners),
+			invitations: await getInvitations(event.locals.client, user)
 		};
 	}
 };

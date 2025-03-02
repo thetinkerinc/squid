@@ -6,6 +6,8 @@ import Landing from './index/landing.svelte';
 
 import type { PageData } from './$types';
 
+console.log(data);
+
 interface Props {
 	data: PageData;
 }

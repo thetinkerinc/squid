@@ -1,7 +1,7 @@
 import { redirect } from '@sveltejs/kit';
 import { sequence } from '@sveltejs/kit/hooks';
 import { createClient } from 'gel';
-import serverAuth from '@edgedb/auth-sveltekit/server';
+import serverAuth from '@gel/auth-sveltekit/server';
 
 import e from '$eql';
 import { i18n } from '$lib/i18n';
@@ -9,7 +9,7 @@ import { options } from '$lib/auth';
 import { addLocalStorage } from '$utils/local';
 
 import type { Handle } from '@sveltejs/kit';
-import type { AuthRouteHandlers, TokenData } from '@edgedb/auth-sveltekit/server';
+import type { AuthRouteHandlers, TokenData } from '@gel/auth-sveltekit/server';
 
 const client = createClient({
 	tlsSecurity: 'insecure'
@@ -30,7 +30,7 @@ const handleAuth: Handle = async ({ event, resolve }) => {
 				partners: {
 					email: true
 				},
-				filter_single: e.op(user.identity, '=', e.ext.auth.global.ClientTokenIdentity)
+				filter_single: e.op(e.ext.auth.global.ClientTokenIdentity, 'in', user.identity)
 			}))
 			.run(event.locals.client);
 		if (!user) {
@@ -56,10 +56,6 @@ const authRouteHandlers: AuthRouteHandlers = {
 		} else if (tokenData?.identity_id) {
 			await handleMagicLink(tokenData);
 		}
-		redirect(303, '/');
-	},
-	async onMagicLinkCallback() {
-		console.log('magic link');
 		redirect(303, '/');
 	},
 	onSignout() {

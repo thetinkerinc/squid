@@ -1,4 +1,4 @@
-import type { ServerRequestAuth, Client } from '@edgedb/auth-sveltekit/server';
+import type { ServerRequestAuth, Client } from '@gel/auth-sveltekit/server';
 import type { User } from '$models';
 import type { LocalStorage } from '$utils/local';
 

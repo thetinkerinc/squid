@@ -1,4 +1,5 @@
 <script lang="ts">
+import { page } from '$app/state';
 import { invalidateAll } from '$app/navigation';
 import { LogOut } from 'lucide-svelte';
 
@@ -41,7 +42,7 @@ async function updateCurrency(newCurrency: string) {
 			class="grid grid-rows-[auto_auto] gap-2 md:grid-cols-2 md:grid-rows-1 lg:grid-cols-1 lg:grid-rows-[auto_auto]">
 			<div>
 				<Card>
-					<Totals />
+					<Totals totals={page.data.totals} />
 				</Card>
 				<div class="my-4 flex justify-around">
 					<Income />
@@ -50,12 +51,12 @@ async function updateCurrency(newCurrency: string) {
 				</div>
 			</div>
 			<Card>
-				<Entries />
+				<Entries entries={page.data.entries} />
 			</Card>
 		</div>
 		<div>
 			<Card class="mb-6 @container">
-				<Breakdown />
+				<Breakdown entries={page.data.entries} />
 			</Card>
 			<Card>
 				<Partners />

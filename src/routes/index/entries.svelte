@@ -1,5 +1,6 @@
 <script lang="ts">
-import { page } from '$app/state';
+let { entries, canDelete = true } = $props();
+
 import { invalidateAll } from '$app/navigation';
 import { flip } from 'svelte/animate';
 import { fade } from 'svelte/transition';
@@ -15,6 +16,9 @@ import type { Entry } from '$models';
 
 function rm(id: string) {
 	return async () => {
+		if (!canDelete) {
+			return;
+		}
 		await client.entry.delete.mutate({ id });
 		await invalidateAll();
 	};
@@ -22,7 +26,7 @@ function rm(id: string) {
 </script>
 
 <ScrollArea class="flex max-h-[300px] flex-col lg:max-h-[400px]">
-	{#each page.data.entries as entry (entry.id)}
+	{#each entries as entry (entry.id)}
 		<div
 			class="entry mb-2 flex items-center gap-4 rounded bg-white/[0.7] px-4 py-1 shadow"
 			animate:flip

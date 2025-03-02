@@ -5,7 +5,7 @@
 	"scripts": {
 		"dev": "run-p mailpit dev:*",
 		"dev:web": "vite dev",
-		"dev:db": "bunx edgedb watch",
+		"dev:db": "bunx gel watch",
 		"build": "vite build",
 		"preview": "vite preview",
 		"generate": "run-p gen:*",
