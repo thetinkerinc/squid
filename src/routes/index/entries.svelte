@@ -4,7 +4,7 @@ let { entries, canDelete = true } = $props();
 import { invalidateAll } from '$app/navigation';
 import { flip } from 'svelte/animate';
 import { fade } from 'svelte/transition';
-import { ArrowUp, ArrowDown, Redo, Info, X, Landmark, Banknote } from 'lucide-svelte';
+import { ArrowUp, ArrowDown, Redo, Info, X, Landmark, Banknote } from '@lucide/svelte';
 
 import formatter from '$utils/formatter';
 import { client } from '$trpc/client';

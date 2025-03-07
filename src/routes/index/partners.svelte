@@ -1,8 +1,8 @@
 <script lang="ts">
 import { page } from '$app/state';
 import { invalidateAll } from '$app/navigation';
-import { UserPlus, Check, X } from 'lucide-svelte';
 import { toast } from 'svelte-sonner';
+import { UserPlus, Check, X } from '@lucide/svelte';
 
 import { client } from '$trpc/client';
 

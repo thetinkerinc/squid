@@ -2,7 +2,7 @@
 let { onselect } = $props();
 
 import { now, getLocalTimeZone } from '@internationalized/date';
-import { SquarePen } from 'lucide-svelte';
+import { SquarePen } from '@lucide/svelte';
 
 import * as AlertDialog from '$components/ui/alert-dialog';
 import { Calendar } from '$components/ui/calendar';

@@ -2,7 +2,7 @@
 import { page } from '$app/state';
 import { invalidateAll } from '$app/navigation';
 import local from '@thetinkerinc/isolocal';
-import { LogOut } from 'lucide-svelte';
+import { LogOut } from '@lucide/svelte';
 
 import auth from '$lib/auth';
 

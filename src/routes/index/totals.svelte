@@ -1,7 +1,7 @@
 <script lang="ts">
 let { totals } = $props();
 
-import { Landmark, Banknote } from 'lucide-svelte';
+import { Landmark, Banknote } from '@lucide/svelte';
 
 import formatter from '$utils/formatter';
 

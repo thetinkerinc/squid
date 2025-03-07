@@ -1,5 +1,5 @@
 import type { ServerRequestAuth, Client } from '@gel/auth-sveltekit/server';
-import type { LocalStorage } from '@thetinkerinc/isolocal';
+import type { Local } from '@thetinkerinc/isolocal';
 import type { User } from '$models';
 
 declare global {
@@ -9,7 +9,7 @@ declare global {
 			client: Client;
 			authenticated: boolean;
 			user?: Omit<User, 'identity', 'partners'>;
-			localStorage: LocalStorage;
+			localStorage: Local;
 		}
 	}
 }
