@@ -19,7 +19,7 @@ import AmountInput from './amount-input.svelte';
 import DatetimeInput from './datetime-input.svelte';
 import DescriptionInput from './description-input.svelte';
 
-import type { AccountType, Entry, EntryType } from '$models';
+import type { AccountType, Entry, EntryType, CurrencyType } from '$models';
 
 interface Props {
 	defaultCategories: string[];
@@ -30,7 +30,7 @@ interface Props {
 let open = $state<boolean>(false);
 let amount = $state<number>();
 let enteredAmount = $state<number>();
-let enteredCurrency = $state<string>('CAD');
+let enteredCurrency = $state<CurrencyType>('CAD');
 let account = $state<AccountType>('bank');
 let created = $state<Date>();
 let category = $state<string>();

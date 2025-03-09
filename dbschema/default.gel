@@ -3,6 +3,7 @@ using extension auth;
 module default {
 	scalar type EntryType extending enum<expense, income, withdrawal>;
 	scalar type AccountType extending enum<bank, cash>;
+	scalar type CurrencyType extending enum<CAD, EUR, MXN, USD>;
 
 	type User {
 		required multi identity: ext::auth::Identity {
@@ -43,7 +44,7 @@ module default {
 	}
 
 	type Currency {
-		required code: str;
+		required code: CurrencyType;
 		required name: str;
 		required symbol: str;
 		required value: float32;

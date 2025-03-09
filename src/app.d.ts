@@ -1,7 +1,6 @@
 import type { ServerRequestAuth, Client } from '@gel/auth-sveltekit/server';
 import type { Local } from '@thetinkerinc/isolocal';
-import type { User } from '$models';
-import type { Currency } from '$types';
+import type { User, CurrencyType } from '$models';
 
 declare global {
 	namespace App {
@@ -11,7 +10,7 @@ declare global {
 			authenticated: boolean;
 			user?: Omit<User, 'identity', 'partners'>;
 			localStorage: Local & {
-				currency: Currency;
+				currency: CurrencyType;
 			};
 		}
 	}

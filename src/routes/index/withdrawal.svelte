@@ -9,10 +9,12 @@ import { Input } from '$components/ui/input';
 
 import AmountInput from './amount-input.svelte';
 
+import type { CurrencyType } from '$models';
+
 let open = $state<boolean>(false);
 let amount = $state<number>();
 let enteredAmount = $state<number>();
-let enteredCurrency = $state<string>('CAD');
+let enteredCurrency = $state<CurrencyType>('CAD');
 let description = $state<string>();
 
 let disabled = $derived(amount == null);

@@ -7,10 +7,10 @@ import local from '@thetinkerinc/isolocal';
 import * as Select from '$components/ui/select';
 
 import type { Page } from '@sveltejs/kit';
-import type { Currency } from '$types';
+import type { CurrencyType } from '$models';
 
 interface Props {
-	onupdate?: (c: Currency) => void;
+	onupdate?: (c: CurrencyType) => void;
 }
 
 function getCurrencies(): Page['data']['currencies'] {
@@ -18,8 +18,8 @@ function getCurrencies(): Page['data']['currencies'] {
 }
 
 function updateCurrency(newCurrency: string) {
-	local.currency = newCurrency as Currency;
-	onupdate?.(newCurrency as Currency);
+	local.currency = newCurrency as CurrencyType;
+	onupdate?.(newCurrency as CurrencyType);
 }
 </script>
 

@@ -10,12 +10,12 @@ import { page } from '$app/state';
 import { Input } from '$components/ui/input';
 import CurrencySelector from '$components/currency-selector.svelte';
 
-import type { Currency } from '$types';
+import type { CurrencyType } from '$models';
 
 interface Props {
 	amount: number | undefined;
 	enteredAmount: number | undefined;
-	enteredCurrency: string;
+	enteredCurrency: CurrencyType;
 }
 
 $effect(() => {
@@ -36,6 +36,6 @@ function getAmount() {
 		<Input type="number" min={0} placeholder="Amount" bind:value={enteredAmount} />
 	</div>
 	<div>
-		<CurrencySelector onupdate={(c: Currency) => (enteredCurrency = c)} />
+		<CurrencySelector onupdate={(c: CurrencyType) => (enteredCurrency = c)} />
 	</div>
 </div>
