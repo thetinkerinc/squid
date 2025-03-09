@@ -12,7 +12,8 @@ const config = {
 			$routes: './src/routes',
 			$eql: './dbschema/edgeql-js',
 			$models: './dbschema/interfaces.ts',
-			$trpc: './src/lib/trpc'
+			$trpc: './src/lib/trpc',
+			$types: './src/types.d.ts'
 		}
 	}
 };

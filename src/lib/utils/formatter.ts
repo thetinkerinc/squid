@@ -18,12 +18,11 @@ function date(d: ConfigType, format?: string): string {
 }
 
 function money(amount: number): string {
-	const currency: string = local.get('currency', 'CAD');
 	return new Intl.NumberFormat('en', {
 		style: 'currency',
 		currencyDisplay: 'narrowSymbol',
-		currency
-	}).format(amount * page.data.currencies[currency].value);
+		currency: local.currency
+	}).format(amount * page.data.currencies[local.currency].value);
 }
 
 export default {

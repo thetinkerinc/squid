@@ -1,7 +1,5 @@
 <script lang="ts">
 import { page } from '$app/state';
-import { invalidateAll } from '$app/navigation';
-import local from '@thetinkerinc/isolocal';
 import { LogOut } from '@lucide/svelte';
 
 import auth from '$lib/auth';
@@ -16,11 +14,6 @@ import Withdrawal from './withdrawal.svelte';
 import Entries from './entries.svelte';
 import Breakdown from './breakdown.svelte';
 import Partners from './partners.svelte';
-
-async function updateCurrency(newCurrency: string) {
-	local.set('currency', newCurrency);
-	await invalidateAll();
-}
 </script>
 
 <div class="px-8 pb-10 pt-4">
@@ -29,7 +22,7 @@ async function updateCurrency(newCurrency: string) {
 			<img src="/squid.png" alt="Cartoon squid with money" class="w-[70px]" />
 		</div>
 		<div class="flex items-center gap-4">
-			<CurrencySelector onupdate={updateCurrency} />
+			<CurrencySelector />
 			<a href={auth.getSignoutUrl()}>
 				<LogOut size={30} />
 			</a>

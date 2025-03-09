@@ -1,5 +1,5 @@
 <script lang="ts">
-let { onupdate } = $props();
+let { onupdate }: Props = $props();
 
 import { page } from '$app/state';
 import local from '@thetinkerinc/isolocal';
@@ -7,21 +7,24 @@ import local from '@thetinkerinc/isolocal';
 import * as Select from '$components/ui/select';
 
 import type { Page } from '@sveltejs/kit';
+import type { Currency } from '$types';
 
-let currency = $state(local.get('currency', 'CAD'));
+interface Props {
+	onupdate?: (c: Currency) => void;
+}
 
 function getCurrencies(): Page['data']['currencies'] {
 	return Object.entries(page.data.currencies).toSorted((a, b) => a[0].localeCompare(b[0]));
 }
 
 function updateCurrency(newCurrency: string) {
-	currency = newCurrency;
-	onupdate(newCurrency);
+	local.currency = newCurrency as Currency;
+	onupdate?.(newCurrency as Currency);
 }
 </script>
 
-<Select.Root type="single" value={currency} onValueChange={updateCurrency}>
-	<Select.Trigger>{currency}</Select.Trigger>
+<Select.Root type="single" value={local.currency} onValueChange={updateCurrency}>
+	<Select.Trigger>{local.currency}</Select.Trigger>
 	<Select.Content>
 		{#each getCurrencies() as [code, info]}
 			<Select.Item value={code}>

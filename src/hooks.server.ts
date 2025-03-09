@@ -111,7 +111,7 @@ async function makeUser(tokenData: TokenData, email: string) {
 
 export const handle: Handle = sequence(
 	i18n.handle(),
-	addLocalStorage,
+	addLocalStorage({ currency: 'CAD' }),
 	handleAuth,
 	createAuthRouteHook(authRouteHandlers)
 );
