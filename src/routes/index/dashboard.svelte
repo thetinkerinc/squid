@@ -1,5 +1,6 @@
 <script lang="ts">
 import { page } from '$app/state';
+import local from '@thetinkerinc/isolocal';
 import { LogOut } from '@lucide/svelte';
 
 import auth from '$lib/auth';
@@ -22,7 +23,7 @@ import Partners from './partners.svelte';
 			<img src="/squid.png" alt="Cartoon squid with money" class="w-[70px]" />
 		</div>
 		<div class="flex items-center gap-4">
-			<CurrencySelector />
+			<CurrencySelector bind:currency={local.currency} />
 			<a href={auth.getSignoutUrl()}>
 				<LogOut size={30} />
 			</a>

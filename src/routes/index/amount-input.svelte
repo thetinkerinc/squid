@@ -36,6 +36,6 @@ function getAmount() {
 		<Input type="number" min={0} placeholder="Amount" bind:value={enteredAmount} />
 	</div>
 	<div>
-		<CurrencySelector onupdate={(c: CurrencyType) => (enteredCurrency = c)} />
+		<CurrencySelector bind:currency={enteredCurrency} />
 	</div>
 </div>
