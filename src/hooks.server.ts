@@ -37,6 +37,8 @@ const handleAuth: Handle = async ({ event, resolve }) => {
 		event.locals.authenticated = true;
 		event.locals.user = user;
 	} catch (_err) {
+		console.log('error getting user');
+		console.log(_err);
 		event.locals.authenticated = false;
 	}
 
