@@ -1,6 +1,5 @@
 node_modules
 mailpit
-dbschema/edgeql-js
 .trigger
 
 # Output

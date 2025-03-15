@@ -1,13 +1,12 @@
 {
-	"name": "foraday",
+	"name": "squid",
 	"version": "0.0.1",
 	"type": "module",
 	"scripts": {
 		"dev": "run-p mailpit dev:*",
 		"dev:web": "vite dev",
 		"dev:db": "bunx gel watch --migrate",
-		"build": "run-s generate build:web",
-		"build:web": "vite build",
+		"build": "vite build",
 		"preview": "vite preview",
 		"generate": "run-p gen:*",
 		"gen:interfaces": "bunx @gel/generate interfaces",
