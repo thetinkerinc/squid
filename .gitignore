@@ -1,11 +1,16 @@
 node_modules
 mailpit
+dbschema/edgeql-js
+.trigger
 
 # Output
 .output
 .vercel
+.netlify
+.wrangler
 /.svelte-kit
 /build
+/dist
 
 # OS
 .DS_Store
@@ -20,6 +25,3 @@ Thumbs.db
 # Vite
 vite.config.js.timestamp-*
 vite.config.ts.timestamp-*
-dbschema/edgeql-js
-
-.trigger
