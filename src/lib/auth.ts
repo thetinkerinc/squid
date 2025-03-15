@@ -1,9 +1,10 @@
 import createClientAuth from '@gel/auth-sveltekit/client';
+import { PUBLIC_APP_URL } from '$env/static/public';
 
 import type { AuthOptions } from '@gel/auth-sveltekit/client';
 
 const options: AuthOptions = {
-	baseUrl: 'http://localhost:5173'
+	baseUrl: PUBLIC_APP_URL
 };
 
 const auth = createClientAuth(options);
