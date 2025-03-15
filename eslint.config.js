@@ -13,7 +13,8 @@ export default ts.config(
 			'src/lib/components/ui/',
 			'dbschema/',
 			'src/lib/paraglide/',
-			'.trigger/'
+			'.trigger/',
+			'.netlify'
 		]
 	},
 	js.configs.recommended,
