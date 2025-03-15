@@ -1,21 +1,22 @@
 import { schedules } from '@trigger.dev/sdk/v3';
-import * as gel from 'gel';
 
 import e from '$eql';
+import { createClient } from '$utils/gel';
 
-type CurrencyCode = 'EUR' | 'USD' | 'CAD' | 'MXN';
+import type { CurrencyType } from '$models';
+
 type CurrencyInfo = {
 	symbol: string;
 	name: string;
 	symbol_native: string;
 	decimal_digits: number;
 	rounding: number;
-	code: CurrencyCode;
+	code: CurrencyType;
 	name_plural: string;
 	type: string;
 };
-type CurrencyInfoResponse = Record<CurrencyCode, CurrencyInfo>;
-type CurrencyValueResponse = Record<CurrencyCode, number>;
+type CurrencyInfoResponse = Record<CurrencyType, CurrencyInfo>;
+type CurrencyValueResponse = Record<CurrencyType, number>;
 
 export const updateCurrencies = schedules.task({
 	id: 'update-currencies',
@@ -32,7 +33,7 @@ export const updateCurrencies = schedules.task({
 			symbol: data.symbol_native,
 			value: values[data.code]
 		}));
-		const client = gel.createClient();
+		const client = createClient();
 		await client.transaction(async (tx) => {
 			await e.delete(e.Currency).run(tx);
 			for (const currency of currencies) {

@@ -1,19 +1,17 @@
 import { redirect } from '@sveltejs/kit';
 import { sequence } from '@sveltejs/kit/hooks';
-import { createClient } from 'gel';
 import serverAuth from '@gel/auth-sveltekit/server';
 import { addLocalStorage } from '@thetinkerinc/isolocal';
 
 import e from '$eql';
+import { createClient } from '$utils/gel';
 import { i18n } from '$lib/i18n';
 import { options } from '$lib/auth';
 
 import type { Handle } from '@sveltejs/kit';
 import type { AuthRouteHandlers, TokenData } from '@gel/auth-sveltekit/server';
 
-const client = createClient({
-	tlsSecurity: 'insecure'
-});
+const client = createClient();
 
 const { createServerRequestAuth, createAuthRouteHook } = serverAuth(client, options);
 
