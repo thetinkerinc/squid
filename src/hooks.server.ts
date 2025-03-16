@@ -45,10 +45,6 @@ const handleAuth: Handle = async ({ event, resolve }) => {
 
 const authRouteHandlers: AuthRouteHandlers = {
 	async onBuiltinUICallback({ error, tokenData, provider }) {
-		console.log('handling built in auth');
-		console.log(error);
-		console.log(tokenData);
-		console.log(provider);
 		if (error) {
 			console.log('error handling auth');
 			console.log(error);
