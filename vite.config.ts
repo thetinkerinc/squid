@@ -4,7 +4,7 @@ import { defineConfig } from 'vite';
 
 export default defineConfig({
 	ssr: {
-		noExternal: ['@thetinkerinc/isolocal']
+		noExternal: ['@thetinkerinc/isolocal', '@gel/auth-sveltekit']
 	},
 	plugins: [
 		sveltekit(),
