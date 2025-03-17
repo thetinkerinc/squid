@@ -24,11 +24,11 @@ export default defineConfig({
 
 				await client.auth().universalAuth.login({
 					clientId: ctx.env.INFISICAL_CLIENT_ID,
-					clientSecret: ctx.env.INFISICAL_CLIENT_SECRET
+					clientSecret: ctx.env.INFISICAL_SECRET_KEY
 				});
 
 				const { secrets } = await client.secrets().listSecrets({
-					environment: ctx.environment,
+					environment: 'prod',
 					projectId: ctx.env.INFISICAL_PROJECT_ID
 				});
 

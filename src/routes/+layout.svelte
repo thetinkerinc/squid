@@ -21,10 +21,10 @@ import '../app.css';
 	<Toaster theme="light" position="top-right" closeButton richColors />
 	<Tooltip.Provider>
 		<div class="grid">
-			<div class="cell-1 z-10">
+			<div class="cell-1 z-10 mb-10">
 				{@render children()}
 			</div>
-			<div class="cell-1 fixed h-[100vh] w-full bg-[#fffde8]">
+			<div class="cell-1 fixed bottom-0 left-0 h-[120vh] w-full bg-[#fffde8]">
 				{@render bg()}
 			</div>
 		</div>

@@ -4,8 +4,8 @@ import auth from '$lib/auth';
 import landingData from './landing-data';
 
 import { Button } from '$components/ui/button';
-import Card from '$components/card.svelte';
 
+import DescriptionCard from './description-card.svelte';
 import Totals from './totals.svelte';
 import Entries from './entries.svelte';
 import Breakdown from './breakdown.svelte';
@@ -28,22 +28,19 @@ import Breakdown from './breakdown.svelte';
 	</div>
 </div>
 <div class="mx-auto mt-10 flex w-[95%] flex-wrap justify-evenly gap-4">
-	<Card class="grid w-[430px] grid-rows-[auto_1fr]">
-		<div class="mb-4 text-center text-lg">See your total balance at a glance</div>
+	<DescriptionCard title="See your total balance at a glance">
 		<div class="place-self-center lg:mb-10">
 			<Totals totals={landingData.totals} />
 		</div>
-	</Card>
-	<Card class="grid w-[430px] grid-rows-[auto_1fr]">
-		<div class="mb-6 text-center text-lg">All your income, expenses, and withdrawals</div>
+	</DescriptionCard>
+	<DescriptionCard title="All your income, expenses, and withdrawals">
 		<div class="place-self-center">
 			<Entries canDelete={false} entries={landingData.entries} />
 		</div>
-	</Card>
-	<Card class="grid w-[430px] grid-rows-[auto_1fr]">
-		<div class="mb-4 text-center text-lg">Breakdown of all time and monthly expenses</div>
-		<div class="place-self-center">
+	</DescriptionCard>
+	<DescriptionCard title="Breakdown of all time and monthly expenses">
+		<div class="w-[300px] place-self-center overflow-hidden">
 			<Breakdown entries={landingData.entries} detailed={false} />
 		</div>
-	</Card>
+	</DescriptionCard>
 </div>

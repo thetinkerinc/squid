@@ -17,13 +17,13 @@ let all = $state(true);
 
 onMount(() => {
 	chart = echarts.init(document.getElementById('chart'), null, {
-		height: 300
+		width: 300
 	});
 	chart.setOption({
 		legend: {
-			orient: 'vertical',
-			top: 'center',
-			right: 0,
+			orient: 'horizontal',
+			top: '2%',
+			left: 'center',
 			formatter: _.capitalize
 		},
 		tooltip: {
@@ -119,7 +119,7 @@ $effect(() => {
 	</button>
 </div>
 <div class="grid grid-rows-[auto_auto] @3xl:grid-cols-2 @3xl:grid-rows-1">
-	<div id="chart" class="h-[300px] w-[400px] justify-self-center @3xl:justify-self-start"></div>
+	<div id="chart" class="mt-2 h-[300px] justify-self-center"></div>
 	{#if detailed}
 		<ScrollArea class="flex max-h-[300px] flex-col">
 			{#each details as cat}

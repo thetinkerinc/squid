@@ -31,12 +31,16 @@ function rm(id: string) {
 			class="entry mb-2 flex items-center gap-4 rounded bg-white/[0.7] px-4 py-1 shadow"
 			animate:flip
 			transition:fade={{ duration: 200 }}>
-			{@render badge(entry)}
-			<div>{formatter.money(entry.amount)}</div>
-			<div class="text-gray-500">{formatter.date(entry.created)}</div>
+			<div class="flex flex-wrap items-center gap-2">
+				<div class="flex items-center gap-2">
+					{@render badge(entry)}
+					<div>{formatter.money(entry.amount)}</div>
+				</div>
+				<div class="text-gray-500">{formatter.date(entry.created)}</div>
+			</div>
 			<div class="capitalize">{entry.category}</div>
 			<div class="actions flex flex-auto items-center justify-end gap-1 transition">
-				<Tooltip.Root>
+				<Tooltip.Root disableCloseOnTriggerClick={true}>
 					<Tooltip.Trigger class="text-blue-500">
 						<Info />
 					</Tooltip.Trigger>

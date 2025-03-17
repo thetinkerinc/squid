@@ -1,7 +1,7 @@
 import { schedules } from '@trigger.dev/sdk/v3';
 
 import e from '$eql';
-import { createClient } from '$utils/gel';
+import { createClient } from 'gel';
 
 import type { CurrencyType } from '$models';
 
@@ -33,7 +33,10 @@ export const updateCurrencies = schedules.task({
 			symbol: data.symbol_native,
 			value: values[data.code]
 		}));
-		const client = createClient();
+		const client = createClient({
+			instanceName: process.env.GEL_INSTANCE,
+			secretKey: process.env.GEL_SECRET_KEY
+		});
 		await client.transaction(async (tx) => {
 			await e.delete(e.Currency).run(tx);
 			for (const currency of currencies) {
