@@ -20,6 +20,7 @@ type CurrencyValueResponse = Record<CurrencyType, number>;
 
 export const updateCurrencies = schedules.task({
 	id: 'update-currencies',
+	machine: 'medium-1x',
 	cron: {
 		pattern: '0 6 * * *',
 		timezone: 'America/Edmonton'
