@@ -9,6 +9,7 @@ function createClient() {
 		});
 	}
 	return createGelClient({
+		tlsSecurity: 'insecure',
 		instanceName: GEL_INSTANCE,
 		secretKey: GEL_SECRET_KEY
 	});

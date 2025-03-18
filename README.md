@@ -7,6 +7,7 @@ Squid is a simple finance tracking app that I made to try out a new tech stack t
 https://squid.thetinkerinc.com/
 
 Besides playing around with some new technologies, I wanted a few things out of a finance tracker:
+
 - Ability to track bank account and cash separately
 - Easy support for multiple currencies
 - Quick visual breakdown of expenses
