@@ -1,0 +1,19 @@
+datasource db {
+  url = env("DATABASE_URL")
+  provider = "postgresql"
+}
+
+generator client {
+  provider = "prisma-client"
+  output = "../generated"
+}
+
+model Entry {
+  id String @id @default(dbgenerated("gen_random_uuid()"))
+  user String
+  date DateTime @db.Timestamptz(3)
+  hours Float
+  project String?
+
+  @@index(fields: [user])
+}

@@ -1,0 +1,26 @@
+{
+   "theme_color":"#ff8559",
+   "background_color":"#fff1d7",
+   "icons":[
+      {
+         "purpose":"maskable",
+         "sizes":"512x512",
+         "src":"icon512_maskable.png",
+         "type":"image/png"
+      },
+      {
+         "purpose":"any",
+         "sizes":"512x512",
+         "src":"icon512_rounded.png",
+         "type":"image/png"
+      }
+   ],
+   "orientation":"any",
+   "display":"standalone",
+   "dir":"auto",
+   "lang":"en-US",
+   "name":"Tempo",
+   "start_url":"https://tempo.thetinkerinc.com",
+   "scope":"https://tempo.thetinkerinc.com/",
+   "description":"A minimalist time tracker app"
+}

@@ -1,0 +1,41 @@
+{
+	"$schema": "https://inlang.com/schema/inlang-message-format",
+	"landing_title_start": "Keep your",
+	"landing_tagline": "No more rushing or dragging",
+	"landing_description": "Tempo is a minimalist and hyper-focused time tracker that stays out of your way",
+	"header_login": "Log in",
+	"header_signup": "Sign up",
+	"header_logout": "Log out",
+	"add_entry_title": "Add new entry",
+	"add_entry_button": "Save",
+	"project_select_placeholder": "Project",
+	"project_select_empty": "No projects",
+	"breakdown_hours_worked": "Hours worked",
+	"breakdown_last_month": "Last month",
+	"breakdown_this_month": "This month",
+	"breakdown_ytd": "YTD",
+	"breakdown_custom": "Custom",
+	"breakdown_entry_hours": [
+		{
+			"declarations": ["input hours", "local hoursPlural = hours: plural"],
+			"selectors": ["hoursPlural"],
+			"match": {
+				"hoursPlural=one": "{hours} hour",
+				"hoursPlural=other": "{hours} hours"
+			}
+		}
+	],
+	"breakdown_entry_no_project": "No project",
+	"breakdown_edit_cancel": "Cancel",
+	"breakdown_edit_save": "Save",
+	"record_start_label": "Record a session",
+	"record_stop_label": "Finish current session",
+	"record_confirm_title": "You worked {sessionLength} hours",
+	"record_confirm_round": "Round your session?",
+	"record_confirm_project": "Save session to a project?",
+	"record_confirm_discard": "Discard",
+	"record_confirm_save": "Save",
+	"schema_hours": "Please specify the number of hours worked",
+	"error_generic_message": "We encountered an issue while processing your request. Please reach out if you think something is wrong",
+	"error_generic_action": "Contact"
+}

@@ -1,0 +1,41 @@
+{
+	"$schema": "https://inlang.com/schema/inlang-message-format",
+	"landing_title_start": "Mantén tu",
+	"landing_tagline": "Sin adelantar ni retrasar",
+	"landing_description": "Tempo es un registro de tiempo minimalista e híper-enfocado que no te estorba",
+	"header_login": "Iniciar sessión",
+	"header_signup": "Registrarse",
+	"header_logout": "Cerrar sessión",
+	"add_entry_title": "Agregar nueva entrada",
+	"add_entry_button": "Guardar",
+	"project_select_placeholder": "Proyecto",
+	"project_select_empty": "No proyectos",
+	"breakdown_hours_worked": "Horas trabajadas",
+	"breakdown_last_month": "Mes pasado",
+	"breakdown_this_month": "Este mes",
+	"breakdown_ytd": "Este año",
+	"breakdown_custom": "Otro",
+	"breakdown_entry_hours": [
+		{
+			"declarations": ["input hours", "local hoursPlural = hours: plural"],
+			"selectors": ["hoursPlural"],
+			"match": {
+				"hoursPlural=one": "{hours} hora",
+				"hoursPlural=other": "{hours} horas"
+			}
+		}
+	],
+	"breakdown_entry_no_project": "Sin proyecto",
+	"breakdown_edit_cancel": "Cancelar",
+	"breakdown_edit_save": "Guardar",
+	"record_start_label": "Recordar una sesión",
+	"record_stop_label": "Terminar sesión actual",
+	"record_confirm_title": "Trabajaste {sessionLength} horas",
+	"record_confirm_round": "¿Redondear tu sesión?",
+	"record_confirm_project": "¿Agregar sesión a un proyecto?",
+	"record_confirm_discard": "Descartar",
+	"record_confirm_save": "Guardar",
+	"schema_hours": "Por favor entra las horas que trabajaste",
+	"error_generic_message": "Encontramos un error procesando tu solicitud. Por favor cantáctanos si crees que algo está mal",
+	"error_generic_action": "Contactar"
+}
