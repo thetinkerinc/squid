@@ -10,6 +10,7 @@ const config = {
 			$components: './src/lib/components',
 			$utils: './src/lib/utils',
 			$routes: './src/routes',
+			$remote: './src/routes/remote',
 			$prisma: './generated',
 			$paraglide: './src/lib/paraglide'
 		},

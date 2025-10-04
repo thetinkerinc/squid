@@ -8,12 +8,50 @@ generator client {
   output = "../generated"
 }
 
+enum EntryType {
+  expense
+  income
+  withdrawal
+}
+
+enum AccountType {
+  bank
+  cash
+}
+
+enum CurrencyType {
+  CAD
+  EUR
+  MXN
+  USD
+}
+
 model Entry {
   id String @id @default(dbgenerated("gen_random_uuid()"))
   user String
-  date DateTime @db.Timestamptz(3)
-  hours Float
-  project String?
+  created DateTime @default(now())
+  type EntryType
+  account AccountType
+  enteredAmount Float
+  enteredCurrency String
+  category String
+  description String?
 
   @@index(fields: [user])
+}
+
+model Invitation {
+  id String @id @default(dbgenerated("gen_random_uuid()"))
+  from String
+  to String
+  sent DateTime @default(now())
+  accepted Boolean?
+}
+
+model Currency {
+  id String @id @default(dbgenerated("gen_random_uuid()"))
+  code CurrencyType
+  name String
+  symbol String
+  value Float
 }

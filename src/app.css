@@ -120,11 +120,6 @@
 	}
 }
 
-@theme {
-	--color-beige: #fff1d7;
-	--color-orange: #fb5c3a;
-}
-
 @layer utilities {
 	.cell-1 {
 		grid-column: 1 / 1;

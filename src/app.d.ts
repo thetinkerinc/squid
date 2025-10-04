@@ -2,12 +2,13 @@
 
 import type { Local } from '@thetinkerinc/isolocal';
 
+import { CurrencyType } from '$prisma/enums';
+
 declare global {
 	namespace App {
 		interface Locals {
 			localStorage: Local & {
-				sessionStarted?: number;
-				sessionPauses: number[];
+				currency: CurrencyType;
 			};
 		}
 	}

@@ -6,7 +6,7 @@
 	"scripts": {
 		"dev": "run-p dev:*",
 		"dev:web": "vite dev",
-		"dev:db": "prisma dev -n tempo -P 4000 -p 4001",
+		"dev:db": "prisma dev -n squid -P 4002 -p 4003",
 		"dev:schema": "prisma generate --watch",
 		"build": "run-s build:prisma build:migrate build:web",
 		"build:prisma": "prisma generate --no-engine",
@@ -61,7 +61,8 @@
 		"@prisma/client": "^6.16.3",
 		"@prisma/extension-accelerate": "^2.0.2",
 		"@thetinkerinc/isolocal": "^0.1.1",
-		"dayjs": "^1.11.18",
+		"date-fns": "^4.1.0",
+		"echarts": "^6.0.0",
 		"radashi": "^12.6.2",
 		"svelte-clerk": "^0.17.4",
 		"valibot": "^1.1.0"
