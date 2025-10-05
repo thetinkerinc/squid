@@ -1,6 +1,5 @@
 import { error } from '@sveltejs/kit';
 import { command, getRequestEvent } from '$app/server';
-import { clerkClient } from 'svelte-clerk/server';
 import * as v from 'valibot';
 
 import { prisma } from '$utils/prisma';
@@ -48,11 +47,10 @@ export const rmEntry = command(v.pipe(v.string(), v.uuid()), async (id) => {
 });
 
 export const invite = command(v.pipe(v.string(), v.email()), async (to) => {
-	const users = await clerkClient.users.getUserList({
-		limit: 1,
-		emailAddress: [to]
-	});
-	if (users.data.length !== 1) {
+	try {
+		await auth.getUserId(to);
+	}
+	catch(_err) {
 		return;
 	}
 	const userId = protect();
