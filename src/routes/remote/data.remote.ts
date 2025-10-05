@@ -49,8 +49,7 @@ export const rmEntry = command(v.pipe(v.string(), v.uuid()), async (id) => {
 export const invite = command(v.pipe(v.string(), v.email()), async (to) => {
 	try {
 		await auth.getUserId(to);
-	}
-	catch(_err) {
+	} catch (_err) {
 		return;
 	}
 	const userId = protect();
