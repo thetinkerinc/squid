@@ -51,11 +51,12 @@ model Entry {
 }
 
 model Invitation {
-  id       String   @id @default(dbgenerated("gen_random_uuid()"))
-  from     String // user ID
-  to       String // email
-  sent     DateTime @default(now())
-  accepted Boolean  @default(false)
+  id        String   @id @default(dbgenerated("gen_random_uuid()"))
+  from      String // user ID
+  fromEmail String // user ID
+  to        String // email
+  sent      DateTime @default(now())
+  accepted  Boolean?
 
   @@index(fields: [from])
 }

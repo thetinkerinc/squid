@@ -91,13 +91,13 @@ function respond(id: string, accepted: boolean) {
 		{#each invitations as invitation}
 			<div class="inline-block rounded bg-white/[0.7] px-4 py-1 shadow">
 				<div class="underline">Invitation</div>
-				<div>From {invitation.from}</div>
+				<div>From {invitation.fromEmail}</div>
 				<div class="flex items-center gap-2">
 					<div class="mr-4 flex-auto text-gray-500">Sent {formatter.date(invitation.sent)}</div>
-					<button class="text-green-500" onclick={respond(invitation.id, true)}>
+					<button class="cursor-pointer text-green-500" onclick={respond(invitation.id, true)}>
 						<Check />
 					</button>
-					<button class="text-red-500" onclick={respond(invitation.id, false)}>
+					<button class="cursor-pointer text-red-500" onclick={respond(invitation.id, false)}>
 						<X />
 					</button>
 				</div>

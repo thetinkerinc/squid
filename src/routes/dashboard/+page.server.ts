@@ -2,6 +2,7 @@ import { redirect } from '@sveltejs/kit';
 import * as _ from 'radashi';
 
 import { prisma } from '$utils/prisma';
+import auth from '$utils/auth';
 
 import { EntryType, AccountType } from '$prisma/enums';
 import type { Entry } from '$prisma/client';
@@ -53,11 +54,12 @@ async function getEntries(userId: string, partners: string[]) {
 }
 
 async function getInvitations(userId: string) {
+	const email = await auth.getEmail(userId);
 	return await prisma.invitation.findMany({
 		where: {
-			to: userId,
+			to: email,
 			accepted: {
-				not: true
+				equals: null
 			}
 		},
 		orderBy: {

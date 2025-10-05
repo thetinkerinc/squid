@@ -4,6 +4,7 @@ import { clerkClient } from 'svelte-clerk/server';
 import * as v from 'valibot';
 
 import { prisma } from '$utils/prisma';
+import auth from '$utils/auth';
 
 import { EntryType, AccountType, CurrencyType } from '$prisma/enums';
 
@@ -26,7 +27,7 @@ export const addEntry = command(
 	}),
 	async (data) => {
 		const userId = protect();
-		const userEmail = await getEmail(userId);
+		const userEmail = await auth.getEmail(userId);
 		await prisma.entry.create({
 			data: {
 				...data,
@@ -55,9 +56,11 @@ export const invite = command(v.pipe(v.string(), v.email()), async (to) => {
 		return;
 	}
 	const userId = protect();
+	const fromEmail = await auth.getEmail(userId);
 	await prisma.invitation.create({
 		data: {
 			from: userId,
+			fromEmail,
 			to
 		}
 	});
@@ -79,10 +82,10 @@ export const respond = command(
 				}
 			});
 			if (data.accepted) {
-				const fromEmail = await getEmail(invitation.from);
+				const fromEmail = await auth.getEmail(invitation.from);
 				const fromId = invitation.from;
 				const toEmail = invitation.to;
-				const toId = await getUserId(invitation.to);
+				const toId = await auth.getUserId(invitation.to);
 				await addPartner(tx, fromId, toEmail);
 				await addPartner(tx, toId, fromEmail);
 			}
@@ -92,36 +95,23 @@ export const respond = command(
 
 async function addPartner(
 	db: Parameters<Parameters<typeof prisma.$transaction>[0]>[0],
-	from: string,
-	to: string
+	user: string,
+	partner: string
 ) {
 	await db.partners.upsert({
 		where: {
-			user: to
+			user
 		},
 		create: {
-			user: to,
-			partners: [from]
+			user,
+			partners: [partner]
 		},
 		update: {
 			partners: {
-				push: from
+				push: partner
 			}
 		}
 	});
-}
-
-async function getEmail(userId: string) {
-	const user = await clerkClient.users.getUser(userId);
-	return user.emailAddresses[0].emailAddress;
-}
-
-async function getUserId(email: string) {
-	const users = await clerkClient.users.getUserList({
-		limit: 1,
-		emailAddress: [email]
-	});
-	return users.data[0].id;
 }
 
 function protect(): string {
