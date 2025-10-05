@@ -2,7 +2,6 @@
 import { ClerkProvider } from 'svelte-clerk';
 import { enUS, esMX } from '@clerk/localizations';
 import { getLocale } from '$paraglide/runtime';
-import { env } from '$env/dynamic/public';
 
 import { Toaster } from '$components/ui/sonner';
 import * as Tooltip from '$components/ui/tooltip';

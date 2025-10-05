@@ -127,7 +127,7 @@ $effect(() => {
 	</button>
 </div>
 <div class="grid grid-rows-[auto_auto] @3xl:grid-cols-[auto_1fr] @3xl:grid-rows-1">
-	<div id="chart" class="mt-2 w-[300px] min-h-[300px] justify-self-center"></div>
+	<div id="chart" class="mt-2 min-h-[300px] w-[300px] justify-self-center"></div>
 	{#if detailed}
 		<ScrollArea class="flex max-h-[300px] flex-col">
 			{#each details as cat}

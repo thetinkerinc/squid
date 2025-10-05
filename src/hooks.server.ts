@@ -10,12 +10,6 @@ import { CurrencyType } from '$prisma/enums';
 
 import type { Handle } from '@sveltejs/kit';
 
-const debug: Handle = ({ event, resolve }) => {
-	console.log('handling request');
-	console.log(PUBLIC_CLERK_PUBLISHABLE_KEY);
-	return resolve(event);
-};
-
 const handleParaglide: Handle = ({ event, resolve }) =>
 	paraglideMiddleware(event.request, ({ request, locale }) => {
 		event.request = request;
@@ -26,7 +20,6 @@ const handleParaglide: Handle = ({ event, resolve }) =>
 	});
 
 export const handle: Handle = sequence(
-	debug,
 	handleParaglide,
 	withClerkHandler({
 		publishableKey: PUBLIC_CLERK_PUBLISHABLE_KEY,
