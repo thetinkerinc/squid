@@ -1,5 +1,6 @@
 <script lang="ts">
 import { ClerkProvider } from 'svelte-clerk';
+import { PUBLIC_CLERK_PUBLISHABLE_KEY } from '$env/static/public';
 import { enUS, esMX } from '@clerk/localizations';
 import { getLocale } from '$paraglide/runtime';
 
@@ -17,7 +18,7 @@ const clerkLocale = {
 </script>
 
 <Toaster position="top-right" richColors closeButton />
-<ClerkProvider localization={clerkLocale}>
+<ClerkProvider localization={clerkLocale} publishableKey={PUBLIC_CLERK_PUBLISHABLE_KEY}>
 	<Tooltip.Provider>
 		<div class="grid">
 			<div class="cell-1 z-10 mb-10">
