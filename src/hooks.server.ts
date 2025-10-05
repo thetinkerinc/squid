@@ -3,7 +3,7 @@ import { withClerkHandler } from 'svelte-clerk/server';
 import { paraglideMiddleware } from '$lib/paraglide/server';
 import { addLocalStorage } from '@thetinkerinc/isolocal';
 
-import { PUBLIC_CLERK_PUBLISHABLE_KEY } from '$env/static/public';
+import { env } from '$env/dynamic/public';
 
 import { CurrencyType } from '$prisma/enums';
 
@@ -11,7 +11,7 @@ import type { Handle } from '@sveltejs/kit';
 
 const debug: Handle = ({ event, resolve }) => {
 	console.log('handling request');
-	console.log(PUBLIC_CLERK_PUBLISHABLE_KEY);
+	console.log(env.PUBLIC_CLERK_PUBLISHABLE_KEY);
 	return resolve(event);
 };
 
