@@ -27,7 +27,9 @@ const handleParaglide: Handle = ({ event, resolve }) =>
 export const handle: Handle = sequence(
 	debug,
 	handleParaglide,
-	withClerkHandler(),
+	withClerkHandler({
+		publishableKey: env.PUBLIC_CLERK_PUBLISHABLE_KEY
+	}),
 	addLocalStorage({
 		currency: CurrencyType.CAD
 	})

@@ -18,7 +18,7 @@ const clerkLocale = {
 </script>
 
 <Toaster position="top-right" richColors closeButton />
-<ClerkProvider localization={clerkLocale} publishableKey={env.PUBLIC_CLERK_PUBLISHABLE_KEY}>
+<ClerkProvider localization={clerkLocale}>
 	<Tooltip.Provider>
 		<div class="grid">
 			<div class="cell-1 z-10 mb-10">
