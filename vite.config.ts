@@ -7,6 +7,11 @@ export default defineConfig({
 	ssr: {
 		noExternal: ['@thetinkerinc/isolocal']
 	},
+	server: {
+		fs: {
+			allow: ['./generated']
+		}
+	},
 	plugins: [
 		tailwindcss(),
 		sveltekit(),

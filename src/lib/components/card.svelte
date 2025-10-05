@@ -11,5 +11,5 @@ interface Props {
 
 <div
 	class="rounded-lg border border-white/[0.3] bg-emerald-400/[0.05] p-4 shadow-lg backdrop-blur {clazz}">
-	{@render children()}
+	{@render children?.()}
 </div>

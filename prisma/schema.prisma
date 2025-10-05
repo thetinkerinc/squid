@@ -1,11 +1,11 @@
 datasource db {
-  url = env("DATABASE_URL")
+  url      = env("DATABASE_URL")
   provider = "postgresql"
 }
 
 generator client {
   provider = "prisma-client"
-  output = "../generated"
+  output   = "../generated"
 }
 
 enum EntryType {
@@ -26,32 +26,42 @@ enum CurrencyType {
   USD
 }
 
+model Partners {
+  id       String   @id @default(dbgenerated("gen_random_uuid()"))
+  user     String   @unique
+  partners String[]
+
+  @@index(fields: [user])
+}
+
 model Entry {
-  id String @id @default(dbgenerated("gen_random_uuid()"))
-  user String
-  created DateTime @default(now())
-  type EntryType
-  account AccountType
-  enteredAmount Float
+  id              String      @id @default(dbgenerated("gen_random_uuid()"))
+  user            String
+  userEmail       String
+  created         DateTime    @default(now())
+  type            EntryType
+  account         AccountType
+  amount          Float
+  enteredAmount   Float
   enteredCurrency String
-  category String
-  description String?
+  category        String
+  description     String?
 
   @@index(fields: [user])
 }
 
 model Invitation {
-  id String @id @default(dbgenerated("gen_random_uuid()"))
-  from String
-  to String
-  sent DateTime @default(now())
-  accepted Boolean?
+  id       String   @id @default(dbgenerated("gen_random_uuid()"))
+  from     String
+  to       String
+  sent     DateTime @default(now())
+  accepted Boolean  @default(false)
 }
 
 model Currency {
-  id String @id @default(dbgenerated("gen_random_uuid()"))
-  code CurrencyType
-  name String
+  id     String       @id @default(dbgenerated("gen_random_uuid()"))
+  code   CurrencyType
+  name   String
   symbol String
-  value Float
+  value  Float
 }

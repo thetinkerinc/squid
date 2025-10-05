@@ -3,12 +3,15 @@ import * as date from 'date-fns';
 import { page } from '$app/state';
 import local from '@thetinkerinc/isolocal';
 
-function _date(d: Date, format?: string): string {
+function _date(d: Date | undefined, format?: string): string {
+	if (d === undefined) {
+		d = new Date();
+	}
 	if (!format) {
 		if (date.isSameDay(new Date(), d)) {
-			format = 'h:mm a';
+			format = 'h:mm aaa';
 		} else {
-			format = 'ddd MMM D';
+			format = 'eee MMM d';
 		}
 	}
 	return date.format(d, format);

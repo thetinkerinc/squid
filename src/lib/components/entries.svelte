@@ -61,7 +61,7 @@ function rm(id: string) {
 								<Banknote />
 							{/if}
 						</div>
-						<div>{formatter.date(entry.created, 'h:mm a ddd MMM D, YYYY')}</div>
+						<div>{formatter.date(entry.created, 'h:mm aaa eee MMM d, yyyy')}</div>
 						<div class="flex gap-1">
 							<div class="capitalize">{entry.category}</div>
 							<div>-</div>
@@ -99,6 +99,8 @@ function rm(id: string) {
 {/snippet}
 
 <style lang="postcss">
+@reference 'tailwindcss';
+
 .badge {
 	@apply rounded bg-gradient-to-br p-[2px] shadow;
 }

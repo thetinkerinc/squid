@@ -8,6 +8,7 @@
 		"dev:web": "vite dev",
 		"dev:db": "prisma dev -n squid -P 4002 -p 4003",
 		"dev:schema": "prisma generate --watch",
+		"dev:trigger": "trigger dev --profile thetinkerinc",
 		"build": "run-s build:prisma build:migrate build:web",
 		"build:prisma": "prisma generate --no-engine",
 		"build:migrate": "prisma migrate deploy",
@@ -17,7 +18,9 @@
 		"cleanup": "run-s format lint check",
 		"check": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json",
 		"check:watch": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json --watch",
-		"format": "prettier --write .",
+		"format": "run-p format:*",
+		"format:code": "prettier --write .",
+		"format:prisma": "prisma format",
 		"lint": "eslint ."
 	},
 	"devDependencies": {
@@ -31,6 +34,7 @@
 		"@tailwindcss/forms": "^0.5.10",
 		"@tailwindcss/typography": "^0.5.19",
 		"@tailwindcss/vite": "^4.1.14",
+		"@trigger.dev/build": "4.0.4",
 		"bits-ui": "^2.11.4",
 		"clsx": "^2.1.1",
 		"eslint": "^9.37.0",
@@ -61,10 +65,12 @@
 		"@prisma/client": "^6.16.3",
 		"@prisma/extension-accelerate": "^2.0.2",
 		"@thetinkerinc/isolocal": "^0.1.1",
+		"@trigger.dev/sdk": "4.0.4",
 		"date-fns": "^4.1.0",
 		"echarts": "^6.0.0",
 		"radashi": "^12.6.2",
 		"svelte-clerk": "^0.17.4",
+		"trigger.dev": "^4.0.4",
 		"valibot": "^1.1.0"
 	}
 }
