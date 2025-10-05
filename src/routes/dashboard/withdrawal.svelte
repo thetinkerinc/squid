@@ -9,7 +9,7 @@ import { Input } from '$components/ui/input';
 
 import AmountInput from './amount-input.svelte';
 
-import { CurrencyType } from '$prisma/enums';
+import { CurrencyType, EntryType, AccountType } from '$prisma/enums';
 
 let open = $state<boolean>(false);
 let amount = $state<number>();
@@ -31,8 +31,8 @@ async function save() {
 		return;
 	}
 	await remote.addEntry({
-		type: 'withdrawal',
-		account: 'bank',
+		type: EntryType.withdrawal,
+		account: AccountType.bank,
 		amount,
 		enteredAmount,
 		enteredCurrency,

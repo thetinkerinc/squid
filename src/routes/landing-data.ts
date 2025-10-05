@@ -1,6 +1,8 @@
 import * as date from 'date-fns';
 import * as _ from 'radashi';
 
+import { EntryType, AccountType, CurrencyType } from '$prisma/enums';
+
 const totals = {
 	bankExpense: 25,
 	bankIncome: 2600,
@@ -15,72 +17,67 @@ const entries = [
 	{
 		id: _.uid(8),
 		created: date.sub(new Date(), { hours: 1 }),
-		type: 'expense',
-		account: 'bank',
+		type: EntryType.expense,
+		account: AccountType.bank,
 		amount: 12,
 		enteredAmount: 12,
-		enteredCurrency: 'CAD',
+		enteredCurrency: CurrencyType.CAD,
 		category: 'transportation',
 		description: 'uber',
-		user: {
-			email: 'example@email.com'
-		}
+		user: 'user123',
+		userEmail: 'example@email.com'
 	},
 	{
 		id: _.uid(8),
 		created: date.sub(new Date(), { hours: 3 }),
-		type: 'expense',
-		account: 'cash',
+		type: EntryType.expense,
+		account: AccountType.cash,
 		amount: 19,
 		enteredAmount: 270,
-		enteredCurrency: 'MXN',
+		enteredCurrency: CurrencyType.MXN,
 		category: 'groceries',
 		description: null,
-		user: {
-			email: 'partner@email.com'
-		}
+		user: 'user321',
+		userEmail: 'partner@email.com'
 	},
 	{
 		id: _.uid(8),
 		created: date.sub(new Date(), { hours: 12 }),
-		type: 'withdrawal',
-		account: 'bank',
+		type: EntryType.withdrawal,
+		account: AccountType.bank,
 		amount: 100,
 		enteredAmount: 100,
-		enteredCurrency: 'CAD',
+		enteredCurrency: CurrencyType.CAD,
 		category: 'withdrawal',
 		description: null,
-		user: {
-			email: 'example@email.com'
-		}
+		user: 'user123',
+		userEmail: 'example@email.com'
 	},
 	{
 		id: _.uid(8),
 		created: date.sub(new Date(), { days: 3.2 }),
-		type: 'expense',
-		account: 'bank',
+		type: EntryType.expense,
+		account: AccountType.bank,
 		amount: 25,
 		enteredAmount: 25,
-		enteredCurrency: 'CAD',
+		enteredCurrency: CurrencyType.CAD,
 		category: 'food',
 		description: 'uber eats',
-		user: {
-			email: 'example@email.com'
-		}
+		user: 'user123',
+		userEmail: 'example@email.com'
 	},
 	{
 		id: _.uid(8),
 		created: date.sub(new Date(), { days: 15.1 }),
-		type: 'income',
-		account: 'bank',
+		type: EntryType.income,
+		account: AccountType.bank,
 		amount: 2600,
 		enteredAmount: 2600,
-		enteredCurrency: 'CAD',
+		enteredCurrency: CurrencyType.CAD,
 		category: 'paycheck',
 		description: date.format(date.sub(new Date(), { days: 15.1 }), 'MMMM'),
-		user: {
-			email: 'example@email.com'
-		}
+		user: 'user123',
+		userEmail: 'example@email.com'
 	}
 ];
 

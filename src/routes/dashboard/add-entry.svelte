@@ -33,7 +33,7 @@ let open = $state<boolean>(false);
 let amount = $state<number>();
 let enteredAmount = $state<number>();
 let enteredCurrency = $state<CurrencyType>(local.currency);
-let account = $state<AccountType>('bank');
+let account = $state<AccountType>(AccountType.bank);
 let created = $state<Date>();
 let category = $state<string>();
 let addingCategory = $state<boolean>(false);
@@ -52,7 +52,7 @@ function reset() {
 	amount = undefined;
 	enteredAmount = undefined;
 	enteredCurrency = local.currency;
-	account = 'bank';
+	account = AccountType.bank;
 	created = undefined;
 	category = undefined;
 	addingCategory = false;

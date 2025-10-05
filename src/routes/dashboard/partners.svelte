@@ -1,5 +1,6 @@
 <script lang="ts">
-import { page } from '$app/state';
+let { invitations, partners }: Props = $props();
+
 import { invalidateAll } from '$app/navigation';
 import { toast } from 'svelte-sonner';
 import { UserPlus, Check, X } from '@lucide/svelte';
@@ -11,6 +12,13 @@ import formatter from '$utils/formatter';
 import * as AlertDialog from '$components/ui/alert-dialog';
 import { Button } from '$components/ui/button';
 import { Input } from '$components/ui/input';
+
+import type { Invitation } from '$prisma/client';
+
+interface Props {
+	invitations: Invitation[];
+	partners: string[];
+}
 
 let open = $state<boolean>(false);
 let email = $state<string>('');
@@ -72,18 +80,18 @@ function respond(id: string, accepted: boolean) {
 			</AlertDialog.Footer>
 		</AlertDialog.Content>
 	</AlertDialog.Root>
-	{#each page.data.partners as partner}
+	{#each partners as partner}
 		<div class="inline-block rounded bg-white/[0.7] px-4 py-1 shadow">
 			{partner}
 		</div>
 	{/each}
 </div>
-{#if page.data.invitations.length}
+{#if invitations.length}
 	<div class="mt-3 flex flex-wrap items-center gap-3">
-		{#each page.data.invitations as invitation}
+		{#each invitations as invitation}
 			<div class="inline-block rounded bg-white/[0.7] px-4 py-1 shadow">
 				<div class="underline">Invitation</div>
-				<div>From {invitation.from.email}</div>
+				<div>From {invitation.from}</div>
 				<div class="flex items-center gap-2">
 					<div class="mr-4 flex-auto text-gray-500">Sent {formatter.date(invitation.sent)}</div>
 					<button class="text-green-500" onclick={respond(invitation.id, true)}>

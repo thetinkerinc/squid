@@ -1,5 +1,6 @@
 <script lang="ts">
-import { page } from '$app/state';
+let { data } = $props();
+
 import local from '@thetinkerinc/isolocal';
 import { useClerkContext } from 'svelte-clerk/client';
 import { LogOut } from '@lucide/svelte';
@@ -43,7 +44,7 @@ async function logout() {
 			class="grid grid-rows-[auto_auto] gap-2 md:grid-cols-2 md:grid-rows-1 lg:grid-cols-1 lg:grid-rows-[auto_auto]">
 			<div>
 				<Card>
-					<Totals totals={page.data.totals} />
+					<Totals totals={data.totals} />
 				</Card>
 				<div class="my-4 flex justify-around">
 					<Income />
@@ -52,15 +53,15 @@ async function logout() {
 				</div>
 			</div>
 			<Card>
-				<Entries entries={page.data.entries} />
+				<Entries entries={data.entries} />
 			</Card>
 		</div>
 		<div>
 			<Card class="@container mb-6">
-				<Breakdown entries={page.data.entries} />
+				<Breakdown entries={data.entries} />
 			</Card>
 			<Card>
-				<Partners />
+				<Partners invitations={data.invitations} partners={data.partners} />
 			</Card>
 		</div>
 	</div>

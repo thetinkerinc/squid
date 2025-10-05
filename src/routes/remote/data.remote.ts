@@ -26,12 +26,12 @@ export const addEntry = command(
 	}),
 	async (data) => {
 		const userId = protect();
-		const user = await clerkClient.users.getUser(userId);
+		const userEmail = await getEmail(userId);
 		await prisma.entry.create({
 			data: {
 				...data,
 				user: userId,
-				userEmail: user.emailAddresses[0].emailAddress
+				userEmail
 			}
 		});
 	}
@@ -58,7 +58,7 @@ export const invite = command(v.pipe(v.string(), v.email()), async (to) => {
 	await prisma.invitation.create({
 		data: {
 			from: userId,
-			to: users.data[0].emailAddresses[0].emailAddress
+			to
 		}
 	});
 });
@@ -66,13 +66,11 @@ export const invite = command(v.pipe(v.string(), v.email()), async (to) => {
 export const respond = command(
 	v.object({
 		id: v.pipe(v.string(), v.uuid()),
-		from: v.string(),
-		to: v.string(),
 		accepted: v.boolean()
 	}),
 	async (data) => {
 		await prisma.$transaction(async (tx) => {
-			await tx.invitation.update({
+			const invitation = await tx.invitation.update({
 				where: {
 					id: data.id
 				},
@@ -81,38 +79,50 @@ export const respond = command(
 				}
 			});
 			if (data.accepted) {
-				await tx.partners.upsert({
-					where: {
-						user: data.from
-					},
-					create: {
-						user: data.from,
-						partners: [data.to]
-					},
-					update: {
-						partners: {
-							push: data.to
-						}
-					}
-				});
-				await tx.partners.upsert({
-					where: {
-						user: data.to
-					},
-					create: {
-						user: data.to,
-						partners: [data.from]
-					},
-					update: {
-						partners: {
-							push: data.from
-						}
-					}
-				});
+				const fromEmail = await getEmail(invitation.from);
+				const fromId = invitation.from;
+				const toEmail = invitation.to;
+				const toId = await getUserId(invitation.to);
+				await addPartner(tx, fromId, toEmail);
+				await addPartner(tx, toId, fromEmail);
 			}
 		});
 	}
 );
+
+async function addPartner(
+	db: Parameters<Parameters<typeof prisma.$transaction>[0]>[0],
+	from: string,
+	to: string
+) {
+	await db.partners.upsert({
+		where: {
+			user: to
+		},
+		create: {
+			user: to,
+			partners: [from]
+		},
+		update: {
+			partners: {
+				push: from
+			}
+		}
+	});
+}
+
+async function getEmail(userId: string) {
+	const user = await clerkClient.users.getUser(userId);
+	return user.emailAddresses[0].emailAddress;
+}
+
+async function getUserId(email: string) {
+	const users = await clerkClient.users.getUserList({
+		limit: 1,
+		emailAddress: [email]
+	});
+	return users.data[0].id;
+}
 
 function protect(): string {
 	const event = getRequestEvent();

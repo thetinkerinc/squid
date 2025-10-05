@@ -13,6 +13,8 @@ import * as remote from '$remote/data.remote';
 import { ScrollArea } from '$components/ui/scroll-area';
 import * as Tooltip from '$components/ui/tooltip';
 
+import { EntryType, AccountType } from '$prisma/enums';
+
 import type { Entry } from '$prisma/client';
 
 interface Props {
@@ -55,9 +57,9 @@ function rm(id: string) {
 							{@render badge(entry)}
 							<div>{formatter.money(entry.amount)}</div>
 							<div>({entry.enteredAmount} {entry.enteredCurrency})</div>
-							{#if entry.account === 'bank'}
+							{#if entry.account === AccountType.bank}
 								<Landmark />
-							{:else if entry.account === 'cash'}
+							{:else if entry.account === AccountType.cash}
 								<Banknote />
 							{/if}
 						</div>
@@ -67,7 +69,7 @@ function rm(id: string) {
 							<div>-</div>
 							<div class="text-gray-500">{entry.description ?? 'No description'}</div>
 						</div>
-						<div>{entry.user.email}</div>
+						<div>{entry.userEmail}</div>
 					</Tooltip.Content>
 				</Tooltip.Root>
 				<button class="text-red-500" onclick={rm(entry.id)}>
@@ -83,15 +85,15 @@ function rm(id: string) {
 </ScrollArea>
 
 {#snippet badge(entry: Entry)}
-	{#if entry.type === 'income'}
+	{#if entry.type === EntryType.income}
 		<div class="badge from-green-300 to-green-400">
 			<ArrowUp size={20} />
 		</div>
-	{:else if entry.type === 'expense'}
+	{:else if entry.type === EntryType.expense}
 		<div class="badge from-red-300 to-red-400">
 			<ArrowDown size={20} />
 		</div>
-	{:else if entry.type === 'withdrawal'}
+	{:else if entry.type === EntryType.withdrawal}
 		<div class="badge from-blue-300 to-blue-400">
 			<Redo size={20} />
 		</div>

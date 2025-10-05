@@ -10,6 +10,8 @@ import formatter from '$utils/formatter';
 
 import { ScrollArea } from '$components/ui/scroll-area';
 
+import { EntryType } from '$prisma/enums';
+
 import type { ECharts } from 'echarts';
 import type { Entry } from '$prisma/client';
 
@@ -39,6 +41,7 @@ onMount(() => {
 			{
 				type: 'pie',
 				name: 'Breakdown',
+				radius: [0, 90],
 				center: [150, '50%'],
 				label: {
 					show: false
@@ -62,7 +65,7 @@ let chart: ECharts;
 
 let expenses = $derived<Entry[]>(
 	entries.filter((e: Entry) => {
-		const isExpense = e.type === 'expense';
+		const isExpense = e.type === EntryType.expense;
 		const isInRange = all ? true : date.isSameMonth(new Date(), e.created);
 		return isExpense && isInRange;
 	})
@@ -123,8 +126,8 @@ $effect(() => {
 		This month
 	</button>
 </div>
-<div class="grid grid-rows-[auto_auto] @3xl:grid-cols-2 @3xl:grid-rows-1">
-	<div id="chart" class="mt-2 h-[300px] justify-self-center"></div>
+<div class="grid grid-rows-[auto_auto] @3xl:grid-cols-[auto_1fr] @3xl:grid-rows-1">
+	<div id="chart" class="mt-2 w-[300px] min-h-[300px] justify-self-center"></div>
 	{#if detailed}
 		<ScrollArea class="flex max-h-[300px] flex-col">
 			{#each details as cat}

@@ -52,10 +52,12 @@ model Entry {
 
 model Invitation {
   id       String   @id @default(dbgenerated("gen_random_uuid()"))
-  from     String
-  to       String
+  from     String // user ID
+  to       String // email
   sent     DateTime @default(now())
   accepted Boolean  @default(false)
+
+  @@index(fields: [from])
 }
 
 model Currency {
