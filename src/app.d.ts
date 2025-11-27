@@ -2,6 +2,8 @@
 
 import type { Local } from '@thetinkerinc/isolocal';
 
+import { CurrencyType } from '$prisma/enums';
+
 declare global {
 	namespace App {
 		interface Platform {
@@ -10,7 +12,9 @@ declare global {
 			ctx: ExecutionContext;
 		}
 		interface Locals {
-			localStorage: Local;
+			localStorage: Local & {
+				currency: CurrencyType;
+			};
 		}
 	}
 }

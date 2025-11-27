@@ -7,6 +7,7 @@ import { DATABASE_URL } from '$env/static/private';
 import { PrismaClient } from '$prisma/client';
 
 export type * from '$prisma/client';
+export type PrismaTx = Parameters<Parameters<typeof prisma.$transaction>[0]>[0];
 
 let prisma: PrismaClient;
 

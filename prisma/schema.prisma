@@ -12,3 +12,64 @@ generator prod {
   runtime = "cloudflare"
   output = "../src/generated"
 }
+
+enum EntryType {
+  expense
+  income
+  withdrawal
+}
+
+enum AccountType {
+  bank
+  cash
+}
+
+enum CurrencyType {
+  CAD
+  EUR
+  MXN
+  USD
+}
+
+model Partners {
+  id       String   @id @default(dbgenerated("gen_random_uuid()"))
+  user     String   @unique
+  partners String[]
+
+  @@index(fields: [user])
+}
+
+model Entry {
+  id              String      @id @default(dbgenerated("gen_random_uuid()"))
+  user            String
+  userEmail       String
+  created         DateTime    @default(now())
+  type            EntryType
+  account         AccountType
+  amount          Float
+  enteredAmount   Float
+  enteredCurrency String
+  category        String
+  description     String?
+
+  @@index(fields: [user])
+}
+
+model Invitation {
+  id        String   @id @default(dbgenerated("gen_random_uuid()"))
+  from      String // user ID
+  fromEmail String // user ID
+  to        String // email
+  sent      DateTime @default(now())
+  accepted  Boolean?
+
+  @@index(fields: [from])
+}
+
+model Currency {
+  id     String       @id @default(dbgenerated("gen_random_uuid()"))
+  code   CurrencyType
+  name   String
+  symbol String
+  value  Float
+}

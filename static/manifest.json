@@ -19,8 +19,8 @@
    "display":"standalone",
    "dir":"auto",
    "lang":"en-US",
-   "name":"Sprout app",
-   "start_url":"https://example.com",
-   "scope":"https://example.com/",
-   "description":"An awesome app"
+   "name":"Squid",
+	"start_url":"https://squid.thetinkerinc.com",
+   "scope":"https://squid.thetinkerinc.com",
+	"description":"An simple, shareable finance tracker"
 }

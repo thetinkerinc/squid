@@ -6,6 +6,8 @@ import { addLocalStorage } from '@thetinkerinc/isolocal';
 import { PUBLIC_CLERK_PUBLISHABLE_KEY } from '$env/static/public';
 import { CLERK_SECRET_KEY } from '$env/static/private';
 
+import { CurrencyType } from '$prisma/enums';
+
 import type { Handle } from '@sveltejs/kit';
 
 const handleParaglide: Handle = ({ event, resolve }) =>
@@ -23,5 +25,7 @@ export const handle: Handle = sequence(
 		publishableKey: PUBLIC_CLERK_PUBLISHABLE_KEY,
 		secretKey: CLERK_SECRET_KEY
 	}),
-	addLocalStorage({})
+	addLocalStorage({
+		currency: CurrencyType.CAD
+	})
 );
