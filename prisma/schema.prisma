@@ -1,0 +1,14 @@
+datasource db {
+  provider = "postgresql"
+}
+
+generator dev {
+  provider = "prisma-client"
+  output = "../src/generated"
+}
+
+generator prod {
+  provider = "prisma-client"
+  runtime = "cloudflare"
+  output = "../src/generated"
+}

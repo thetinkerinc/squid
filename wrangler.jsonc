@@ -1,0 +1,21 @@
+{
+	"$schema": "node_modules/wrangler/config-schema.json",
+	"name": "sprout-app",
+	"main": ".svelte-kit/cloudflare/_worker.js",
+	"compatibility_date": "2025-11-13",
+	"compatibility_flags": ["nodejs_compat"],
+	"assets": {
+		"binding": "ASSETS",
+		"directory": ".svelte-kit/cloudflare"
+	},
+	"observability": {
+		"enabled": true
+	},
+	"vars": {
+		"PUBLIC_CLERK_PUBLISHABLE_KEY": "pk_live_Y2xlcmsudGVtcG8udGhldGlua2VyaW5jLmNvbSQ",
+		"PUBLIC_CLERK_SIGN_IN_FORCE_REDIRECT_URL": "/dashboard",
+		"PUBLIC_CLERK_SIGN_IN_URL": "/login",
+		"PUBLIC_CLERK_SIGN_UP_FORCE_REDIRECT_URL": "/dashboard",
+		"PUBLIC_CLERK_SIGN_UP_URL": "/signup"
+	}
+}
