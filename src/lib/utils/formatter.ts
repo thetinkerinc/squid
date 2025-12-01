@@ -3,9 +3,11 @@ import * as date from 'date-fns';
 
 import { page } from '$app/state';
 
-function _date(d: Date | undefined, format?: string): string {
-	if (d === undefined) {
+function _date(d: Date | string | undefined, format?: string): string {
+	if (d === undefined || d === '') {
 		d = new Date();
+	} else if (typeof d === 'string') {
+		d = new Date(d);
 	}
 	if (!format) {
 		if (date.isSameDay(new Date(), d)) {

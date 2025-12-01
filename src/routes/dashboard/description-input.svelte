@@ -1,15 +1,17 @@
 <script lang="ts">
-let { options, value = $bindable() }: Props = $props();
+let { options }: Props = $props();
+
+import { addEntry } from '$remote/data.remote';
 
 import { Input } from '$components/ui/input';
 
 interface Props {
 	options: string[];
-	value: string;
 }
 
 let keepOpen = false;
 
+let value = $state<string>();
 let open = $state<boolean>(false);
 let highlighted = $state<number>(0);
 
@@ -42,7 +44,8 @@ function filterOptions() {
 	if (!value) {
 		return options;
 	}
-	return options.filter((o) => o.toLocaleLowerCase().includes(value.toLocaleLowerCase()));
+	const cmp = value.toLocaleLowerCase();
+	return options.filter((o) => o.toLocaleLowerCase().includes(cmp));
 }
 
 function focus() {
@@ -124,6 +127,7 @@ function stopEvent(evt: Event) {
 				{@const hl = idx === highlighted}
 				<button
 					class={['rounded px-2 py-1 text-left capitalize hover:bg-gray-100', hl && 'bg-gray-100']}
+					type="button"
 					tabindex="-1"
 					onmouseenter={() => (highlighted = idx)}
 					onclick={() => select(idx)}>
@@ -133,3 +137,4 @@ function stopEvent(evt: Event) {
 		</div>
 	{/if}
 </div>
+<input class="hidden" {...addEntry.fields.description.as('text')} {value} />

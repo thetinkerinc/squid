@@ -1,50 +1,40 @@
 <script lang="ts">
-import { invalidateAll } from '$app/navigation';
+import { toast } from 'svelte-sonner';
+import * as _ from 'radashi';
 
-import * as remote from '$remote/data.remote';
+import { getEntriesAndPartners, addEntry } from '$remote/data.remote';
+import * as schema from '$remote/schema';
 
 import * as AlertDialog from '$components/ui/alert-dialog';
 import { Button } from '$components/ui/button';
-import { Input } from '$components/ui/input';
 
 import AmountInput from './amount-input.svelte';
+import DescriptionInput from './description-input.svelte';
 
-import { CurrencyType, EntryType, AccountType } from '$prisma/enums';
+import { EntryType, AccountType } from '$prisma/enums';
 
-let open = $state<boolean>(false);
-let amount = $state<number>();
-let enteredAmount = $state<number>();
-let enteredCurrency = $state<CurrencyType>(CurrencyType.CAD);
-let description = $state<string>();
+let open = $state(false);
 
-let disabled = $derived(amount == null);
+let entriesAndPartners = $derived(await getEntriesAndPartners());
+let entries = $derived(entriesAndPartners.entries.filter((e) => e.type === EntryType.withdrawal));
+let descriptions = $derived(
+	_.unique(_.sift(entries.filter((e) => e.category === 'withdrawal').map((e) => e.description)))
+);
 
-function reset() {
-	amount = undefined;
-	enteredAmount = undefined;
-	enteredCurrency = CurrencyType.CAD;
-	description = undefined;
-}
-
-async function save() {
-	if (amount == null || enteredAmount == null) {
-		return;
+async function enhance({ form, submit }: Parameters<Parameters<typeof addEntry.enhance>[0]>[0]) {
+	try {
+		await submit();
+		form.reset();
+		open = false;
+	} catch (_err) {
+		toast.error(
+			'Something went wrong while saving your entry. Please try again or reach out if the issue persists'
+		);
 	}
-	await remote.addEntry({
-		type: EntryType.withdrawal,
-		account: AccountType.bank,
-		amount,
-		enteredAmount,
-		enteredCurrency,
-		category: 'withdrawal',
-		description
-	});
-	await invalidateAll();
-	open = false;
 }
 </script>
 
-<AlertDialog.Root onOpenChange={reset} bind:open>
+<AlertDialog.Root bind:open>
 	<AlertDialog.Trigger>
 		{#snippet child({ props })}
 			<Button {...props}>Withdrawal</Button>
@@ -52,11 +42,18 @@ async function save() {
 	</AlertDialog.Trigger>
 	<AlertDialog.Content class="border border-white/[0.8] bg-white/[0.3] backdrop-blur">
 		<AlertDialog.Title>Withdraw cash</AlertDialog.Title>
-		<AmountInput bind:amount bind:enteredAmount bind:enteredCurrency />
-		<Input type="text" placeholder="Description" bind:value={description} />
+		<form id="add-entry" {...addEntry.preflight(schema.entry).enhance(enhance)}>
+			<input class="hidden" {...addEntry.fields.type.as('text')} value={EntryType.withdrawal} />
+			<input class="hidden" {...addEntry.fields.account.as('text')} value={AccountType.bank} />
+			<input class="hidden" {...addEntry.fields.category.as('text')} value="withdrawal" />
+			<AmountInput />
+			<div class="my-2"></div>
+			<DescriptionInput options={descriptions} />
+		</form>
 		<AlertDialog.Footer>
 			<AlertDialog.Cancel>Cancel</AlertDialog.Cancel>
-			<AlertDialog.Action {disabled} onclick={save}>Save</AlertDialog.Action>
+			<AlertDialog.Action {...addEntry.buttonProps.enhance(enhance)} form="add-entry"
+				>Save</AlertDialog.Action>
 		</AlertDialog.Footer>
 	</AlertDialog.Content>
 </AlertDialog.Root>

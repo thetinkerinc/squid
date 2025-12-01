@@ -29,3 +29,4 @@ function getCurrencies(): Page['data']['currencies'] {
 		{/each}
 	</Select.Content>
 </Select.Root>
+<input class="hidden" type="string" name="enteredCurrency" value={currency} />

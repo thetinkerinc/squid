@@ -3,16 +3,6 @@ import * as _ from 'radashi';
 
 import { EntryType, AccountType, CurrencyType } from '$prisma/enums';
 
-const totals = {
-	bankExpense: 25,
-	bankIncome: 2600,
-	cashExpense: 19,
-	cashIncome: 0,
-	expense: 44,
-	income: 2600,
-	withdrawal: 100
-};
-
 const entries = [
 	{
 		id: _.uid(8),
@@ -82,6 +72,5 @@ const entries = [
 ];
 
 export default {
-	totals,
 	entries
 };

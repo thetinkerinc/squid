@@ -6,7 +6,32 @@ import * as schema from './schema';
 
 import type { PrismaTx } from '$utils/prisma';
 
-export const addEntry = Authenticated.command(schema.entry, async ({ ctx, data }) => {
+export const getEntriesAndPartners = Authenticated.query(async ({ ctx }) => {
+	const partners = await getPartners(ctx);
+	const entries = await getEntries(ctx, partners);
+
+	return {
+		partners,
+		entries
+	};
+});
+
+export const getInvitations = Authenticated.query(async ({ ctx }) => {
+	const email = await auth.getEmail(ctx);
+	return await prisma.invitation.findMany({
+		where: {
+			to: email,
+			accepted: {
+				equals: null
+			}
+		},
+		orderBy: {
+			sent: 'desc'
+		}
+	});
+});
+
+export const addEntry = Authenticated.form(schema.entry, async ({ ctx, data }) => {
 	const userEmail = await auth.getEmail(ctx);
 	await prisma.entry.create({
 		data: {
@@ -17,10 +42,11 @@ export const addEntry = Authenticated.command(schema.entry, async ({ ctx, data }
 	});
 });
 
-export const rmEntry = Authenticated.command(schema.entryId, async ({ data }) => {
+export const rmEntry = Authenticated.form(schema.entryId, async ({ ctx, data }) => {
 	await prisma.entry.delete({
 		where: {
-			id: data
+			...data,
+			user: ctx
 		}
 	});
 });
@@ -61,6 +87,29 @@ export const respond = Authenticated.command(schema.response, async ({ data }) =
 		}
 	});
 });
+
+async function getPartners(userId: string) {
+	const resp = await prisma.partners.findFirst({
+		where: {
+			user: userId
+		},
+		select: {
+			partners: true
+		}
+	});
+	return resp?.partners ?? [];
+}
+
+async function getEntries(userId: string, partners: string[]) {
+	return await prisma.entry.findMany({
+		where: {
+			OR: [{ user: userId }, { userEmail: { in: partners } }]
+		},
+		orderBy: {
+			created: 'desc'
+		}
+	});
+}
 
 async function addPartner(db: PrismaTx, user: string, partner: string) {
 	await db.partners.upsert({

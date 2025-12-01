@@ -31,7 +31,7 @@ import DescriptionCard from './description-card.svelte';
 <div class="mx-auto mt-10 flex w-[95%] flex-wrap justify-evenly gap-4">
 	<DescriptionCard title="See your total balance at a glance">
 		<div class="place-self-center lg:mb-10">
-			<Totals totals={landingData.totals} />
+			<Totals entries={landingData.entries} />
 		</div>
 	</DescriptionCard>
 	<DescriptionCard title="All your income, expenses, and withdrawals">

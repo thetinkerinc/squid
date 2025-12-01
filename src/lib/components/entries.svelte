@@ -1,14 +1,13 @@
 <script lang="ts">
 let { entries, canDelete = true }: Props = $props();
 
-import { invalidateAll } from '$app/navigation';
 import { flip } from 'svelte/animate';
 import { fade } from 'svelte/transition';
 import { ArrowUp, ArrowDown, Redo, Info, X, Landmark, Banknote } from '@lucide/svelte';
 
 import formatter from '$utils/formatter';
 
-import * as remote from '$remote/data.remote';
+import { rmEntry } from '$remote/data.remote';
 
 import { ScrollArea } from '$components/ui/scroll-area';
 import * as Tooltip from '$components/ui/tooltip';
@@ -20,16 +19,6 @@ import type { Entry } from '$prisma/client';
 interface Props {
 	entries: Entry[];
 	canDelete?: boolean;
-}
-
-function rm(id: string) {
-	return async () => {
-		if (!canDelete) {
-			return;
-		}
-		await remote.rmEntry(id);
-		await invalidateAll();
-	};
 }
 </script>
 
@@ -72,9 +61,14 @@ function rm(id: string) {
 						<div>{entry.userEmail}</div>
 					</Tooltip.Content>
 				</Tooltip.Root>
-				<button class="text-red-500" onclick={rm(entry.id)}>
-					<X />
-				</button>
+				{#if canDelete}
+					<form {...rmEntry.for(entry.id)}>
+						<input class="hidden" {...rmEntry.fields.id.as('text')} value={entry.id} />
+						<button class="block cursor-pointer text-red-500" type="submit">
+							<X />
+						</button>
+					</form>
+				{/if}
 			</div>
 		</div>
 	{:else}

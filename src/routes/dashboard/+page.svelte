@@ -1,9 +1,9 @@
 <script lang="ts">
-let { data } = $props();
-
 import local from '@thetinkerinc/isolocal';
 import { useClerkContext } from 'svelte-clerk/client';
 import { LogOut } from '@lucide/svelte';
+
+import { getEntriesAndPartners, getInvitations } from '$remote/data.remote';
 
 import Card from '$components/card.svelte';
 import CurrencySelector from '$components/currency-selector.svelte';
@@ -17,6 +17,11 @@ import Withdrawal from './withdrawal.svelte';
 import Partners from './partners.svelte';
 
 const ctx = useClerkContext();
+
+const entriesAndPartners = $derived(await getEntriesAndPartners());
+const invitations = $derived(await getInvitations());
+const entries = $derived(entriesAndPartners.entries);
+const partners = $derived(entriesAndPartners.partners);
 
 async function logout() {
 	await ctx.clerk?.signOut();
@@ -44,7 +49,7 @@ async function logout() {
 			class="grid grid-rows-[auto_auto] gap-2 md:grid-cols-2 md:grid-rows-1 lg:grid-cols-1 lg:grid-rows-[auto_auto]">
 			<div>
 				<Card>
-					<Totals totals={data.totals} />
+					<Totals {entries} />
 				</Card>
 				<div class="my-4 flex justify-around">
 					<Income />
@@ -53,15 +58,15 @@ async function logout() {
 				</div>
 			</div>
 			<Card>
-				<Entries entries={data.entries} />
+				<Entries {entries} />
 			</Card>
 		</div>
 		<div>
 			<Card class="@container mb-6">
-				<Breakdown entries={data.entries} />
+				<Breakdown {entries} />
 			</Card>
 			<Card>
-				<Partners invitations={data.invitations} partners={data.partners} />
+				<Partners {invitations} {partners} />
 			</Card>
 		</div>
 	</div>
