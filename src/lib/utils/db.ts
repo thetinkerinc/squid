@@ -1,0 +1,97 @@
+import * as k from 'kysely';
+import { NeonDialect } from 'kysely-neon';
+import { neon, types } from '@neondatabase/serverless';
+import { dev } from '$app/environment';
+import { DATABASE_URL } from '$env/static/private';
+
+export const EntryType = {
+	expense: 'expense',
+	income: 'income',
+	withdrawal: 'withdrawal'
+} as const;
+
+export const AccountType = {
+	bank: 'bank',
+	cash: 'cash'
+} as const;
+
+export const CurrencyType = {
+	CAD: 'CAD',
+	EUR: 'EUR',
+	MXN: 'MXN',
+	USD: 'USD'
+} as const;
+
+type EntryValue = (typeof EntryType)[keyof typeof EntryType];
+type AccountValue = (typeof AccountType)[keyof typeof AccountType];
+type CurrencyValue = (typeof CurrencyType)[keyof typeof CurrencyType];
+
+interface DB {
+	partners: PartnerTable;
+	entries: EntryTable;
+	invitations: InvitationTable;
+	currencies: CurrencyTable;
+}
+
+interface PartnerTable {
+	id: k.Generated<string>;
+	user: string;
+	partners: string[];
+}
+
+interface EntryTable {
+	id: k.Generated<string>;
+	user: string;
+	userEmail: string;
+	created: k.Generated<Date>;
+	type: EntryValue;
+	account: AccountValue;
+	amount: number;
+	enteredAmount: number;
+	enteredCurrency: CurrencyValue;
+	category: string;
+	description: string | null;
+}
+
+interface InvitationTable {
+	id: k.Generated<string>;
+	from: string;
+	fromEmail: string;
+	to: string;
+	sent: k.Generated<Date>;
+	accepted: boolean | null;
+}
+
+interface CurrencyTable {
+	id: k.Generated<string>;
+	code: string;
+	name: string;
+	symbol: string;
+	value: number;
+}
+
+export type Tx = k.Transaction<DB>;
+
+export const db = await initDb();
+
+async function initDb() {
+	if (dev) {
+		const { KyselyPGlite } = await import('kysely-pglite');
+		const { types } = await import('@electric-sql/pglite');
+		const { dialect } = await KyselyPGlite.create('./data/db/', {
+			parsers: {
+				[types.NUMERIC]: (v) => Number(v)
+			}
+		});
+		return new k.Kysely<DB>({
+			dialect
+		});
+	} else {
+		types.setTypeParser(types.builtins.NUMERIC, (v) => Number(v));
+		return new k.Kysely<DB>({
+			dialect: new NeonDialect({
+				neon: neon(DATABASE_URL)
+			})
+		});
+	}
+}

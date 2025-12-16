@@ -1,10 +1,12 @@
+import { sql } from 'kysely';
+
 import { Authenticated } from '$utils/commanders';
-import { prisma } from '$utils/prisma';
+import { db } from '$utils/db';
 import auth from '$utils/auth';
 
 import * as schema from './schema';
 
-import type { PrismaTx } from '$utils/prisma';
+import type { Tx } from '$utils/db';
 
 export const getEntriesAndPartners = Authenticated.query(async ({ ctx }) => {
 	const partners = await getPartners(ctx);
@@ -18,66 +20,56 @@ export const getEntriesAndPartners = Authenticated.query(async ({ ctx }) => {
 
 export const getInvitations = Authenticated.query(async ({ ctx }) => {
 	const email = await auth.getEmail(ctx);
-	return await prisma.invitation.findMany({
-		where: {
-			to: email,
-			accepted: {
-				equals: null
-			}
-		},
-		orderBy: {
-			sent: 'desc'
-		}
-	});
+	return await db
+		.selectFrom('invitations')
+		.selectAll()
+		.where('to', '=', email)
+		.where('accepted', 'is', null)
+		.orderBy('sent', 'desc')
+		.execute();
 });
 
 export const addEntry = Authenticated.form(schema.entry, async ({ ctx, data }) => {
 	const userEmail = await auth.getEmail(ctx);
-	await prisma.entry.create({
-		data: {
+	await db
+		.insertInto('entries')
+		.values({
 			...data,
 			user: ctx,
 			userEmail
-		}
-	});
+		})
+		.execute();
 });
 
 export const rmEntry = Authenticated.form(schema.entryId, async ({ ctx, data }) => {
-	await prisma.entry.delete({
-		where: {
-			...data,
-			user: ctx
-		}
-	});
+	await db.deleteFrom('entries').where('id', '=', data.id).where('user', '=', ctx).execute();
 });
 
-export const invite = Authenticated.command(schema.email, async ({ ctx: userId, data: to }) => {
+export const invite = Authenticated.form(schema.invitation, async ({ ctx: userId, data }) => {
 	try {
-		await auth.getUserId(to);
+		await auth.getUserId(data.to);
 	} catch (_err) {
 		return;
 	}
 	const fromEmail = await auth.getEmail(userId);
-	await prisma.invitation.create({
-		data: {
-			from: userId,
-			fromEmail,
-			to
-		}
+	await db.insertInto('invitations').values({
+		from: userId,
+		fromEmail,
+		to: data.to
 	});
 });
 
-export const respond = Authenticated.command(schema.response, async ({ data }) => {
-	await prisma.$transaction(async (tx) => {
-		const invitation = await tx.invitation.update({
-			where: {
-				id: data.id
-			},
-			data: {
+export const respond = Authenticated.form(schema.response, async ({ data }) => {
+	await db.transaction().execute(async (tx) => {
+		const invitation = await tx
+			.updateTable('invitations')
+			.set({
 				accepted: data.accepted
-			}
-		});
-		if (data.accepted) {
+			})
+			.where('id', '=', data.id)
+			.returningAll()
+			.executeTakeFirst();
+		if (data.accepted && invitation) {
 			const fromEmail = await auth.getEmail(invitation.from);
 			const fromId = invitation.from;
 			const toEmail = invitation.to;
@@ -89,41 +81,34 @@ export const respond = Authenticated.command(schema.response, async ({ data }) =
 });
 
 async function getPartners(userId: string) {
-	const resp = await prisma.partners.findFirst({
-		where: {
-			user: userId
-		},
-		select: {
-			partners: true
-		}
-	});
+	const resp = await db
+		.selectFrom('partners')
+		.where('user', '=', userId)
+		.select(['partners'])
+		.executeTakeFirst();
 	return resp?.partners ?? [];
 }
 
 async function getEntries(userId: string, partners: string[]) {
-	return await prisma.entry.findMany({
-		where: {
-			OR: [{ user: userId }, { userEmail: { in: partners } }]
-		},
-		orderBy: {
-			created: 'desc'
-		}
-	});
+	return await db
+		.selectFrom('entries')
+		.selectAll()
+		.where((w) => w.or([w('user', '=', userId), w('userEmail', 'in', partners)]))
+		.orderBy('created', 'desc')
+		.execute();
 }
 
-async function addPartner(db: PrismaTx, user: string, partner: string) {
-	await db.partners.upsert({
-		where: {
-			user
-		},
-		create: {
+async function addPartner(tx: Tx, user: string, partner: string) {
+	await tx
+		.insertInto('partners')
+		.values({
 			user,
 			partners: [partner]
-		},
-		update: {
-			partners: {
-				push: partner
-			}
-		}
-	});
+		})
+		.onConflict((c) =>
+			c.column('user').doUpdateSet({
+				partners: sql`array_append(partners, ${partner})`
+			})
+		)
+		.execute();
 }

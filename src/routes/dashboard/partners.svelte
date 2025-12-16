@@ -1,11 +1,10 @@
 <script lang="ts">
 let { invitations, partners }: Props = $props();
 
-import { invalidateAll } from '$app/navigation';
 import { toast } from 'svelte-sonner';
 import { UserPlus, Check, X } from '@lucide/svelte';
 
-import * as remote from '$remote/data.remote';
+import { invite, respond } from '$remote/data.remote';
 
 import formatter from '$utils/formatter';
 
@@ -21,42 +20,10 @@ interface Props {
 }
 
 let open = $state<boolean>(false);
-let email = $state<string>('');
-
-function reset() {
-	email = '';
-}
-
-async function invite() {
-	if (email === '') {
-		return;
-	}
-	try {
-		await remote.invite(email);
-		toast.success('Invitation sent!');
-		open = false;
-	} catch (_err) {
-		const msg =
-			"We couldn't send your invitation. Make " +
-			'sure your partner has an account and that ' +
-			'you spelled their email correctly.';
-		toast.error(msg);
-	}
-}
-
-function respond(id: string, accepted: boolean) {
-	return async () => {
-		await remote.respond({
-			id,
-			accepted
-		});
-		await invalidateAll();
-	};
-}
 </script>
 
 <div class="flex flex-wrap items-center gap-3">
-	<AlertDialog.Root onOpenChange={reset} bind:open>
+	<AlertDialog.Root bind:open>
 		<AlertDialog.Trigger>
 			{#snippet child({ props })}
 				<Button {...props}>
@@ -73,10 +40,10 @@ function respond(id: string, accepted: boolean) {
 					Likewise, you'll be able to see and edit any information they have added.
 				</AlertDialog.Description>
 			</AlertDialog.Header>
-			<Input type="email" placeholder="Email" bind:value={email} />
+			<Input type="email" placeholder="Email" />
 			<AlertDialog.Footer>
 				<AlertDialog.Cancel>Cancel</AlertDialog.Cancel>
-				<AlertDialog.Action onclick={invite}>Invite</AlertDialog.Action>
+				<AlertDialog.Action>Invite</AlertDialog.Action>
 			</AlertDialog.Footer>
 		</AlertDialog.Content>
 	</AlertDialog.Root>
@@ -88,18 +55,30 @@ function respond(id: string, accepted: boolean) {
 </div>
 {#if invitations.length}
 	<div class="mt-3 flex flex-wrap items-center gap-3">
-		{#each invitations as invitation}
+		{#each invitations as invitation (invitation.id)}
 			<div class="inline-block rounded bg-white/[0.7] px-4 py-1 shadow">
 				<div class="underline">Invitation</div>
 				<div>From {invitation.fromEmail}</div>
 				<div class="flex items-center gap-2">
 					<div class="mr-4 flex-auto text-gray-500">Sent {formatter.date(invitation.sent)}</div>
-					<button class="cursor-pointer text-green-500" onclick={respond(invitation.id, true)}>
-						<Check />
-					</button>
-					<button class="cursor-pointer text-red-500" onclick={respond(invitation.id, false)}>
-						<X />
-					</button>
+					<form {...respond.for('accept')}>
+						<input
+							class="hidden"
+							{...respond.for('accept').fields.accepted.as('checkbox')}
+							value={true} />
+						<button class="cursor-pointer text-green-500" {...respond.for('accept').buttonProps}>
+							<Check />
+						</button>
+					</form>
+					<form {...respond.for('decline')}>
+						<input
+							class="hidden"
+							{...respond.for('decline').fields.accepted.as('checkbox')}
+							value={false} />
+						<button class="cursor-pointer text-red-500" {...respond.for('decline').buttonProps}>
+							<X />
+						</button>
+					</form>
 				</div>
 			</div>
 		{/each}

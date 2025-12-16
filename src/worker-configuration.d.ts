@@ -18,19 +18,18 @@ type StringifyValues<EnvType extends Record<string, unknown>> = {
 	[Binding in keyof EnvType]: EnvType[Binding] extends string ? EnvType[Binding] : string;
 };
 declare namespace NodeJS {
-	interface ProcessEnv
-		extends StringifyValues<
-			Pick<
-				Cloudflare.Env,
-				| 'PUBLIC_CLERK_PUBLISHABLE_KEY'
-				| 'PUBLIC_CLERK_SIGN_IN_URL'
-				| 'PUBLIC_CLERK_SIGN_UP_URL'
-				| 'PUBLIC_CLERK_SIGN_IN_FORCE_REDIRECT_URL'
-				| 'PUBLIC_CLERK_SIGN_UP_FORCE_REDIRECT_URL'
-				| 'CLERK_SECRET_KEY'
-				| 'DATABASE_URL'
-			>
-		> {}
+	interface ProcessEnv extends StringifyValues<
+		Pick<
+			Cloudflare.Env,
+			| 'PUBLIC_CLERK_PUBLISHABLE_KEY'
+			| 'PUBLIC_CLERK_SIGN_IN_URL'
+			| 'PUBLIC_CLERK_SIGN_UP_URL'
+			| 'PUBLIC_CLERK_SIGN_IN_FORCE_REDIRECT_URL'
+			| 'PUBLIC_CLERK_SIGN_UP_FORCE_REDIRECT_URL'
+			| 'CLERK_SECRET_KEY'
+			| 'DATABASE_URL'
+		>
+	> {}
 }
 
 // Begin runtime types
@@ -7943,8 +7942,7 @@ interface IncomingRequestCfPropertiesBotManagement {
 	 */
 	clientTrustScore: number;
 }
-interface IncomingRequestCfPropertiesBotManagementEnterprise
-	extends IncomingRequestCfPropertiesBotManagement {
+interface IncomingRequestCfPropertiesBotManagementEnterprise extends IncomingRequestCfPropertiesBotManagement {
 	/**
 	 * Results of Cloudflare's Bot Management analysis
 	 */
@@ -9379,7 +9377,8 @@ declare namespace CloudflareWorkersModule {
 	export abstract class WorkflowEntrypoint<
 		Env = unknown,
 		T extends Rpc.Serializable<T> | unknown = unknown
-	> implements Rpc.WorkflowEntrypointBranded
+	>
+		implements Rpc.WorkflowEntrypointBranded
 	{
 		[Rpc.__WORKFLOW_ENTRYPOINT_BRAND]: never;
 		protected ctx: ExecutionContext;

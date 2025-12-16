@@ -5,7 +5,7 @@ import { EntryType, AccountType, CurrencyType } from '$prisma/enums';
 export const entry = v.object({
 	type: v.enum(EntryType),
 	account: v.enum(AccountType),
-	created: rmEmpty(v.pipe(v.string(), v.isoTimestamp())),
+	created: rmEmpty(v.pipe(v.string(), v.isoTimestamp(), v.toDate())),
 	amount: v.pipe(v.number(), v.minValue(0)),
 	enteredAmount: v.pipe(v.number(), v.minValue(0)),
 	enteredCurrency: v.enum(CurrencyType),
@@ -17,7 +17,9 @@ export const entryId = v.object({
 	id: v.pipe(v.string(), v.uuid())
 });
 
-export const email = v.pipe(v.string(), v.email());
+export const invitation = v.object({
+	to: v.pipe(v.string(), v.email())
+});
 
 export const response = v.object({
 	id: v.pipe(v.string(), v.uuid()),
