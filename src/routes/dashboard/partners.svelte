@@ -1,7 +1,6 @@
 <script lang="ts">
 let { invitations, partners }: Props = $props();
 
-import { toast } from 'svelte-sonner';
 import { UserPlus, Check, X } from '@lucide/svelte';
 
 import { invite, respond } from '$remote/data.remote';
@@ -12,7 +11,7 @@ import * as AlertDialog from '$components/ui/alert-dialog';
 import { Button } from '$components/ui/button';
 import { Input } from '$components/ui/input';
 
-import type { Invitation } from '$utils/db';
+import type { Invitation } from '$types';
 
 interface Props {
 	invitations: Invitation[];
@@ -40,10 +39,14 @@ let open = $state<boolean>(false);
 					Likewise, you'll be able to see and edit any information they have added.
 				</AlertDialog.Description>
 			</AlertDialog.Header>
-			<Input type="email" placeholder="Email" />
+			<form id="invite-partner" {...invite}>
+				<Input placeholder="Email" {...invite.fields.email.as('email')} />
+			</form>
 			<AlertDialog.Footer>
 				<AlertDialog.Cancel>Cancel</AlertDialog.Cancel>
-				<AlertDialog.Action>Invite</AlertDialog.Action>
+				<AlertDialog.Action form="invite-partner" {...invite.buttonProps}>
+					Invite
+				</AlertDialog.Action>
 			</AlertDialog.Footer>
 		</AlertDialog.Content>
 	</AlertDialog.Root>

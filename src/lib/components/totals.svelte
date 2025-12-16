@@ -5,9 +5,8 @@ import * as _ from 'radashi';
 import { Landmark, Banknote } from '@lucide/svelte';
 
 import formatter from '$utils/formatter';
-import { EntryType, AccountType } from '$utils/db';
 
-import type { Entry } from '$utils/db';
+import { EntryType, AccountType, type Entry } from '$types';
 
 interface Props {
 	entries: Entry[];

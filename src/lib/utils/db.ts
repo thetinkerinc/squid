@@ -4,42 +4,22 @@ import { neon, types } from '@neondatabase/serverless';
 import { dev } from '$app/environment';
 import { DATABASE_URL } from '$env/static/private';
 
-export const EntryType = {
-	expense: 'expense',
-	income: 'income',
-	withdrawal: 'withdrawal'
-} as const;
+import type { EntryValue, AccountValue, CurrencyValue } from '$types';
 
-export const AccountType = {
-	bank: 'bank',
-	cash: 'cash'
-} as const;
-
-export const CurrencyType = {
-	CAD: 'CAD',
-	EUR: 'EUR',
-	MXN: 'MXN',
-	USD: 'USD'
-} as const;
-
-export type EntryValue = (typeof EntryType)[keyof typeof EntryType];
-export type AccountValue = (typeof AccountType)[keyof typeof AccountType];
-export type CurrencyValue = (typeof CurrencyType)[keyof typeof CurrencyType];
-
-interface DB {
+export interface DB {
 	partners: PartnerTable;
 	entries: EntryTable;
 	invitations: InvitationTable;
 	currencies: CurrencyTable;
 }
 
-interface PartnerTable {
+export interface PartnerTable {
 	id: k.Generated<string>;
 	user: string;
 	partners: string[];
 }
 
-interface EntryTable {
+export interface EntryTable {
 	id: k.Generated<string>;
 	user: string;
 	userEmail: string;
@@ -53,7 +33,7 @@ interface EntryTable {
 	description: string | null;
 }
 
-interface InvitationTable {
+export interface InvitationTable {
 	id: k.Generated<string>;
 	from: string;
 	fromEmail: string;
@@ -62,17 +42,13 @@ interface InvitationTable {
 	accepted: boolean | null;
 }
 
-interface CurrencyTable {
+export interface CurrencyTable {
 	id: k.Generated<string>;
 	code: CurrencyValue;
 	name: string;
 	symbol: string;
 	value: number;
 }
-
-export type Tx = k.Transaction<DB>;
-export type Entry = k.Selectable<EntryTable>;
-export type Invitation = k.Selectable<InvitationTable>;
 
 export const db = await initDb();
 

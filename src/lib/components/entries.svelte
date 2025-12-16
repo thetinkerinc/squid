@@ -6,14 +6,13 @@ import { fade } from 'svelte/transition';
 import { ArrowUp, ArrowDown, Redo, Info, X, Landmark, Banknote } from '@lucide/svelte';
 
 import formatter from '$utils/formatter';
-import { EntryType, AccountType } from '$utils/db';
 
 import { rmEntry } from '$remote/data.remote';
 
 import { ScrollArea } from '$components/ui/scroll-area';
 import * as Tooltip from '$components/ui/tooltip';
 
-import type { Entry } from '$utils/db';
+import { EntryType, AccountType, type Entry } from '$types';
 
 interface Props {
 	entries: Entry[];

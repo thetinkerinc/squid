@@ -6,7 +6,7 @@ import { addLocalStorage } from '@thetinkerinc/isolocal';
 import { PUBLIC_CLERK_PUBLISHABLE_KEY } from '$env/static/public';
 import { CLERK_SECRET_KEY } from '$env/static/private';
 
-import { CurrencyType } from '$utils/db';
+import { CurrencyType } from '$types';
 
 import type { Handle } from '@sveltejs/kit';
 

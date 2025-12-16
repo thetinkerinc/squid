@@ -6,7 +6,7 @@ import auth from '$utils/auth';
 
 import * as schema from './schema';
 
-import type { Tx } from '$utils/db';
+import type { Tx } from '$types';
 
 export const getEntriesAndPartners = Authenticated.query(async ({ ctx }) => {
 	const partners = await getPartners(ctx);
@@ -93,7 +93,10 @@ async function getEntries(userId: string, partners: string[]) {
 	return await db
 		.selectFrom('entries')
 		.selectAll()
-		.where((w) => w.or([w('user', '=', userId), w('userEmail', 'in', partners)]))
+		.$if(partners.length === 0, (q) => q.where('user', '=', userId))
+		.$if(partners.length > 0, (q) =>
+			q.where((w) => w.or([w('user', '=', userId), w('userEmail', 'in', partners)]))
+		)
 		.orderBy('created', 'desc')
 		.execute();
 }

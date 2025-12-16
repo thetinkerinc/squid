@@ -10,10 +10,8 @@ import formatter from '$utils/formatter';
 
 import { ScrollArea } from '$components/ui/scroll-area';
 
-import { EntryType } from '$utils/db';
-
 import type { ECharts } from 'echarts';
-import type { Entry } from '$utils/db';
+import { EntryType, type Entry } from '$types';
 
 interface Props {
 	entries: Entry[];

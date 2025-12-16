@@ -6,7 +6,7 @@ import { page } from '$app/state';
 import * as Select from '$components/ui/select';
 
 import type { Page } from '@sveltejs/kit';
-import type { CurrencyValue } from '$utils/db';
+import type { CurrencyValue } from '$types';
 
 interface Props {
 	currency: CurrencyValue;

@@ -1,6 +1,6 @@
 import * as v from 'valibot';
 
-import { EntryType, AccountType, CurrencyType } from '$utils/db';
+import { EntryType, AccountType, CurrencyType } from '$types';
 
 export const entry = v.object({
 	type: v.enum(EntryType),

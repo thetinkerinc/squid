@@ -2,8 +2,6 @@
 import { toast } from 'svelte-sonner';
 import * as _ from 'radashi';
 
-import { EntryType, AccountType } from '$utils/db';
-
 import { getEntriesAndPartners, addEntry } from '$remote/data.remote';
 import * as schema from '$remote/schema';
 
@@ -12,6 +10,8 @@ import { Button } from '$components/ui/button';
 
 import AmountInput from './amount-input.svelte';
 import DescriptionInput from './description-input.svelte';
+
+import { EntryType, AccountType } from '$types';
 
 let open = $state(false);
 

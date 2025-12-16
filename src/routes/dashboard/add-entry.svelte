@@ -15,7 +15,7 @@ import AmountInput from './amount-input.svelte';
 import DatetimeInput from './datetime-input.svelte';
 import CategoryInput from './category-input.svelte';
 
-import type { EntryValue } from '$utils/db';
+import type { EntryValue } from '$types';
 
 interface Props {
 	defaultCategories: string[];
