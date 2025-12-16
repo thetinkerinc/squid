@@ -5,6 +5,7 @@
 	"type": "module",
 	"scripts": {
 		"dev": "vite dev",
+		"studio": "drizzle-kit studio",
 		"build": "vite build",
 		"preview": "vite preview",
 		"prepare": "svelte-kit sync",
@@ -29,6 +30,8 @@
 		"@tailwindcss/vite": "^4.1.18",
 		"bits-ui": "^2.14.4",
 		"clsx": "^2.1.1",
+		"drizzle-kit": "^1.0.0-beta.3-36e9b9e",
+		"drizzle-orm": "^1.0.0-beta.3-36e9b9e",
 		"eslint": "^9.39.2",
 		"eslint-config-prettier": "^10.1.8",
 		"eslint-plugin-svelte": "^3.13.1",

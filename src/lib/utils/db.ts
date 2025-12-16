@@ -64,7 +64,7 @@ interface InvitationTable {
 
 interface CurrencyTable {
 	id: k.Generated<string>;
-	code: string;
+	code: CurrencyValue;
 	name: string;
 	symbol: string;
 	value: number;
