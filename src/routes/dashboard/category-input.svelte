@@ -9,7 +9,7 @@ import { Input } from '$components/ui/input';
 
 import DescriptionInput from './description-input.svelte';
 
-import type { Entry } from '$utils/prisma';
+import type { Entry } from '$utils/db';
 
 let category = $state<string>();
 let addingCategory = $state<boolean>(false);

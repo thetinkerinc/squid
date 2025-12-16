@@ -5,10 +5,9 @@ import * as _ from 'radashi';
 import { Landmark, Banknote } from '@lucide/svelte';
 
 import formatter from '$utils/formatter';
+import { EntryType, AccountType } from '$utils/db';
 
-import { EntryType, AccountType } from '$prisma/enums';
-
-import type { Entry } from '$prisma/client';
+import type { Entry } from '$utils/db';
 
 interface Props {
 	entries: Entry[];

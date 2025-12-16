@@ -5,12 +5,11 @@ import { page } from '$app/state';
 
 import * as Select from '$components/ui/select';
 
-import { CurrencyType } from '$prisma/enums';
-
 import type { Page } from '@sveltejs/kit';
+import type { CurrencyValue } from '$utils/db';
 
 interface Props {
-	currency: CurrencyType;
+	currency: CurrencyValue;
 }
 
 function getCurrencies(): Page['data']['currencies'] {

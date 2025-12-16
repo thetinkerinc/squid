@@ -15,11 +15,11 @@ import AmountInput from './amount-input.svelte';
 import DatetimeInput from './datetime-input.svelte';
 import CategoryInput from './category-input.svelte';
 
-import { EntryType } from '$prisma/enums';
+import type { EntryValue } from '$utils/db';
 
 interface Props {
 	defaultCategories: string[];
-	entryType: EntryType;
+	entryType: EntryValue;
 	title: string;
 }
 

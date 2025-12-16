@@ -11,7 +11,6 @@ const config = {
 			$utils: './src/lib/utils',
 			$routes: './src/routes',
 			$remote: './src/routes/remote',
-			$prisma: './src/generated',
 			$paraglide: './src/lib/paraglide'
 		},
 		experimental: {

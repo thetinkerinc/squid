@@ -1,14 +1,16 @@
 <script lang="ts">
 import { page } from '$app/state';
 
+import { CurrencyType } from '$utils/db';
+
 import { addEntry } from '$remote/data.remote';
 
 import { Input } from '$components/ui/input';
 import CurrencySelector from '$components/currency-selector.svelte';
 
-import { CurrencyType } from '$prisma/enums';
+import type { CurrencyValue } from '$utils/db';
 
-let currency = $state<CurrencyType>(CurrencyType.CAD);
+let currency = $state<CurrencyValue>(CurrencyType.CAD);
 let enteredAmount = $state<number | undefined>();
 
 let amount = $derived(getAmount());

@@ -2,7 +2,7 @@
 
 import type { Local } from '@thetinkerinc/isolocal';
 
-import { CurrencyType } from '$prisma/enums';
+import { CurrencyValue } from '$utils/db';
 
 declare global {
 	namespace App {
@@ -13,7 +13,7 @@ declare global {
 		}
 		interface Locals {
 			localStorage: Local & {
-				currency: CurrencyType;
+				currency: CurrencyValue;
 			};
 		}
 	}

@@ -53,6 +53,12 @@ export default defineConfig(
 		}
 	},
 	{
+		files: ['migrations/*.ts'],
+		rules: {
+			'@typescript-eslint/no-explicit-any': 'off'
+		}
+	},
+	{
 		rules: {
 			'no-mixed-spaces-and-tabs': 'off',
 			'no-control-regex': 'off',

@@ -10,10 +10,10 @@ import formatter from '$utils/formatter';
 
 import { ScrollArea } from '$components/ui/scroll-area';
 
-import { EntryType } from '$prisma/enums';
+import { EntryType } from '$utils/db';
 
 import type { ECharts } from 'echarts';
-import type { Entry } from '$prisma/client';
+import type { Entry } from '$utils/db';
 
 interface Props {
 	entries: Entry[];

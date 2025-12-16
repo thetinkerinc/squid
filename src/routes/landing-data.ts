@@ -1,7 +1,7 @@
 import * as date from 'date-fns';
 import * as _ from 'radashi';
 
-import { EntryType, AccountType, CurrencyType } from '$prisma/enums';
+import { EntryType, AccountType, CurrencyType } from '$utils/db';
 
 const entries = [
 	{

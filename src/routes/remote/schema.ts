@@ -1,6 +1,6 @@
 import * as v from 'valibot';
 
-import { EntryType, AccountType, CurrencyType } from '$prisma/enums';
+import { EntryType, AccountType, CurrencyType } from '$utils/db';
 
 export const entry = v.object({
 	type: v.enum(EntryType),
