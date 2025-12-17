@@ -44,7 +44,7 @@ async function getCurrencyInfo(): Promise<CurrencyInfoResponse> {
 	const resp = await fetch(
 		`https://api.freecurrencyapi.com/v1/currencies?apikey=${process.env.CURRENCY_API_KEY}&currencies=EUR%2CUSD%2CCAD%2CMXN`
 	);
-	const json = await resp.json() as { data: CurrencyInfoResponse };
+	const json = (await resp.json()) as { data: CurrencyInfoResponse };
 	return json.data;
 }
 
@@ -52,6 +52,6 @@ async function getCurrencyValues(): Promise<CurrencyValueResponse> {
 	const resp = await fetch(
 		`https://api.freecurrencyapi.com/v1/latest?apikey=${process.env.CURRENCY_API_KEY}&currencies=EUR%2CUSD%2CCAD%2CMXN&base_currency=CAD`
 	);
-	const json = await resp.json() as { data: CurrencyValueResponse };
+	const json = (await resp.json()) as { data: CurrencyValueResponse };
 	return json.data;
 }
