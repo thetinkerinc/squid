@@ -1,7 +1,7 @@
 import { Kysely, sql } from 'kysely';
 
 export async function up(db: Kysely<any>): Promise<void> {
-	await db.schema.createType('entry').asEnum(['expense', 'income', 'withrawal']).execute();
+	await db.schema.createType('entry').asEnum(['expense', 'income', 'withdrawal']).execute();
 	await db.schema.createType('account').asEnum(['bank', 'cash']).execute();
 	await db.schema.createType('currency').asEnum(['CAD', 'EUR', 'MXN', 'USD']).execute();
 
@@ -9,7 +9,7 @@ export async function up(db: Kysely<any>): Promise<void> {
 		.createTable('partners')
 		.ifNotExists()
 		.addColumn('id', 'uuid', (c) => c.primaryKey().defaultTo(sql`gen_random_uuid()`))
-		.addColumn('user', 'text', (c) => c.notNull())
+		.addColumn('user', 'text', (c) => c.unique().notNull())
 		.addColumn('partners', sql`text[]`, (c) => c.notNull())
 		.execute();
 
@@ -56,4 +56,7 @@ export async function down(db: Kysely<any>): Promise<void> {
 	await db.schema.dropTable('entries').execute();
 	await db.schema.dropTable('invitations').execute();
 	await db.schema.dropTable('currencies').execute();
+	await db.schema.dropType('entry').execute();
+	await db.schema.dropType('account').execute();
+	await db.schema.dropType('currency').execute();
 }

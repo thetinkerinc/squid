@@ -52,11 +52,23 @@ export const invite = Authenticated.form(schema.invitation, async ({ ctx: userId
 		return;
 	}
 	const fromEmail = await auth.getEmail(userId);
-	await db.insertInto('invitations').values({
-		from: userId,
-		fromEmail,
-		to: data.to
-	});
+	const exists = await db
+		.selectFrom('invitations')
+		.where('from', '=', userId)
+		.where('to', '=', data.to)
+		.select(({ fn }) => [fn.count<number>('id').as('count')])
+		.executeTakeFirst();
+	if (exists?.count ?? 0 > 0) {
+		return;
+	}
+	await db
+		.insertInto('invitations')
+		.values({
+			from: userId,
+			fromEmail,
+			to: data.to
+		})
+		.execute();
 });
 
 export const respond = Authenticated.form(schema.response, async ({ data }) => {
@@ -110,7 +122,7 @@ async function addPartner(tx: Tx, user: string, partner: string) {
 		})
 		.onConflict((c) =>
 			c.column('user').doUpdateSet({
-				partners: sql`array_append(partners, ${partner})`
+				partners: sql`array_append(partners.partners, ${partner})`
 			})
 		)
 		.execute();

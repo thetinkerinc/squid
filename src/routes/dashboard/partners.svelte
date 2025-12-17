@@ -1,6 +1,7 @@
 <script lang="ts">
 let { invitations, partners }: Props = $props();
 
+import { toast } from 'svelte-sonner';
 import { UserPlus, Check, X } from '@lucide/svelte';
 
 import { invite, respond } from '$remote/data.remote';
@@ -19,6 +20,21 @@ interface Props {
 }
 
 let open = $state<boolean>(false);
+
+async function enhance({ form, submit }: EnhanceParams<typeof invite.enhance>) {
+	try {
+		await submit();
+		open = false;
+		form.reset();
+		toast.success('Invitation sent!');
+	} catch (_err) {
+		const msg =
+			"We couldn't send your invitation. Make " +
+			'sure your partner has an account and that ' +
+			'you spelled their email correctly.';
+		toast.error(msg);
+	}
+}
 </script>
 
 <div class="flex flex-wrap items-center gap-3">
@@ -39,12 +55,12 @@ let open = $state<boolean>(false);
 					Likewise, you'll be able to see and edit any information they have added.
 				</AlertDialog.Description>
 			</AlertDialog.Header>
-			<form id="invite-partner" {...invite}>
-				<Input placeholder="Email" {...invite.fields.email.as('email')} />
+			<form id="invite-partner" {...invite.enhance(enhance)}>
+				<Input placeholder="Email" {...invite.fields.to.as('email')} />
 			</form>
 			<AlertDialog.Footer>
 				<AlertDialog.Cancel>Cancel</AlertDialog.Cancel>
-				<AlertDialog.Action form="invite-partner" {...invite.buttonProps}>
+				<AlertDialog.Action form="invite-partner" {...invite.buttonProps.enhance(enhance)}>
 					Invite
 				</AlertDialog.Action>
 			</AlertDialog.Footer>
@@ -67,7 +83,11 @@ let open = $state<boolean>(false);
 					<form {...respond.for('accept')}>
 						<input
 							class="hidden"
-							{...respond.for('accept').fields.accepted.as('checkbox')}
+							{...respond.for('accept').fields.id.as('text')}
+							value={invitation.id} />
+						<input
+							class="hidden"
+							{...respond.for('accept').fields.accepted.as('text')}
 							value={true} />
 						<button class="cursor-pointer text-green-500" {...respond.for('accept').buttonProps}>
 							<Check />
@@ -76,7 +96,11 @@ let open = $state<boolean>(false);
 					<form {...respond.for('decline')}>
 						<input
 							class="hidden"
-							{...respond.for('decline').fields.accepted.as('checkbox')}
+							{...respond.for('accept').fields.id.as('text')}
+							value={invitation.id} />
+						<input
+							class="hidden"
+							{...respond.for('decline').fields.accepted.as('text')}
 							value={false} />
 						<button class="cursor-pointer text-red-500" {...respond.for('decline').buttonProps}>
 							<X />

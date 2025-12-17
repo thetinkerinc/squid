@@ -23,7 +23,10 @@ export const invitation = v.object({
 
 export const response = v.object({
 	id: v.pipe(v.string(), v.uuid()),
-	accepted: v.boolean()
+	accepted: v.pipe(
+		v.string(),
+		v.transform((a) => (a === 'false' ? false : true))
+	)
 });
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any

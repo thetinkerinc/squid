@@ -54,18 +54,20 @@ export const db = await initDb();
 
 async function initDb() {
 	if (dev) {
-		const { KyselyPGlite } = await import('kysely-pglite');
-		const { types } = await import('@electric-sql/pglite');
-		const { dialect } = await KyselyPGlite.create('./data/db/', {
-			parsers: {
-				[types.NUMERIC]: (v) => Number(v)
-			}
+		const { Pool, types } = await import('pg');
+		types.setTypeParser(types.builtins.NUMERIC, (v) => Number(v));
+		types.setTypeParser(types.builtins.INT8, (v) => Number(v));
+		const dialect = new k.PostgresDialect({
+			pool: new Pool({
+				connectionString: DATABASE_URL
+			})
 		});
 		return new k.Kysely<DB>({
 			dialect
 		});
 	} else {
 		types.setTypeParser(types.builtins.NUMERIC, (v) => Number(v));
+		types.setTypeParser(types.builtins.INT8, (v) => Number(v));
 		return new k.Kysely<DB>({
 			dialect: new NeonDialect({
 				neon: neon(DATABASE_URL)

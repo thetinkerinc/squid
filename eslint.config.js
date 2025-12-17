@@ -17,6 +17,7 @@ export default defineConfig(
 			'build/',
 			'.svelte-kit/',
 			'dist/',
+			'data/',
 			'src/lib/components/ui/',
 			'src/lib/paraglide/',
 			'.trigger/',
