@@ -2,6 +2,8 @@ import { buildClerkProps } from 'svelte-clerk/server';
 import { getPageData } from '@thetinkerinc/isolocal';
 import * as _ from 'radashi';
 
+import { db } from '$utils/db';
+
 import type { LayoutServerLoad } from './$types';
 
 export const load: LayoutServerLoad = async (event) => {
@@ -13,14 +15,6 @@ export const load: LayoutServerLoad = async (event) => {
 };
 
 async function getCurrencies() {
-	const currencies = [
-		{
-			id: '123',
-			code: 'CAD',
-			name: 'Canadian Dollar',
-			symbol: '$',
-			value: 1
-		}
-	];
+	const currencies = await db.selectFrom('currencies').selectAll().execute();
 	return _.objectify(currencies, (c) => c.code);
 }

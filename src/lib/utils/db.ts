@@ -1,8 +1,6 @@
 import * as k from 'kysely';
 import { NeonDialect } from 'kysely-neon';
 import { neon, types } from '@neondatabase/serverless';
-import { dev } from '$app/environment';
-import { DATABASE_URL } from '$env/static/private';
 
 import type { EntryValue, AccountValue, CurrencyValue } from '$types';
 
@@ -53,6 +51,19 @@ export interface CurrencyTable {
 export const db = await initDb();
 
 async function initDb() {
+	let dev: boolean;
+	let DATABASE_URL: string;
+
+	try {
+		({ dev } = await import('$app/environment'));
+		({ DATABASE_URL } = await import('$env/static/private'));
+	}
+	catch(err) {
+		const { DEV } = await import('esm-env');
+		dev = DEV;
+		DATABASE_URL = process.env.DATABASE_URL!;
+	}
+
 	if (dev) {
 		const { Pool, types } = await import('pg');
 		types.setTypeParser(types.builtins.NUMERIC, (v) => Number(v));
