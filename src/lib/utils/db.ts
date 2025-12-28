@@ -1,6 +1,5 @@
 import * as k from 'kysely';
-import { NeonDialect } from 'kysely-neon';
-import { neon, types } from '@neondatabase/serverless';
+import { Pool, types } from '@neondatabase/serverless';
 
 import type { EntryValue, AccountValue, CurrencyValue } from '$types';
 
@@ -78,8 +77,8 @@ async function initDb() {
 		types.setTypeParser(types.builtins.NUMERIC, (v) => Number(v));
 		types.setTypeParser(types.builtins.INT8, (v) => Number(v));
 		return new k.Kysely<DB>({
-			dialect: new NeonDialect({
-				neon: neon(DATABASE_URL)
+			dialect: new k.PostgresDialect({
+				pool: new Pool({ connectionString: DATABASE_URL })
 			})
 		});
 	}
