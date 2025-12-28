@@ -15,7 +15,6 @@
         "echarts": "^6.0.0",
         "esm-env": "^1.2.2",
         "kysely": "^0.28.9",
-        "kysely-neon": "^2.0.2",
         "radashi": "^12.7.1",
         "svelte-clerk": "^0.20.2",
         "valibot": "^1.2.0",
