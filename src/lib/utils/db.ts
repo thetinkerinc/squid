@@ -58,8 +58,7 @@ async function initDb() {
 		({ dev } = await import('$app/environment'));
 		({ DATABASE_URL } = await import('$env/static/private'));
 	} catch (_err) {
-		const { DEV } = await import('esm-env');
-		dev = DEV;
+		({ DEV: dev } = await import('esm-env'));
 		DATABASE_URL = process.env.DATABASE_URL!;
 	}
 
