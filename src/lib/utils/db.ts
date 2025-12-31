@@ -63,14 +63,9 @@ export async function getDb() {
 }
 
 async function getConnectionString() {
-
-	console.log('getting connection string');
-
 	let connectionString: string;
 
 	const dev = await getDev();
-
-	console.log({ dev });
 
 	if (dev) {
 		try {
@@ -79,23 +74,11 @@ async function getConnectionString() {
 			connectionString = process.env.DATABASE_URL!;
 		}
 	} else {
-
-		console.log('getting production connection string');
-
 		try {
 			const { getRequestEvent } = await import('$app/server');
 			const event = getRequestEvent();
-
-			console.log(event.platform);
-
 			connectionString = event.platform!.env.HYPERDRIVE.connectionString;
-
-			console.log(connectionString);
 		} catch (_err) {
-
-			console.log('error getting connection string');
-			console.log(_err);
-
 			try {
 				({ DATABASE_URL: connectionString } = await import('$env/static/private'));
 			} catch (_err) {
