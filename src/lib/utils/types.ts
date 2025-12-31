@@ -24,6 +24,12 @@ export type EntryValue = (typeof EntryType)[keyof typeof EntryType];
 export type AccountValue = (typeof AccountType)[keyof typeof AccountType];
 export type CurrencyValue = (typeof CurrencyType)[keyof typeof CurrencyType];
 
+export type Db = k.Kysely<DB>;
 export type Tx = k.Transaction<DB>;
 export type Entry = k.Selectable<EntryTable>;
 export type Invitation = k.Selectable<InvitationTable>;
+
+export type Ctx = {
+	db: Db;
+	userId: string;
+};

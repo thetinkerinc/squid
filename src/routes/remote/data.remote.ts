@@ -1,12 +1,11 @@
 import { sql } from 'kysely';
 
 import { Authenticated } from '$utils/commanders';
-import { db } from '$utils/db';
 import auth from '$utils/auth';
 
 import * as schema from './schema';
 
-import type { Tx } from '$types';
+import type { Tx, Ctx } from '$types';
 
 export const getEntriesAndPartners = Authenticated.query(async ({ ctx }) => {
 	const partners = await getPartners(ctx);
@@ -19,8 +18,8 @@ export const getEntriesAndPartners = Authenticated.query(async ({ ctx }) => {
 });
 
 export const getInvitations = Authenticated.query(async ({ ctx }) => {
-	const email = await auth.getEmail(ctx);
-	return await db
+	const email = await auth.getEmail(ctx.userId);
+	return await ctx.db
 		.selectFrom('invitations')
 		.selectAll()
 		.where('to', '=', email)
@@ -30,49 +29,53 @@ export const getInvitations = Authenticated.query(async ({ ctx }) => {
 });
 
 export const addEntry = Authenticated.form(schema.entry, async ({ ctx, data }) => {
-	const userEmail = await auth.getEmail(ctx);
-	await db
+	const userEmail = await auth.getEmail(ctx.userId);
+	await ctx.db
 		.insertInto('entries')
 		.values({
 			...data,
-			user: ctx,
+			user: ctx.userId,
 			userEmail
 		})
 		.execute();
 });
 
 export const rmEntry = Authenticated.form(schema.entryId, async ({ ctx, data }) => {
-	await db.deleteFrom('entries').where('id', '=', data.id).where('user', '=', ctx).execute();
+	await ctx.db
+		.deleteFrom('entries')
+		.where('id', '=', data.id)
+		.where('user', '=', ctx.userId)
+		.execute();
 });
 
-export const invite = Authenticated.form(schema.invitation, async ({ ctx: userId, data }) => {
+export const invite = Authenticated.form(schema.invitation, async ({ ctx, data }) => {
 	try {
 		await auth.getUserId(data.to);
 	} catch (_err) {
 		return;
 	}
-	const fromEmail = await auth.getEmail(userId);
-	const exists = await db
+	const fromEmail = await auth.getEmail(ctx.userId);
+	const exists = await ctx.db
 		.selectFrom('invitations')
-		.where('from', '=', userId)
+		.where('from', '=', ctx.userId)
 		.where('to', '=', data.to)
 		.select(({ fn }) => [fn.count<number>('id').as('count')])
 		.executeTakeFirst();
 	if (exists?.count ?? 0 > 0) {
 		return;
 	}
-	await db
+	await ctx.db
 		.insertInto('invitations')
 		.values({
-			from: userId,
+			from: ctx.userId,
 			fromEmail,
 			to: data.to
 		})
 		.execute();
 });
 
-export const respond = Authenticated.form(schema.response, async ({ data }) => {
-	await db.transaction().execute(async (tx) => {
+export const respond = Authenticated.form(schema.response, async ({ ctx, data }) => {
+	await ctx.db.transaction().execute(async (tx) => {
 		const invitation = await tx
 			.updateTable('invitations')
 			.set({
@@ -92,7 +95,7 @@ export const respond = Authenticated.form(schema.response, async ({ data }) => {
 	});
 });
 
-async function getPartners(userId: string) {
+async function getPartners({ db, userId }: Ctx) {
 	const resp = await db
 		.selectFrom('partners')
 		.where('user', '=', userId)
@@ -101,7 +104,7 @@ async function getPartners(userId: string) {
 	return resp?.partners ?? [];
 }
 
-async function getEntries(userId: string, partners: string[]) {
+async function getEntries({ db, userId }: Ctx, partners: string[]) {
 	return await db
 		.selectFrom('entries')
 		.selectAll()

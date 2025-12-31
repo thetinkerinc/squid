@@ -1,5 +1,5 @@
 import * as k from 'kysely';
-import { Pool, types } from '@neondatabase/serverless';
+import { Pool, types } from 'pg';
 
 import type { EntryValue, AccountValue, CurrencyValue } from '$types';
 
@@ -47,39 +47,76 @@ export interface CurrencyTable {
 	value: number;
 }
 
-export const db = await initDb();
+export async function getDb() {
+	types.setTypeParser(types.builtins.NUMERIC, (v) => Number(v));
+	types.setTypeParser(types.builtins.INT8, (v) => Number(v));
 
-async function initDb() {
-	let dev: boolean;
-	let DATABASE_URL: string;
+	const connectionString = await getConnectionString();
 
-	try {
-		({ dev } = await import('$app/environment'));
-		({ DATABASE_URL } = await import('$env/static/private'));
-	} catch (_err) {
-		({ DEV: dev } = await import('esm-env'));
-		DATABASE_URL = process.env.DATABASE_URL!;
-	}
+	return new k.Kysely<DB>({
+		dialect: new k.PostgresDialect({
+			pool: new Pool({
+				connectionString
+			})
+		})
+	});
+}
+
+async function getConnectionString() {
+
+	console.log('getting connection string');
+
+	let connectionString: string;
+
+	const dev = await getDev();
+
+	console.log({ dev });
 
 	if (dev) {
-		const { Pool, types } = await import('pg');
-		types.setTypeParser(types.builtins.NUMERIC, (v) => Number(v));
-		types.setTypeParser(types.builtins.INT8, (v) => Number(v));
-		const dialect = new k.PostgresDialect({
-			pool: new Pool({
-				connectionString: DATABASE_URL
-			})
-		});
-		return new k.Kysely<DB>({
-			dialect
-		});
+		try {
+			({ DATABASE_URL: connectionString } = await import('$env/static/private'));
+		} catch (_err) {
+			connectionString = process.env.DATABASE_URL!;
+		}
 	} else {
-		types.setTypeParser(types.builtins.NUMERIC, (v) => Number(v));
-		types.setTypeParser(types.builtins.INT8, (v) => Number(v));
-		return new k.Kysely<DB>({
-			dialect: new k.PostgresDialect({
-				pool: new Pool({ connectionString: DATABASE_URL })
-			})
-		});
+
+		console.log('getting production connection string');
+
+		try {
+			const { getRequestEvent } = await import('$app/server');
+			const event = getRequestEvent();
+
+			console.log(event.platform);
+
+			connectionString = event.platform!.env.HYPERDRIVE.connectionString;
+
+			console.log(connectionString);
+		} catch (_err) {
+
+			console.log('error getting connection string');
+			console.log(_err);
+
+			try {
+				({ DATABASE_URL: connectionString } = await import('$env/static/private'));
+			} catch (_err) {
+				connectionString = process.env.DATABASE_URL!;
+			}
+		}
 	}
+
+	if (!connectionString) {
+		throw new Error('Could not find connection string');
+	}
+
+	return connectionString;
+}
+
+async function getDev() {
+	let dev: boolean;
+	try {
+		({ dev } = await import('$app/environment'));
+	} catch (_err) {
+		({ DEV: dev } = await import('esm-env'));
+	}
+	return dev;
 }

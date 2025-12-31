@@ -1,6 +1,6 @@
 import { schedules } from '@trigger.dev/sdk/v3';
 
-import { db } from '$utils/db';
+import { getDb } from '$utils/db';
 
 import { CurrencyType, type CurrencyValue } from '$types';
 
@@ -33,6 +33,7 @@ export const updateCurrencies = schedules.task({
 			symbol: data.symbol_native,
 			value: values[data.code]
 		}));
+		const db = await getDb();
 		await db.transaction().execute(async (tx) => {
 			await tx.deleteFrom('currencies').execute();
 			await tx.insertInto('currencies').values(currencies).execute();

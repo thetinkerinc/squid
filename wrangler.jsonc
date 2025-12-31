@@ -4,13 +4,20 @@
 	"main": ".svelte-kit/cloudflare/_worker.js",
 	"compatibility_date": "2025-11-13",
 	"compatibility_flags": ["nodejs_compat"],
+	"observability": {
+		"enabled": true
+	},
 	"assets": {
 		"binding": "ASSETS",
 		"directory": ".svelte-kit/cloudflare"
 	},
-	"observability": {
-		"enabled": true
-	},
+	"hyperdrive": [
+		{
+			"binding": "HYPERDRIVE",
+			"id": "418e3b2d513541e8b4432eacb547cd4d",
+			"localConnectionString": "postgres://postgres:postgres@localhost:5432/app"
+		}
+	],
 	"vars": {
 		"PUBLIC_CLERK_PUBLISHABLE_KEY": "pk_live_Y2xlcmsuc3F1aWQudGhldGlua2VyaW5jLmNvbSQ",
 		"PUBLIC_CLERK_SIGN_IN_FORCE_REDIRECT_URL": "/dashboard",
