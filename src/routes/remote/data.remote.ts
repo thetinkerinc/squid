@@ -41,11 +41,13 @@ export const addEntry = Authenticated.form(schema.entry, async ({ ctx, data }) =
 });
 
 export const rmEntry = Authenticated.form(schema.entryId, async ({ ctx, data }) => {
-	await ctx.db
-		.deleteFrom('entries')
-		.where('id', '=', data.id)
-		.where('user', '=', ctx.userId)
-		.execute();
+	await ctx.db.transaction().execute(async (tx) => {
+		await tx
+			.deleteFrom('entries')
+			.where('id', '=', data.id)
+			.where('user', '=', ctx.userId)
+			.execute();
+	});
 });
 
 export const invite = Authenticated.form(schema.invitation, async ({ ctx, data }) => {
