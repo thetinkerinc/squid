@@ -1,105 +1,49 @@
 import * as k from 'kysely';
-import { Pool, types } from 'pg';
 
 import type { EntryValue, AccountValue, CurrencyValue } from '$types';
 
-export interface DB {
-	partners: PartnerTable;
-	entries: EntryTable;
-	invitations: InvitationTable;
-	currencies: CurrencyTable;
-}
-
-export interface PartnerTable {
-	id: k.Generated<string>;
-	user: string;
-	partners: string[];
-}
-
-export interface EntryTable {
-	id: k.Generated<string>;
-	user: string;
-	userEmail: string;
-	created: k.Generated<Date>;
-	type: EntryValue;
-	account: AccountValue;
-	amount: number;
-	enteredAmount: number;
-	enteredCurrency: CurrencyValue;
-	category: string;
-	description: string | null;
-}
-
-export interface InvitationTable {
-	id: k.Generated<string>;
-	from: string;
-	fromEmail: string;
-	to: string;
-	sent: k.Generated<Date>;
-	accepted: boolean | null;
-}
-
-export interface CurrencyTable {
-	id: k.Generated<string>;
-	code: CurrencyValue;
-	name: string;
-	symbol: string;
-	value: number;
-}
-
-export async function getDb() {
-	types.setTypeParser(types.builtins.NUMERIC, (v) => Number(v));
-	types.setTypeParser(types.builtins.INT8, (v) => Number(v));
-
-	const connectionString = await getConnectionString();
-
-	return new k.Kysely<DB>({
-		dialect: new k.PostgresDialect({
-			pool: new Pool({
-				connectionString
-			})
-		})
-	});
-}
-
-async function getConnectionString() {
-	let connectionString: string;
-
-	const dev = await getDev();
-
-	if (dev) {
-		try {
-			({ DATABASE_URL: connectionString } = await import('$env/static/private'));
-		} catch (_err) {
-			connectionString = process.env.DATABASE_URL!;
-		}
-	} else {
-		try {
-			const { getRequestEvent } = await import('$app/server');
-			const event = getRequestEvent();
-			connectionString = event.platform!.env.HYPERDRIVE.connectionString;
-		} catch (_err) {
-			try {
-				({ DATABASE_URL: connectionString } = await import('$env/static/private'));
-			} catch (_err) {
-				connectionString = process.env.DATABASE_URL!;
-			}
-		}
+declare module '@thetinkerinc/sprout/db' {
+	interface DB {
+		partners: PartnerTable;
+		entries: EntryTable;
+		invitations: InvitationTable;
+		currencies: CurrencyTable;
 	}
 
-	if (!connectionString) {
-		throw new Error('Could not find connection string');
+	export interface PartnerTable {
+		id: k.Generated<string>;
+		user: string;
+		partners: string[];
 	}
 
-	return connectionString;
-}
-
-async function getDev() {
-	let dev: boolean;
-	try {
-		({ dev } = await import('$app/environment'));
-	} catch (_err) {
-		({ DEV: dev } = await import('esm-env'));
+	export interface EntryTable {
+		id: k.Generated<string>;
+		user: string;
+		userEmail: string;
+		created: k.Generated<Date>;
+		type: EntryValue;
+		account: AccountValue;
+		amount: number;
+		enteredAmount: number;
+		enteredCurrency: CurrencyValue;
+		category: string;
+		description: string | null;
 	}
-	return dev;
+
+	export interface InvitationTable {
+		id: k.Generated<string>;
+		from: string;
+		fromEmail: string;
+		to: string;
+		sent: k.Generated<Date>;
+		accepted: boolean | null;
+	}
+
+	export interface CurrencyTable {
+		id: k.Generated<string>;
+		code: CurrencyValue;
+		name: string;
+		symbol: string;
+		value: number;
+	}
 }

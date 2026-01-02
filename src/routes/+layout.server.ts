@@ -1,8 +1,7 @@
 import { buildClerkProps } from 'svelte-clerk/server';
 import { getPageData } from '@thetinkerinc/isolocal';
+import { getDb } from '@thetinkerinc/sprout/db';
 import * as _ from 'radashi';
-
-import { getDb } from '$utils/db';
 
 import type { LayoutServerLoad } from './$types';
 

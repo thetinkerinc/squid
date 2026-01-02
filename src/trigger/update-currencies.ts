@@ -1,6 +1,5 @@
 import { schedules } from '@trigger.dev/sdk/v3';
-
-import { getDb } from '$utils/db';
+import { getDb } from '@thetinkerinc/sprout/db';
 
 import { CurrencyType, type CurrencyValue } from '$types';
 

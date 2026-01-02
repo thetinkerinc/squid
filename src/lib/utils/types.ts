@@ -1,6 +1,6 @@
 import * as k from 'kysely';
 
-import type { DB, EntryTable, InvitationTable } from '$utils/db';
+import type { DB, EntryTable, InvitationTable } from '@thetinkerinc/sprout/db';
 
 export const EntryType = {
 	expense: 'expense',
