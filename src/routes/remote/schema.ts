@@ -18,7 +18,7 @@ export const entryId = v.object({
 });
 
 export const invitation = v.object({
-	to: v.pipe(v.string(), v.email())
+	to: v.pipe(v.string(), v.email(), v.toLowerCase())
 });
 
 export const response = v.object({

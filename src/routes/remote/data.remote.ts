@@ -1,3 +1,4 @@
+import { error } from '@sveltejs/kit';
 import { sql } from 'kysely';
 import { getEmail, getUserId } from '@thetinkerinc/sprout/auth';
 import { Authenticated } from '@thetinkerinc/sprout/commanders';
@@ -75,6 +76,7 @@ export const invite = Authenticated.form(schema.invitation, async ({ ctx, data }
 
 export const respond = Authenticated.form(schema.response, async ({ ctx, data }) => {
 	await ctx.db.transaction().execute(async (tx) => {
+		const userEmail = await getEmail(ctx.userId);
 		const invitation = await tx
 			.updateTable('invitations')
 			.set({
@@ -83,6 +85,11 @@ export const respond = Authenticated.form(schema.response, async ({ ctx, data })
 			.where('id', '=', data.id)
 			.returningAll()
 			.executeTakeFirst();
+
+		if (!invitation || invitation.to !== userEmail) {
+			error(400, 'You can not respond to this invitation');
+		}
+
 		if (data.accepted && invitation) {
 			const fromEmail = await getEmail(invitation.from);
 			const fromId = invitation.from;
