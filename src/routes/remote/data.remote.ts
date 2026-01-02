@@ -1,5 +1,5 @@
 import { sql } from 'kysely';
-import auth from '@thetinkerinc/sprout/auth';
+import { getEmail, getUserId } from '@thetinkerinc/sprout/auth';
 import { Authenticated } from '@thetinkerinc/sprout/commanders';
 
 import * as schema from './schema';
@@ -17,7 +17,7 @@ export const getEntriesAndPartners = Authenticated.query(async ({ ctx }) => {
 });
 
 export const getInvitations = Authenticated.query(async ({ ctx }) => {
-	const email = await auth.getEmail(ctx.userId);
+	const email = await getEmail(ctx.userId);
 	return await ctx.db
 		.selectFrom('invitations')
 		.selectAll()
@@ -28,7 +28,7 @@ export const getInvitations = Authenticated.query(async ({ ctx }) => {
 });
 
 export const addEntry = Authenticated.form(schema.entry, async ({ ctx, data }) => {
-	const userEmail = await auth.getEmail(ctx.userId);
+	const userEmail = await getEmail(ctx.userId);
 	await ctx.db
 		.insertInto('entries')
 		.values({
@@ -49,11 +49,11 @@ export const rmEntry = Authenticated.form(schema.entryId, async ({ ctx, data }) 
 
 export const invite = Authenticated.form(schema.invitation, async ({ ctx, data }) => {
 	try {
-		await auth.getUserId(data.to);
+		await getUserId(data.to);
 	} catch (_err) {
 		return;
 	}
-	const fromEmail = await auth.getEmail(ctx.userId);
+	const fromEmail = await getEmail(ctx.userId);
 	const exists = await ctx.db
 		.selectFrom('invitations')
 		.where('from', '=', ctx.userId)
@@ -84,10 +84,10 @@ export const respond = Authenticated.form(schema.response, async ({ ctx, data })
 			.returningAll()
 			.executeTakeFirst();
 		if (data.accepted && invitation) {
-			const fromEmail = await auth.getEmail(invitation.from);
+			const fromEmail = await getEmail(invitation.from);
 			const fromId = invitation.from;
 			const toEmail = invitation.to;
-			const toId = await auth.getUserId(invitation.to);
+			const toId = await getUserId(invitation.to);
 			await addPartner(tx, fromId, toEmail);
 			await addPartner(tx, toId, fromEmail);
 		}
