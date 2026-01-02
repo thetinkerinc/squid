@@ -10,7 +10,7 @@
         "@neondatabase/serverless": "^1.0.2",
         "@thetinkerinc/commander": "^0.1.4",
         "@thetinkerinc/isolocal": "^0.1.1",
-        "@thetinkerinc/sprout": "^0.1.0",
+        "@thetinkerinc/sprout": "^0.1.1",
         "@trigger.dev/sdk": "4.3.1",
         "date-fns": "^4.1.0",
         "echarts": "^6.0.0",
@@ -38,8 +38,8 @@
         "bits-ui": "^2.14.4",
         "bun": "^1.3.5",
         "clsx": "^2.1.1",
-        "drizzle-kit": "^1.0.0-beta.8-734e789",
-        "drizzle-orm": "^1.0.0-beta.8-734e789",
+        "drizzle-kit": "^1.0.0-beta.8-dbc3565",
+        "drizzle-orm": "^1.0.0-beta.8-dbc3565",
         "eslint": "^9.39.2",
         "eslint-config-prettier": "^10.1.8",
         "eslint-plugin-svelte": "^3.13.1",
@@ -496,7 +496,7 @@
 
     "@thetinkerinc/isolocal": ["@thetinkerinc/isolocal@0.1.1", "", { "dependencies": { "js-cookie": "^3.0.5" }, "peerDependencies": { "@sveltejs/kit": "^2.17.2", "devalue": "^5.1.1", "svelte": "^5.0.0" } }, "sha512-RkhYbWFSANte3j4eswLUwD35DLAmzzjWd/eiL32fzk+OgR+jD2pDVPNBJcOj1+TEkGyaWEU3x+RSILGA6rsP3g=="],
 
-    "@thetinkerinc/sprout": ["@thetinkerinc/sprout@0.1.1", "", { "dependencies": { "@thetinkerinc/commander": "^0.1.4", "kysely": "^0.28.9", "pg": "^8.16.3" }, "peerDependencies": { "@sveltejs/kit": "^2.49.2", "svelte": "^5.0.0" } }, "sha512-5RHKtfIaXInv57CsBkj9Z+Eycub9ix04g5f5oAW6RsukiIiPELKw2/1V4b2fBuULOO0kYuup8pgKQSln3k94Cg=="],
+    "@thetinkerinc/sprout": ["@thetinkerinc/sprout@0.1.2", "", { "dependencies": { "@thetinkerinc/commander": "^0.1.4", "kysely": "^0.28.9", "pg": "^8.16.3" }, "peerDependencies": { "@sveltejs/kit": "^2.49.2", "svelte": "^5.0.0" } }, "sha512-gzFDO2PspH8tD6sMs5B1bP1kdEJd5Se6mtrBWemYJHdvRQgLC51xMGqL+pbZoylgPHu+R2akc8BfEIQKhvYOuA=="],
 
     "@trigger.dev/build": ["@trigger.dev/build@4.3.1", "", { "dependencies": { "@prisma/config": "^6.10.0", "@trigger.dev/core": "4.3.1", "mlly": "^1.7.1", "pkg-types": "^1.1.3", "resolve": "^1.22.8", "tinyglobby": "^0.2.2", "tsconfck": "3.1.3" } }, "sha512-jmfKbvXnaN2RMd1PwywrRHPy1oYwMNKr/H3yNQZtd/4N/Lk9235lWmugg8WgOHtaAr8NcYqwo9OucYXqJBQsrA=="],
 

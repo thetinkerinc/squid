@@ -1,7 +1,6 @@
 import { sql } from 'kysely';
+import auth from '@thetinkerinc/sprout/auth';
 import { Authenticated } from '@thetinkerinc/sprout/commanders';
-
-import auth from '$utils/auth';
 
 import * as schema from './schema';
 
