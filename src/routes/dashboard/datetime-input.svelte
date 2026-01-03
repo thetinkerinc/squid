@@ -6,6 +6,8 @@ import { SquarePen } from '@lucide/svelte';
 
 import formatter from '$utils/formatter';
 
+import * as m from '$paraglide/messages';
+
 import * as AlertDialog from '$components/ui/alert-dialog';
 import { Calendar } from '$components/ui/calendar';
 
@@ -73,8 +75,8 @@ function setTime() {
 				maxValue={today}
 				bind:value={date} />
 			<AlertDialog.Footer>
-				<AlertDialog.Cancel>Cancel</AlertDialog.Cancel>
-				<AlertDialog.Action onclick={setTime}>Set</AlertDialog.Action>
+				<AlertDialog.Cancel>{m.datetime_cancel()}</AlertDialog.Cancel>
+				<AlertDialog.Action onclick={setTime}>{m.datetime_accept()}</AlertDialog.Action>
 			</AlertDialog.Footer>
 		</AlertDialog.Content>
 	</AlertDialog.Root>

@@ -1,5 +1,7 @@
 import * as v from 'valibot';
 
+import * as m from '$paraglide/messages';
+
 import { EntryType, AccountType, CurrencyType } from '$types';
 
 export const entry = v.object({
@@ -9,7 +11,7 @@ export const entry = v.object({
 	amount: v.pipe(v.number(), v.minValue(0)),
 	enteredAmount: v.pipe(v.number(), v.minValue(0)),
 	enteredCurrency: v.enum(CurrencyType),
-	category: v.pipe(v.string(), v.nonEmpty('Choose a category for this entry'), v.toLowerCase()),
+	category: v.pipe(v.string(), v.nonEmpty(m.add_entry_no_category()), v.toLowerCase()),
 	description: rmEmpty(v.pipe(v.string(), v.toLowerCase()))
 });
 

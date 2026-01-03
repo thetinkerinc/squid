@@ -1,6 +1,7 @@
 <script lang="ts">
 let { options }: Props = $props();
 
+import * as m from '$paraglide/messages';
 import { addEntry } from '$remote/data.remote';
 
 import { Input } from '$components/ui/input';
@@ -112,7 +113,7 @@ function stopEvent(evt: Event) {
 <div class="relative">
 	<Input
 		id="description"
-		placeholder="Description"
+		placeholder={m.add_entry_description_placeholder()}
 		autocomplete="off"
 		onfocus={() => (open = filtered.length !== 0)}
 		onblur={close}

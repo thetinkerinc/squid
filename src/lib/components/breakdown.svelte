@@ -4,6 +4,7 @@ let { entries, detailed = true }: Props = $props();
 import { onMount } from 'svelte';
 import * as date from 'date-fns';
 import * as echarts from 'echarts';
+import * as m from '$paraglide/messages';
 import * as _ from 'radashi';
 
 import formatter from '$utils/formatter';
@@ -38,7 +39,7 @@ onMount(() => {
 		series: [
 			{
 				type: 'pie',
-				name: 'Breakdown',
+				name: m.breakdown_title(),
 				radius: [0, 90],
 				center: [150, '50%'],
 				label: {
@@ -70,7 +71,7 @@ let expenses = $derived<Entry[]>(
 );
 let amounts = $derived(
 	expenses.reduce((a: { [key: string]: Record<string, number> }, v: Entry) => {
-		const description = (v.description ?? 'no description').toLocaleLowerCase();
+		const description = (v.description ?? m.breakdown_no_description()).toLocaleLowerCase();
 		a[v.category] = a[v.category] ?? {};
 		a[v.category].total = a[v.category].total ?? 0;
 		a[v.category][description] = a[v.category][description] ?? 0;
@@ -104,7 +105,7 @@ $effect(() => {
 	chart.setOption({
 		series: [
 			{
-				name: 'Breakdown',
+				name: m.breakdown_title(),
 				data: slices
 			}
 		]
@@ -116,12 +117,12 @@ $effect(() => {
 	<button
 		class={['rounded px-4 py-2', all && 'bg-white/[0.7] shadow']}
 		onclick={() => (all = true)}>
-		All time
+		{m.breakdown_all_time()}
 	</button>
 	<button
 		class={['rounded px-4 py-2', !all && 'bg-white/[0.7] shadow']}
 		onclick={() => (all = false)}>
-		This month
+		{m.breakdown_this_month()}
 	</button>
 </div>
 <div class="grid grid-rows-[auto_auto] @3xl:grid-cols-[auto_1fr] @3xl:grid-rows-1">

@@ -1,8 +1,8 @@
 <script lang="ts">
 import { ClerkProvider } from 'svelte-clerk';
 import { setDefaultOptions } from 'date-fns';
-import { enUS as clerkEn } from '@clerk/localizations';
-import { enUS as dateEn } from 'date-fns/locale';
+import { enUS as clerkEn, esMX as clerkEs } from '@clerk/localizations';
+import { enUS as dateEn, es as dateEs } from 'date-fns/locale';
 import { getLocale } from '$paraglide/runtime';
 
 import { Toaster } from '$components/ui/sonner';
@@ -16,11 +16,13 @@ let { children } = $props();
 
 setDefaultOptions({
 	locale: {
-		en: dateEn
+		en: dateEn,
+		es: dateEs
 	}[getLocale()]
 });
 const clerkLocale = {
-	en: clerkEn
+	en: clerkEn,
+	es: clerkEs
 }[getLocale()];
 </script>
 

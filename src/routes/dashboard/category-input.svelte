@@ -3,6 +3,7 @@ let { entries, defaultCategories }: Props = $props();
 
 import * as _ from 'radashi';
 
+import * as m from '$paraglide/messages';
 import { addEntry } from '$remote/data.remote';
 
 import { Input } from '$components/ui/input';
@@ -76,7 +77,11 @@ function addCategory() {
 	{/each}
 </div>
 {#if addingCategory}
-	<Input class="mb-1" type="text" placeholder="New category" bind:value={category} />
+	<Input
+		class="mb-1"
+		type="text"
+		placeholder={m.add_entry_category_placeholder()}
+		bind:value={category} />
 {/if}
 {#if category || addingCategory}
 	<DescriptionInput options={descriptions} />

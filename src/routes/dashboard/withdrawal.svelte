@@ -2,6 +2,7 @@
 import { toast } from 'svelte-sonner';
 import * as _ from 'radashi';
 
+import * as m from '$paraglide/messages';
 import { getEntriesAndPartners, addEntry } from '$remote/data.remote';
 import * as schema from '$remote/schema';
 
@@ -27,9 +28,7 @@ async function enhance({ form, submit }: Parameters<Parameters<typeof addEntry.e
 		form.reset();
 		open = false;
 	} catch (_err) {
-		toast.error(
-			'Something went wrong while saving your entry. Please try again or reach out if the issue persists'
-		);
+		toast.error(m.add_entry_error());
 	}
 }
 </script>
@@ -37,11 +36,11 @@ async function enhance({ form, submit }: Parameters<Parameters<typeof addEntry.e
 <AlertDialog.Root bind:open>
 	<AlertDialog.Trigger>
 		{#snippet child({ props })}
-			<Button {...props}>Withdrawal</Button>
+			<Button {...props}>{m.add_entry_withrawal_label()}</Button>
 		{/snippet}
 	</AlertDialog.Trigger>
 	<AlertDialog.Content class="border border-white/[0.8] bg-white/[0.3] backdrop-blur">
-		<AlertDialog.Title>Withdraw cash</AlertDialog.Title>
+		<AlertDialog.Title>{m.add_entry_withrawal_title()}</AlertDialog.Title>
 		<form id="add-entry" {...addEntry.preflight(schema.entry).enhance(enhance)}>
 			<input class="hidden" {...addEntry.fields.type.as('text')} value={EntryType.withdrawal} />
 			<input class="hidden" {...addEntry.fields.account.as('text')} value={AccountType.bank} />
@@ -51,9 +50,10 @@ async function enhance({ form, submit }: Parameters<Parameters<typeof addEntry.e
 			<DescriptionInput options={descriptions} />
 		</form>
 		<AlertDialog.Footer>
-			<AlertDialog.Cancel>Cancel</AlertDialog.Cancel>
-			<AlertDialog.Action {...addEntry.buttonProps.enhance(enhance)} form="add-entry"
-				>Save</AlertDialog.Action>
+			<AlertDialog.Cancel>{m.add_entry_cancel()}</AlertDialog.Cancel>
+			<AlertDialog.Action {...addEntry.buttonProps.enhance(enhance)} form="add-entry">
+				{m.add_entry_save()}
+			</AlertDialog.Action>
 		</AlertDialog.Footer>
 	</AlertDialog.Content>
 </AlertDialog.Root>

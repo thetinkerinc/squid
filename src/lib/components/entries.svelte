@@ -7,6 +7,7 @@ import { ArrowUp, ArrowDown, Redo, Info, X, Landmark, Banknote } from '@lucide/s
 
 import formatter from '$utils/formatter';
 
+import * as m from '$paraglide/messages';
 import { rmEntry } from '$remote/data.remote';
 
 import { ScrollArea } from '$components/ui/scroll-area';
@@ -71,7 +72,7 @@ interface Props {
 		</div>
 	{:else}
 		<div class="rounded bg-white/[0.7] px-4 py-1 shadow text-gray-500 text-center text-lg py-2">
-			No entries added yet
+			{m.entries_empty()}
 		</div>
 	{/each}
 </ScrollArea>

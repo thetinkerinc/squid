@@ -1,4 +1,5 @@
 import * as date from 'date-fns';
+import * as m from '$paraglide/messages';
 import * as _ from 'radashi';
 
 import { EntryType, AccountType, CurrencyType } from '$types';
@@ -12,7 +13,7 @@ const entries = [
 		amount: 12,
 		enteredAmount: 12,
 		enteredCurrency: CurrencyType.CAD,
-		category: 'transportation',
+		category: m.expense_category_transport(),
 		description: 'uber',
 		user: 'user123',
 		userEmail: 'example@email.com'
@@ -25,7 +26,7 @@ const entries = [
 		amount: 19,
 		enteredAmount: 270,
 		enteredCurrency: CurrencyType.MXN,
-		category: 'groceries',
+		category: m.expense_category_groceries(),
 		description: null,
 		user: 'user321',
 		userEmail: 'partner@email.com'
@@ -38,7 +39,7 @@ const entries = [
 		amount: 100,
 		enteredAmount: 100,
 		enteredCurrency: CurrencyType.CAD,
-		category: 'withdrawal',
+		category: m.withdrawal_category(),
 		description: null,
 		user: 'user123',
 		userEmail: 'example@email.com'
@@ -51,7 +52,7 @@ const entries = [
 		amount: 25,
 		enteredAmount: 25,
 		enteredCurrency: CurrencyType.CAD,
-		category: 'food',
+		category: m.expense_category_food(),
 		description: 'uber eats',
 		user: 'user123',
 		userEmail: 'example@email.com'
@@ -64,7 +65,7 @@ const entries = [
 		amount: 2600,
 		enteredAmount: 2600,
 		enteredCurrency: CurrencyType.CAD,
-		category: 'paycheck',
+		category: m.income_category_paycheck(),
 		description: date.format(date.sub(new Date(), { days: 15.1 }), 'MMMM'),
 		user: 'user123',
 		userEmail: 'example@email.com'

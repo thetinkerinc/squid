@@ -7,6 +7,7 @@ import { getEntriesAndPartners, getInvitations } from '$remote/data.remote';
 
 import Card from '$components/card.svelte';
 import CurrencySelector from '$components/currency-selector.svelte';
+import LocaleSelector from '$components/locale-selector.svelte';
 import Totals from '$components/totals.svelte';
 import Entries from '$components/entries.svelte';
 import Breakdown from '$components/breakdown.svelte';
@@ -38,6 +39,7 @@ async function logout() {
 		</div>
 		<div class="flex items-center gap-4">
 			<CurrencySelector bind:currency={local.currency} />
+			<LocaleSelector />
 			<button class="cursor-pointer" onclick={logout}>
 				<LogOut size={27} />
 			</button>

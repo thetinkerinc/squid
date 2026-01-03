@@ -1,8 +1,9 @@
 <script lang="ts">
-let { defaultCategories, entryType, title }: Props = $props();
+let { defaultCategories, entryType, title, label }: Props = $props();
 
 import { toast } from 'svelte-sonner';
 
+import * as m from '$paraglide/messages';
 import { getEntriesAndPartners, addEntry } from '$remote/data.remote';
 import * as schema from '$remote/schema';
 
@@ -21,6 +22,7 @@ interface Props {
 	defaultCategories: string[];
 	entryType: EntryValue;
 	title: string;
+	label: string;
 }
 
 let open = $state<boolean>(false);
@@ -34,9 +36,7 @@ async function enhance({ form, submit }: Parameters<Parameters<typeof addEntry.e
 		form.reset();
 		open = false;
 	} catch (_err) {
-		toast.error(
-			'Something went wrong while saving your entry. Please try again or reach out if the issue persists'
-		);
+		toast.error(m.add_entry_error());
 	}
 }
 </script>
@@ -44,7 +44,7 @@ async function enhance({ form, submit }: Parameters<Parameters<typeof addEntry.e
 <AlertDialog.Root bind:open>
 	<AlertDialog.Trigger>
 		{#snippet child({ props })}
-			<Button class="capitalize" {...props}>{entryType}</Button>
+			<Button {...props}>{label}</Button>
 		{/snippet}
 	</AlertDialog.Trigger>
 	<AlertDialog.Content class="border border-white/[0.8] bg-white/[0.3] backdrop-blur">
@@ -58,11 +58,11 @@ async function enhance({ form, submit }: Parameters<Parameters<typeof addEntry.e
 					name={addEntry.fields.account.as('text').name}>
 					<div class="flex items-center gap-2">
 						<RadioGroup.Item {...addEntry.fields.account.as('text')} value="bank" id="bank" />
-						<Label for="bank">Bank</Label>
+						<Label for="bank">{m.account_bank()}</Label>
 					</div>
 					<div class="flex items-center gap-2">
 						<RadioGroup.Item {...addEntry.fields.account.as('text')} value="cash" id="cash" />
-						<Label for="cash">Cash</Label>
+						<Label for="cash">{m.account_cash()}</Label>
 					</div>
 				</RadioGroup.Root>
 				<DatetimeInput {...addEntry.fields.created.as('text')} />
@@ -70,9 +70,10 @@ async function enhance({ form, submit }: Parameters<Parameters<typeof addEntry.e
 			<CategoryInput {entries} {defaultCategories} />
 		</form>
 		<AlertDialog.Footer>
-			<AlertDialog.Cancel>Cancel</AlertDialog.Cancel>
-			<AlertDialog.Action {...addEntry.buttonProps.enhance(enhance)} form="add-entry"
-				>Save</AlertDialog.Action>
+			<AlertDialog.Cancel>{m.add_entry_cancel()}</AlertDialog.Cancel>
+			<AlertDialog.Action {...addEntry.buttonProps.enhance(enhance)} form="add-entry">
+				{m.add_entry_save()}
+			</AlertDialog.Action>
 		</AlertDialog.Footer>
 	</AlertDialog.Content>
 </AlertDialog.Root>

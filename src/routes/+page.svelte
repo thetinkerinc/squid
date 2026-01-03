@@ -1,6 +1,9 @@
 <script lang="ts">
 import landingData from './landing-data';
 
+import * as m from '$paraglide/messages';
+
+import LocaleSelector from '$components/locale-selector.svelte';
 import { Button } from '$components/ui/button';
 import Totals from '$components/totals.svelte';
 import Entries from '$components/entries.svelte';
@@ -17,29 +20,32 @@ import DescriptionCard from './description-card.svelte';
 		class="grid grid-rows-[repeat(3,auto)] items-center justify-items-center gap-10 p-4 lg:grid-cols-[repeat(3,auto)] lg:grid-rows-1">
 		<img src="/logo.png" alt="Cartoon squid with money" class="w-[200px]" />
 		<div>
-			<div class="mb-2 text-[50px] leading-none">Save quid with squid!</div>
+			<div class="mb-2 text-[50px] leading-none">{m.landing_title()}</div>
 			<div class="text-2xl">
-				<div class="ml-2">Easily keep track of your income and expenses</div>
-				<div class="ml-4">and collaborate with others to do shared budgeting</div>
+				<div class="ml-2">{m.landing_description_top()}</div>
+				<div class="ml-4">{m.landing_description_bottom()}</div>
 			</div>
 		</div>
 		<div class="self-center">
-			<Button href="/login">Get started</Button>
+			<div class="flex items-center gap-5">
+				<Button href="/login">{m.landing_auth_button()}</Button>
+				<LocaleSelector />
+			</div>
 		</div>
 	</div>
 </div>
 <div class="mx-auto mt-10 flex w-[95%] flex-wrap justify-evenly gap-4">
-	<DescriptionCard title="See your total balance at a glance">
+	<DescriptionCard title={m.landing_example_balance_title()}>
 		<div class="place-self-center lg:mb-10">
 			<Totals entries={landingData.entries} />
 		</div>
 	</DescriptionCard>
-	<DescriptionCard title="All your income, expenses, and withdrawals">
+	<DescriptionCard title={m.landing_example_entries_title()}>
 		<div class="place-self-center">
 			<Entries canDelete={false} entries={landingData.entries} />
 		</div>
 	</DescriptionCard>
-	<DescriptionCard title="Breakdown of all time and monthly expenses">
+	<DescriptionCard title={m.landing_example_breakdown_title()}>
 		<div class="w-[300px] place-self-center overflow-hidden">
 			<Breakdown entries={landingData.entries} detailed={false} />
 		</div>

@@ -1,6 +1,7 @@
 <script lang="ts">
 import { page } from '$app/state';
 
+import * as m from '$paraglide/messages';
 import { addEntry } from '$remote/data.remote';
 
 import { Input } from '$components/ui/input';
@@ -27,7 +28,7 @@ function getAmount() {
 		<Input
 			{...addEntry.fields.enteredAmount.as('number')}
 			min={0}
-			placeholder="Amount"
+			placeholder={m.add_entry_amount_placeholder()}
 			bind:value={enteredAmount} />
 		<input class="hidden" {...addEntry.fields.amount.as('number')} value={amount} />
 	</div>
