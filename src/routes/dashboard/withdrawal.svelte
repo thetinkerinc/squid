@@ -18,9 +18,7 @@ let open = $state(false);
 
 let entriesAndPartners = $derived(await getEntriesAndPartners());
 let entries = $derived(entriesAndPartners.entries.filter((e) => e.type === EntryType.withdrawal));
-let descriptions = $derived(
-	_.unique(_.sift(entries.filter((e) => e.category === 'withdrawal').map((e) => e.description)))
-);
+let descriptions = $derived(_.unique(_.sift(entries.map((e) => e.description))));
 
 async function enhance({ form, submit }: Parameters<Parameters<typeof addEntry.enhance>[0]>[0]) {
 	try {
