@@ -30,7 +30,7 @@ let open = $state<boolean>(false);
 let entriesAndPartners = $derived(await getEntriesAndPartners());
 let entries = $derived(entriesAndPartners.entries.filter((e) => e.type === entryType));
 
-async function enhance({ form, submit }: Parameters<Parameters<typeof addEntry.enhance>[0]>[0]) {
+async function enhance({ form, submit }: EnhanceParams<typeof addEntry.enhance>) {
 	try {
 		await submit();
 		form.reset();
