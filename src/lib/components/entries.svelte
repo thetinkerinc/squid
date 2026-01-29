@@ -3,12 +3,22 @@ let { entries, canDelete = true }: Props = $props();
 
 import { flip } from 'svelte/animate';
 import { fade } from 'svelte/transition';
-import { ArrowUp, ArrowDown, Redo, Info, X, Clock, Landmark, Banknote } from '@lucide/svelte';
+import {
+	ArrowUp,
+	ArrowDown,
+	Redo,
+	Check,
+	Info,
+	X,
+	Clock,
+	Landmark,
+	Banknote
+} from '@lucide/svelte';
 
 import formatter from '$utils/formatter';
 
 import * as m from '$paraglide/messages';
-import { rmEntry } from '$remote/data.remote';
+import { markReceived, rmEntry } from '$remote/data.remote';
 
 import { ScrollArea } from '$components/ui/scroll-area';
 import * as Tooltip from '$components/ui/tooltip';
@@ -35,7 +45,15 @@ interface Props {
 				<div class="text-gray-500">{formatter.date(entry.created)}</div>
 			</div>
 			<div class="capitalize">{entry.category}</div>
-			<div class="actions flex flex-auto items-center justify-end gap-1 transition">
+			<div class="actions flex flex-auto items-center justify-end gap-2 transition">
+				{#if entry.pending}
+					<form {...markReceived.for(entry.id)}>
+						<input class="hidden" {...markReceived.fields.id.as('text')} value={entry.id} />
+						<button class="block cursor-pointer text-green-500" type="submit">
+							<Check />
+						</button>
+					</form>
+				{/if}
 				<Tooltip.Root disableCloseOnTriggerClick={true}>
 					<Tooltip.Trigger class="text-blue-500">
 						<Info />

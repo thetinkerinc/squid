@@ -40,6 +40,17 @@ export const addEntry = Authenticated.form(schema.entry, async ({ ctx, data }) =
 		.execute();
 });
 
+export const markReceived = Authenticated.form(schema.entryId, async ({ ctx, data }) => {
+	await ctx.db
+		.updateTable('entries')
+		.where('id', '=', data.id)
+		.where('user', '=', ctx.userId)
+		.set({
+			pending: false
+		})
+		.execute();
+});
+
 export const rmEntry = Authenticated.form(schema.entryId, async ({ ctx, data }) => {
 	await ctx.db
 		.deleteFrom('entries')
