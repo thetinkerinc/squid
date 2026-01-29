@@ -1,5 +1,5 @@
 <script lang="ts">
-let { defaultCategories, entryType, title, label }: Props = $props();
+let { defaultCategories, entryType, canBePending = false, title, label }: Props = $props();
 
 import { toast } from 'svelte-sonner';
 
@@ -10,6 +10,7 @@ import * as schema from '$remote/schema';
 import * as AlertDialog from '$components/ui/alert-dialog';
 import { Button } from '$components/ui/button';
 import { Label } from '$components/ui/label';
+import { Checkbox } from '$components/ui/checkbox';
 import * as RadioGroup from '$components/ui/radio-group';
 
 import AmountInput from './amount-input.svelte';
@@ -21,6 +22,7 @@ import type { EntryValue } from '$types';
 interface Props {
 	defaultCategories: string[];
 	entryType: EntryValue;
+	canBePending?: boolean;
 	title: string;
 	label: string;
 }
@@ -49,7 +51,7 @@ async function enhance({ form, submit }: EnhanceParams<typeof addEntry.enhance>)
 	</AlertDialog.Trigger>
 	<AlertDialog.Content class="border border-white/[0.8] bg-white/[0.3] backdrop-blur">
 		<AlertDialog.Title>{title}</AlertDialog.Title>
-		<form id="add-entry" {...addEntry.preflight(schema.entry).enhance(enhance)}>
+		<form {...addEntry.preflight(schema.entry).enhance(enhance)} id="add-entry">
 			<input class="hidden" {...addEntry.fields.type.as('text')} value={entryType} />
 			<AmountInput />
 			<div class="my-2 flex flex-wrap items-center gap-4">
@@ -67,11 +69,19 @@ async function enhance({ form, submit }: EnhanceParams<typeof addEntry.enhance>)
 				</RadioGroup.Root>
 				<DatetimeInput {...addEntry.fields.created.as('text')} />
 			</div>
+			{#if canBePending}
+				<div class="my-2 flex items-center gap-2">
+					<Checkbox {...addEntry.fields.pending.as('checkbox')} type="button" id="pending" />
+					<Label for="pending">Pending</Label>
+				</div>
+			{:else}
+				<input class="hidden" {...addEntry.fields.pending.as('checkbox')} value={false} />
+			{/if}
 			<CategoryInput {entries} {defaultCategories} />
 		</form>
 		<AlertDialog.Footer>
 			<AlertDialog.Cancel>{m.add_entry_cancel()}</AlertDialog.Cancel>
-			<AlertDialog.Action {...addEntry.buttonProps.enhance(enhance)} form="add-entry">
+			<AlertDialog.Action form="add-entry">
 				{m.add_entry_save()}
 			</AlertDialog.Action>
 		</AlertDialog.Footer>

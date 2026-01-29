@@ -9,5 +9,6 @@ const defaultCategories = [m.income_category_paycheck(), m.income_category_misc(
 <AddEntry
 	{defaultCategories}
 	entryType="income"
+	canBePending={true}
 	title={m.add_entry_income_title()}
 	label={m.add_entry_income_label()} />

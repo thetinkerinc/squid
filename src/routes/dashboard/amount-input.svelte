@@ -1,5 +1,6 @@
 <script lang="ts">
 import { page } from '$app/state';
+import local from '@thetinkerinc/isolocal';
 
 import * as m from '$paraglide/messages';
 import { addEntry } from '$remote/data.remote';
@@ -7,9 +8,9 @@ import { addEntry } from '$remote/data.remote';
 import { Input } from '$components/ui/input';
 import CurrencySelector from '$components/currency-selector.svelte';
 
-import { CurrencyType, type CurrencyValue } from '$types';
+import { type CurrencyValue } from '$types';
 
-let currency = $state<CurrencyValue>(CurrencyType.CAD);
+let currency = $state<CurrencyValue>(local.currency);
 let enteredAmount = $state<number | undefined>();
 
 let amount = $derived(getAmount());
@@ -30,7 +31,7 @@ function getAmount() {
 			min={0}
 			placeholder={m.add_entry_amount_placeholder()}
 			bind:value={enteredAmount} />
-		<input class="hidden" {...addEntry.fields.amount.as('number')} value={amount} />
+		<input class="hidden" {...addEntry.fields.amount.as('number')} step="any" value={amount} />
 	</div>
 	<div>
 		<CurrencySelector bind:currency />

@@ -6,6 +6,7 @@ import { EntryType, AccountType, CurrencyType } from '$types';
 
 export const entry = v.object({
 	type: v.enum(EntryType),
+	pending: v.optional(v.boolean(), false),
 	account: v.enum(AccountType),
 	created: rmEmpty(v.pipe(v.string(), v.isoTimestamp(), v.toDate())),
 	amount: v.pipe(v.number(), v.minValue(0)),

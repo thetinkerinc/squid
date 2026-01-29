@@ -56,7 +56,7 @@ async function enhance({ form, submit }: EnhanceParams<typeof invite.enhance>) {
 			</form>
 			<AlertDialog.Footer>
 				<AlertDialog.Cancel>Cancel</AlertDialog.Cancel>
-				<AlertDialog.Action form="invite-partner" {...invite.buttonProps.enhance(enhance)}>
+				<AlertDialog.Action form="invite-partner">
 					{m.partner_add_invite()}
 				</AlertDialog.Action>
 			</AlertDialog.Footer>
@@ -88,7 +88,7 @@ async function enhance({ form, submit }: EnhanceParams<typeof invite.enhance>) {
 							class="hidden"
 							{...respond.for('accept').fields.accepted.as('text')}
 							value={true} />
-						<button class="cursor-pointer text-green-500" {...respond.for('accept').buttonProps}>
+						<button class="cursor-pointer text-green-500">
 							<Check />
 						</button>
 					</form>
@@ -101,7 +101,7 @@ async function enhance({ form, submit }: EnhanceParams<typeof invite.enhance>) {
 							class="hidden"
 							{...respond.for('decline').fields.accepted.as('text')}
 							value={false} />
-						<button class="cursor-pointer text-red-500" {...respond.for('decline').buttonProps}>
+						<button class="cursor-pointer text-red-500">
 							<X />
 						</button>
 					</form>

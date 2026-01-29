@@ -23,6 +23,7 @@ declare module '@thetinkerinc/sprout/db' {
 		created: k.Generated<Date>;
 		type: EntryValue;
 		account: AccountValue;
+		pending: boolean;
 		amount: number;
 		enteredAmount: number;
 		enteredCurrency: CurrencyValue;

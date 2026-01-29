@@ -41,6 +41,7 @@ async function enhance({ form, submit }: Parameters<Parameters<typeof addEntry.e
 		<AlertDialog.Title>{m.add_entry_withrawal_title()}</AlertDialog.Title>
 		<form id="add-entry" {...addEntry.preflight(schema.entry).enhance(enhance)}>
 			<input class="hidden" {...addEntry.fields.type.as('text')} value={EntryType.withdrawal} />
+			<input class="hidden" {...addEntry.fields.pending.as('checkbox')} value={false} />
 			<input class="hidden" {...addEntry.fields.account.as('text')} value={AccountType.bank} />
 			<input class="hidden" {...addEntry.fields.category.as('text')} value="withdrawal" />
 			<AmountInput />
@@ -49,7 +50,7 @@ async function enhance({ form, submit }: Parameters<Parameters<typeof addEntry.e
 		</form>
 		<AlertDialog.Footer>
 			<AlertDialog.Cancel>{m.add_entry_cancel()}</AlertDialog.Cancel>
-			<AlertDialog.Action {...addEntry.buttonProps.enhance(enhance)} form="add-entry">
+			<AlertDialog.Action form="add-entry">
 				{m.add_entry_save()}
 			</AlertDialog.Action>
 		</AlertDialog.Footer>

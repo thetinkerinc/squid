@@ -3,7 +3,7 @@ let { entries, canDelete = true }: Props = $props();
 
 import { flip } from 'svelte/animate';
 import { fade } from 'svelte/transition';
-import { ArrowUp, ArrowDown, Redo, Info, X, Landmark, Banknote } from '@lucide/svelte';
+import { ArrowUp, ArrowDown, Redo, Info, X, Clock, Landmark, Banknote } from '@lucide/svelte';
 
 import formatter from '$utils/formatter';
 
@@ -79,8 +79,14 @@ interface Props {
 
 {#snippet badge(entry: Entry)}
 	{#if entry.type === EntryType.income}
-		<div class="badge from-green-300 to-green-400">
+		<div class="badge relative from-green-300 to-green-400">
 			<ArrowUp size={20} />
+			{#if entry.pending}
+				<div
+					class="absolute top-0 right-0 translate-x-[3px] -translate-y-[3px] rounded-full bg-amber-400">
+					<Clock size={13} />
+				</div>
+			{/if}
 		</div>
 	{:else if entry.type === EntryType.expense}
 		<div class="badge from-red-300 to-red-400">

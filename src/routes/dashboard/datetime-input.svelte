@@ -1,6 +1,7 @@
 <script lang="ts">
 let { ...rest } = $props();
 
+import { onMount } from 'svelte';
 import { now, getLocalTimeZone } from '@internationalized/date';
 import { SquarePen } from '@lucide/svelte';
 
@@ -10,6 +11,10 @@ import * as m from '$paraglide/messages';
 
 import * as AlertDialog from '$components/ui/alert-dialog';
 import { Calendar } from '$components/ui/calendar';
+
+onMount(() => {
+	setTime();
+});
 
 const today = now(getLocalTimeZone());
 
