@@ -12,8 +12,8 @@ import { Button } from '$components/ui/button';
 import { Label } from '$components/ui/label';
 import { Checkbox } from '$components/ui/checkbox';
 import * as RadioGroup from '$components/ui/radio-group';
+import AmountInput from '$components/amount-input.svelte';
 
-import AmountInput from './amount-input.svelte';
 import DatetimeInput from './datetime-input.svelte';
 import CategoryInput from './category-input.svelte';
 

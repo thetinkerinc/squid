@@ -36,6 +36,7 @@
 	"add_entry_income_title": "Agregar ingresos a tu cuenta",
 	"add_entry_withrawal_title": "Retirar efectivo",
 	"add_entry_no_category": "Elige una categoría para esta entrada",
+	"add_child_entry_category": "pago",
 	"partner_add_success": "Invitación mandada!",
 	"partner_add_error": "No pudimos enviar tu invitación. Asegúrate de que tu compañero tenga una cuenta y que hayas entrado bien su correo.",
 	"partner_add_button": "Agregar compañero",

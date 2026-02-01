@@ -5,12 +5,13 @@ import * as m from '$paraglide/messages';
 import { EntryType, AccountType, CurrencyType } from '$types';
 
 export const entry = v.object({
+	parent: v.optional(v.pipe(v.string(), v.uuid())),
 	type: v.enum(EntryType),
 	pending: v.optional(v.boolean(), false),
 	account: v.enum(AccountType),
 	created: rmEmpty(v.pipe(v.string(), v.isoTimestamp(), v.toDate())),
-	amount: v.pipe(v.number(), v.minValue(0)),
-	enteredAmount: v.pipe(v.number(), v.minValue(0)),
+	amount: v.pipe(v.number(), v.gtValue(0)),
+	enteredAmount: v.message(v.pipe(v.number(), v.gtValue(0)), 'Enter a payment amount'),
 	enteredCurrency: v.enum(CurrencyType),
 	category: v.pipe(v.string(), v.nonEmpty(m.add_entry_no_category()), v.toLowerCase()),
 	description: rmEmpty(v.pipe(v.string(), v.toLowerCase()))

@@ -1,11 +1,13 @@
-import { error } from '@sveltejs/kit';
+import { error, invalid } from '@sveltejs/kit';
 import { sql } from 'kysely';
 import { getEmail, getUserId } from '@thetinkerinc/sprout/auth';
 import { Authenticated } from '@thetinkerinc/sprout/commanders';
 
+import * as m from '$paraglide/messages';
+
 import * as schema from './schema';
 
-import type { Tx, Ctx } from '$types';
+import { type Tx, type Ctx, type Db, AccountType, EntryType, type CurrencyValue } from '$types';
 
 export const getEntriesAndPartners = Authenticated.query(async ({ ctx }) => {
 	const partners = await getPartners(ctx);
@@ -15,6 +17,42 @@ export const getEntriesAndPartners = Authenticated.query(async ({ ctx }) => {
 		partners,
 		entries
 	};
+});
+
+export const getPaymentsTotals = Authenticated.query(async ({ ctx }) => {
+	const partners = await getPartners(ctx);
+	return await ctx.db
+		.selectFrom('entries as p')
+		.select([
+			sql<number>`coalesce(sum(c.amount) filter (where c.account=${AccountType.bank}), 0)`.as(
+				'bank'
+			),
+			sql<number>`coalesce(sum(c.amount) filter (where c.account=${AccountType.cash}), 0)`.as(
+				'cash'
+			)
+		])
+		.innerJoin('entries as c', 'p.id', 'c.parent')
+		.where('c.parent', 'is not', null)
+		.where('p.pending', '=', true)
+		.$if(partners.length === 0, (q) => q.where('c.user', '=', ctx.userId))
+		.$if(partners.length > 0, (q) =>
+			q.where((w) => w.or([w('c.user', '=', ctx.userId), w('c.userEmail', 'in', partners)]))
+		)
+		.executeTakeFirstOrThrow();
+});
+
+export const getPayments = Authenticated.query(schema.entryId, async ({ ctx, params }) => {
+	const partners = await getPartners(ctx);
+	return await ctx.db
+		.selectFrom('entries')
+		.selectAll()
+		.where('parent', '=', params.id)
+		.$if(partners.length === 0, (q) => q.where('user', '=', ctx.userId))
+		.$if(partners.length > 0, (q) =>
+			q.where((w) => w.or([w('user', '=', ctx.userId), w('userEmail', 'in', partners)]))
+		)
+		.orderBy('created', 'desc')
+		.execute();
 });
 
 export const getInvitations = Authenticated.query(async ({ ctx }) => {
@@ -28,27 +66,73 @@ export const getInvitations = Authenticated.query(async ({ ctx }) => {
 		.execute();
 });
 
-export const addEntry = Authenticated.form(schema.entry, async ({ ctx, data }) => {
-	const userEmail = await getEmail(ctx.userId);
-	await ctx.db
-		.insertInto('entries')
-		.values({
-			...data,
-			user: ctx.userId,
-			userEmail
-		})
-		.execute();
+export const addEntry = Authenticated.form(schema.entry, async ({ ctx, data, issue }) => {
+	await ctx.db.transaction().execute(async (tx) => {
+		if (data.parent) {
+			const paid = (await getAmountPaid(tx, data.parent)) + data.enteredAmount;
+			const { enteredAmount } = await tx
+				.selectFrom('entries')
+				.select('enteredAmount')
+				.where('id', '=', data.parent)
+				.executeTakeFirstOrThrow();
+			if (paid > enteredAmount) {
+				invalid(issue.enteredAmount("Total paid amount can't exceed entry total"));
+			} else if (paid === enteredAmount) {
+				await tx
+					.updateTable('entries')
+					.where('id', '=', data.parent!)
+					.set({
+						pending: false
+					})
+					.execute();
+			}
+		}
+		const userEmail = await getEmail(ctx.userId);
+		await tx
+			.insertInto('entries')
+			.values({
+				...data,
+				user: ctx.userId,
+				userEmail
+			})
+			.execute();
+	});
 });
 
 export const markReceived = Authenticated.form(schema.entryId, async ({ ctx, data }) => {
-	await ctx.db
-		.updateTable('entries')
-		.where('id', '=', data.id)
-		.where('user', '=', ctx.userId)
-		.set({
-			pending: false
-		})
-		.execute();
+	await ctx.db.transaction().execute(async (tx) => {
+		const userEmail = await getEmail(ctx.userId);
+
+		const parent = await tx
+			.updateTable('entries')
+			.where('id', '=', data.id)
+			.where('user', '=', ctx.userId)
+			.set({
+				pending: false
+			})
+			.returning(['account', 'enteredAmount', 'enteredCurrency'])
+			.executeTakeFirstOrThrow();
+
+		const paid = await getAmountPaid(tx, data.id);
+		const remaining = parent.enteredAmount - paid;
+
+		await tx
+			.insertInto('entries')
+			.values({
+				parent: data.id,
+				type: EntryType.income,
+				pending: false,
+				account: parent.account,
+				created: new Date(),
+				amount: await convert(tx, parent.enteredCurrency, remaining),
+				enteredAmount: remaining,
+				enteredCurrency: parent.enteredCurrency,
+				category: m.add_child_entry_category(),
+				user: ctx.userId,
+				userEmail
+			})
+			.execute();
+	});
 });
 
 export const rmEntry = Authenticated.form(schema.entryId, async ({ ctx, data }) => {
@@ -125,12 +209,22 @@ async function getEntries({ db, userId }: Ctx, partners: string[]) {
 	return await db
 		.selectFrom('entries')
 		.selectAll()
+		.where('parent', 'is', null)
 		.$if(partners.length === 0, (q) => q.where('user', '=', userId))
 		.$if(partners.length > 0, (q) =>
 			q.where((w) => w.or([w('user', '=', userId), w('userEmail', 'in', partners)]))
 		)
 		.orderBy('created', 'desc')
 		.execute();
+}
+
+async function getAmountPaid(db: Db, id: string) {
+	const { paid } = await db
+		.selectFrom('entries')
+		.select(({ fn }) => fn.sum<number>('enteredAmount').as('paid'))
+		.where('parent', '=', id)
+		.executeTakeFirstOrThrow();
+	return paid ?? 0;
 }
 
 async function addPartner(tx: Tx, user: string, partner: string) {
@@ -146,4 +240,16 @@ async function addPartner(tx: Tx, user: string, partner: string) {
 			})
 		)
 		.execute();
+}
+
+async function convert(db: Db, currency: CurrencyValue, amount: number) {
+	if (currency === 'CAD') {
+		return amount;
+	}
+	const { value } = await db
+		.selectFrom('currencies')
+		.select('value')
+		.where('code', '=', currency)
+		.executeTakeFirstOrThrow();
+	return amount / value;
 }

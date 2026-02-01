@@ -7,6 +7,7 @@ import { EntryType, AccountType, CurrencyType } from '$types';
 const entries = [
 	{
 		id: _.uid(8),
+		parent: null,
 		created: date.sub(new Date(), { hours: 1 }),
 		type: EntryType.expense,
 		pending: false,
@@ -21,6 +22,7 @@ const entries = [
 	},
 	{
 		id: _.uid(8),
+		parent: null,
 		created: date.sub(new Date(), { hours: 3 }),
 		type: EntryType.expense,
 		pending: false,
@@ -35,6 +37,7 @@ const entries = [
 	},
 	{
 		id: _.uid(8),
+		parent: null,
 		created: date.sub(new Date(), { hours: 12 }),
 		type: EntryType.withdrawal,
 		pending: false,
@@ -49,6 +52,7 @@ const entries = [
 	},
 	{
 		id: _.uid(8),
+		parent: null,
 		created: date.sub(new Date(), { days: 3.2 }),
 		type: EntryType.expense,
 		pending: false,
@@ -63,6 +67,7 @@ const entries = [
 	},
 	{
 		id: _.uid(8),
+		parent: null,
 		created: date.sub(new Date(), { days: 15.1 }),
 		type: EntryType.income,
 		pending: false,

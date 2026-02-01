@@ -8,8 +8,8 @@ import * as schema from '$remote/schema';
 
 import * as AlertDialog from '$components/ui/alert-dialog';
 import { Button } from '$components/ui/button';
+import AmountInput from '$components/amount-input.svelte';
 
-import AmountInput from './amount-input.svelte';
 import DescriptionInput from './description-input.svelte';
 
 import { EntryType, AccountType } from '$types';

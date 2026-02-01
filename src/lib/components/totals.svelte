@@ -1,5 +1,5 @@
 <script lang="ts">
-let { entries }: Props = $props();
+let { entries, paymentsTotals = { bank: 0, cash: 0 } }: Props = $props();
 
 import * as _ from 'radashi';
 import { Landmark, Banknote } from '@lucide/svelte';
@@ -10,13 +10,22 @@ import { EntryType, AccountType, type Entry } from '$types';
 
 interface Props {
 	entries: Entry[];
+	paymentsTotals?: {
+		[AccountType.bank]: number;
+		[AccountType.cash]: number;
+	};
 }
 
 let totals = $derived(getTotals());
-let total = $derived(totals.income - totals.expense);
-let pending = $derived(totals.pending);
-let bank = $derived(totals.bankIncome - totals.withdrawal - totals.bankExpense);
-let cash = $derived(totals.cashIncome + totals.withdrawal - totals.cashExpense);
+let payments = $derived(paymentsTotals.bank + paymentsTotals.cash);
+let total = $derived(totals.income - totals.expense + payments);
+let pending = $derived(totals.pending - payments);
+let bank = $derived(
+	totals.bankIncome - totals.withdrawal - totals.bankExpense + paymentsTotals.bank
+);
+let cash = $derived(
+	totals.cashIncome + totals.withdrawal - totals.cashExpense + paymentsTotals.cash
+);
 
 function getTotals() {
 	const income = entries.filter((e) => e.type === EntryType.income && e.pending === false);

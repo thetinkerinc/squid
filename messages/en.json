@@ -36,6 +36,7 @@
 	"add_entry_income_title": "Add income to your account",
 	"add_entry_withrawal_title": "Withdraw cash",
 	"add_entry_no_category": "Choose a category for this entry",
+	"add_child_entry_category": "payment",
 	"partner_add_success": "Invitation sent!",
 	"partner_add_error": "We couldn't send your invitation. Make sure your partner has an account and that you spelled their email correctly.",
 	"partner_add_button": "Add partner",

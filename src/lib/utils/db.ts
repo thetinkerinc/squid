@@ -18,6 +18,7 @@ declare module '@thetinkerinc/sprout/db' {
 
 	export interface EntryTable {
 		id: k.Generated<string>;
+		parent: string | null;
 		user: string;
 		userEmail: string;
 		created: k.Generated<Date>;

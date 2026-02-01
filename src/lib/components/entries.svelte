@@ -2,26 +2,20 @@
 let { entries, canDelete = true }: Props = $props();
 
 import { flip } from 'svelte/animate';
-import { fade } from 'svelte/transition';
-import {
-	ArrowUp,
-	ArrowDown,
-	Redo,
-	Check,
-	Info,
-	X,
-	Clock,
-	Landmark,
-	Banknote
-} from '@lucide/svelte';
+import { fade, slide } from 'svelte/transition';
+import { watch } from 'runed';
+import { toast } from 'svelte-sonner';
+import { ArrowUp, ArrowDown, Redo, Clock, Landmark, Banknote } from '@lucide/svelte';
 
 import formatter from '$utils/formatter';
 
 import * as m from '$paraglide/messages';
-import { markReceived, rmEntry } from '$remote/data.remote';
+import { getPayments, addEntry, markReceived, rmEntry } from '$remote/data.remote';
 
 import { ScrollArea } from '$components/ui/scroll-area';
-import * as Tooltip from '$components/ui/tooltip';
+import * as Dialog from '$components/ui/dialog';
+import { Button } from '$components/ui/button';
+import AmountInput from '$components/amount-input.svelte';
 
 import { EntryType, AccountType, type Entry } from '$types';
 
@@ -29,64 +23,68 @@ interface Props {
 	entries: Entry[];
 	canDelete?: boolean;
 }
+
+let showReceiptControls = $state(false);
+let selectedIdx = $state<number>();
+
+let selectedEntry = $derived<Entry | undefined>(
+	selectedIdx == null ? undefined : entries[selectedIdx]
+);
+let entryId = $derived(selectedEntry?.id);
+
+$effect(() => {
+	if (!selectedEntry?.pending) {
+		showReceiptControls = false;
+	}
+});
+
+watch(
+	() => entryId,
+	(curr, prev) => {
+		const wasRemoved = prev && !curr;
+		const changed = prev && curr && prev !== curr;
+		if (wasRemoved || changed) {
+			selectedIdx = undefined;
+		}
+	}
+);
+
+function handleCloseDetails(open: boolean) {
+	if (!open) {
+		showReceiptControls = false;
+		selectedIdx = undefined;
+	}
+}
+
+async function enhance({ form, submit }: EnhanceParams<typeof addEntry.enhance>) {
+	try {
+		await submit();
+		form.reset();
+		showReceiptControls = false;
+	} catch (_err) {
+		toast.error(m.add_entry_error());
+	}
+}
 </script>
 
 <ScrollArea class="flex max-h-[300px] flex-col lg:max-h-[400px]">
-	{#each entries as entry (entry.id)}
+	{#each entries as entry, idx (entry.id)}
 		<div
-			class="entry mb-2 flex items-center gap-4 rounded bg-white/[0.7] px-4 py-1 shadow"
+			class="entry mb-2 rounded bg-white/[0.7] shadow last:mb-0"
 			animate:flip
 			transition:fade={{ duration: 200 }}>
-			<div class="flex flex-wrap items-center gap-2">
-				<div class="flex items-center gap-2">
-					{@render badge(entry)}
-					<div>{formatter.money(entry.amount)}</div>
+			<button
+				class="flex w-full cursor-pointer items-center gap-4 px-4 py-1 hover:bg-gray-100/50"
+				onclick={() => (selectedIdx = idx)}>
+				<div class="flex flex-wrap items-center gap-2">
+					<div class="flex items-center gap-2">
+						{@render badge(entry)}
+						<div>{formatter.money(entry.amount)}</div>
+					</div>
+					<div class="text-gray-500">{formatter.date(entry.created)}</div>
 				</div>
-				<div class="text-gray-500">{formatter.date(entry.created)}</div>
-			</div>
-			<div class="capitalize">{entry.category}</div>
-			<div class="actions flex flex-auto items-center justify-end gap-2 transition">
-				{#if entry.pending}
-					<form {...markReceived.for(entry.id)}>
-						<input class="hidden" {...markReceived.fields.id.as('text')} value={entry.id} />
-						<button class="block cursor-pointer text-green-500" type="submit">
-							<Check />
-						</button>
-					</form>
-				{/if}
-				<Tooltip.Root disableCloseOnTriggerClick={true}>
-					<Tooltip.Trigger class="text-blue-500">
-						<Info />
-					</Tooltip.Trigger>
-					<Tooltip.Content class="flex flex-col gap-2 py-2 text-base">
-						<div class="flex items-center gap-2">
-							{@render badge(entry)}
-							<div>{formatter.money(entry.amount)}</div>
-							<div>({entry.enteredAmount} {entry.enteredCurrency})</div>
-							{#if entry.account === AccountType.bank}
-								<Landmark />
-							{:else if entry.account === AccountType.cash}
-								<Banknote />
-							{/if}
-						</div>
-						<div>{formatter.date(entry.created, 'h:mm aaa eee MMM d, yyyy')}</div>
-						<div class="flex gap-1">
-							<div class="capitalize">{entry.category}</div>
-							<div>-</div>
-							<div class="text-gray-500">{entry.description ?? 'No description'}</div>
-						</div>
-						<div>{entry.userEmail}</div>
-					</Tooltip.Content>
-				</Tooltip.Root>
-				{#if canDelete}
-					<form {...rmEntry.for(entry.id)}>
-						<input class="hidden" {...rmEntry.fields.id.as('text')} value={entry.id} />
-						<button class="block cursor-pointer text-red-500" type="submit">
-							<X />
-						</button>
-					</form>
-				{/if}
-			</div>
+				<div class="capitalize">{entry.category}</div>
+			</button>
 		</div>
 	{:else}
 		<div class="rounded bg-white/[0.7] px-4 py-1 shadow text-gray-500 text-center text-lg py-2">
@@ -94,6 +92,124 @@ interface Props {
 		</div>
 	{/each}
 </ScrollArea>
+
+{#if selectedEntry}
+	<Dialog.Root onOpenChangeComplete={handleCloseDetails} open={!!selectedEntry}>
+		<Dialog.Content class="flex flex-col gap-2 bg-primary py-2 py-4 text-base text-white">
+			<div class="flex items-center gap-3">
+				{@render badge(selectedEntry)}
+				<div>
+					<div class="flex items-center gap-2">
+						<div>{formatter.money(selectedEntry.amount)}</div>
+						<div>({selectedEntry.enteredAmount} {selectedEntry.enteredCurrency})</div>
+					</div>
+					{#if selectedEntry.pending}
+						<div class="text-center">
+							<svelte:boundary>
+								{@const payments = await getPayments({ id: selectedEntry.id })}
+								{@const received = payments.reduce((a, v) => a + v.amount, 0)}
+								<div>{formatter.money(received)} Received</div>
+
+								{#snippet pending()}
+									<div>-- Received</div>
+								{/snippet}
+							</svelte:boundary>
+						</div>
+					{/if}
+				</div>
+				{#if selectedEntry.account === AccountType.bank}
+					<Landmark />
+				{:else if selectedEntry.account === AccountType.cash}
+					<Banknote />
+				{/if}
+			</div>
+			<div>{formatter.date(selectedEntry.created, 'h:mm aaa eee MMM d')}</div>
+			<div class="flex gap-1">
+				<div class="capitalize">{selectedEntry.category}</div>
+				<div>-</div>
+				<div class="text-gray-500">{selectedEntry.description ?? 'No description'}</div>
+			</div>
+			<div>{selectedEntry.userEmail}</div>
+			<div class="my-2 flex items-center gap-2">
+				{#if selectedEntry.pending}
+					<Button
+						variant="outline"
+						class="text-black"
+						onclick={() => (showReceiptControls = !showReceiptControls)}>
+						Register payment
+					</Button>
+				{/if}
+				{#if canDelete}
+					<form {...rmEntry.for(selectedEntry.id)}>
+						<input class="hidden" {...rmEntry.fields.id.as('text')} value={selectedEntry.id} />
+						<Button variant="destructive" type="submit">Delete</Button>
+					</form>
+				{/if}
+			</div>
+			{#if showReceiptControls}
+				<div class="rounded bg-slate-800 p-2" transition:slide>
+					<form
+						{...addEntry.for(selectedEntry.id).enhance(enhance)}
+						class="flex items-center gap-1 text-black">
+						<input class="hidden" {...addEntry.fields.parent.as('text')} value={selectedEntry.id} />
+						<input class="hidden" {...addEntry.fields.type.as('text')} value={EntryType.income} />
+						<input
+							class="hidden"
+							{...addEntry.fields.account.as('text')}
+							value={selectedEntry.account} />
+						<input
+							class="hidden"
+							{...addEntry.fields.category.as('text')}
+							value={m.add_child_entry_category()} />
+						<AmountInput currency={selectedEntry.enteredCurrency} />
+						<input
+							class="hidden"
+							{...addEntry.fields.enteredCurrency.as('text')}
+							value={selectedEntry.enteredCurrency} />
+						<input
+							class="hidden"
+							{...addEntry.fields.created.as('text')}
+							value={new Date().toISOString()} />
+						<Button variant="outline" class="text-black" type="submit">Add</Button>
+					</form>
+					<div class="mb-1">
+						{#each addEntry.for(selectedEntry.id).fields.enteredAmount.issues() as issue}
+							<div class="text-sm text-red-400">{issue.message}</div>
+						{/each}
+					</div>
+					<form {...markReceived.for(selectedEntry.id)}>
+						<input class="hidden" {...markReceived.fields.id.as('text')} value={selectedEntry.id} />
+						<Button variant="outline" class="text-black" type="submit">Mark as received</Button>
+					</form>
+				</div>
+			{/if}
+			<div>Payments</div>
+			<svelte:boundary>
+				<ScrollArea class="flex max-h-[200px] flex-col rounded bg-slate-800 p-2">
+					{#each await getPayments({ id: selectedEntry.id }) as payment (payment.id)}
+						<div
+							class="mb-2 flex items-center gap-4 rounded bg-gray-600 px-4 py-1 last:mb-0"
+							animate:flip>
+							{@render badge(payment)}
+							<div>{formatter.money(payment.amount)}</div>
+							<div>{formatter.date(payment.created, 'h:mm aaa eee MMM d')}</div>
+						</div>
+					{:else}
+						<div class="text-center">No payments</div>
+					{/each}
+				</ScrollArea>
+
+				{#snippet pending()}
+					<div class="rounded bg-slate-800 p-2">
+						{#each { length: 3 }}
+							<div class="mb-2 h-8 animate-pulse rounded bg-gray-600"></div>
+						{/each}
+					</div>
+				{/snippet}
+			</svelte:boundary>
+		</Dialog.Content>
+	</Dialog.Root>
+{/if}
 
 {#snippet badge(entry: Entry)}
 	{#if entry.type === EntryType.income}
@@ -122,13 +238,5 @@ interface Props {
 
 .badge {
 	@apply rounded bg-gradient-to-br p-[2px] shadow;
-}
-.entry .actions {
-	opacity: 0;
-	pointer-events: none;
-}
-.entry:hover .actions {
-	opacity: 1;
-	pointer-events: unset;
 }
 </style>
