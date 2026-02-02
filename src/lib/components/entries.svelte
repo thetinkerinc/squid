@@ -130,22 +130,24 @@ async function enhance({ form, submit }: EnhanceParams<typeof addEntry.enhance>)
 				<div class="text-gray-500">{selectedEntry.description ?? m.breakdown_no_description()}</div>
 			</div>
 			<div>{selectedEntry.userEmail}</div>
-			<div class="my-2 flex items-center gap-2">
-				{#if selectedEntry.pending}
-					<Button
-						variant="outline"
-						class="text-black"
-						onclick={() => (showReceiptControls = !showReceiptControls)}>
-						{m.payments_register_button()}
-					</Button>
-				{/if}
-				{#if canDelete}
-					<form {...rmEntry.for(selectedEntry.id)}>
-						<input class="hidden" {...rmEntry.fields.id.as('text')} value={selectedEntry.id} />
-						<Button variant="destructive" type="submit">{m.delete()}</Button>
-					</form>
-				{/if}
-			</div>
+			{#if selectedEntry.pending || canDelete}
+				<div class="my-2 flex items-center gap-2">
+					{#if selectedEntry.pending}
+						<Button
+							variant="outline"
+							class="text-black"
+							onclick={() => (showReceiptControls = !showReceiptControls)}>
+							{m.payments_register_button()}
+						</Button>
+					{/if}
+					{#if canDelete}
+						<form {...rmEntry.for(selectedEntry.id)}>
+							<input class="hidden" {...rmEntry.fields.id.as('text')} value={selectedEntry.id} />
+							<Button variant="destructive" type="submit">{m.delete()}</Button>
+						</form>
+					{/if}
+				</div>
+			{/if}
 			{#if showReceiptControls}
 				<div class="rounded bg-slate-800 p-2" transition:slide>
 					<form
@@ -187,30 +189,38 @@ async function enhance({ form, submit }: EnhanceParams<typeof addEntry.enhance>)
 					</form>
 				</div>
 			{/if}
-			<div>{m.payments_title()}</div>
-			<svelte:boundary>
-				<ScrollArea class="flex max-h-[200px] flex-col rounded bg-slate-800 p-2">
-					{#each await getPayments({ id: selectedEntry.id }) as payment (payment.id)}
-						<div
-							class="mb-2 flex items-center gap-4 rounded bg-gray-600 px-4 py-1 last:mb-0"
-							animate:flip>
-							{@render badge(payment)}
-							<div>{formatter.money(payment.amount)}</div>
-							<div>{formatter.date(payment.created, 'h:mm aaa eee MMM d')}</div>
-						</div>
-					{:else}
-						<div class="text-center">{m.payments_empty()}</div>
-					{/each}
-				</ScrollArea>
-
-				{#snippet pending()}
-					<div class="rounded bg-slate-800 p-2">
-						{#each { length: 3 }}
-							<div class="mb-2 h-8 animate-pulse rounded bg-gray-600"></div>
+			{#if selectedEntry.type === EntryType.income}
+				<div>{m.payments_title()}</div>
+				<svelte:boundary>
+					<ScrollArea class="flex max-h-[200px] flex-col rounded bg-slate-800 p-2">
+						{#each await getPayments({ id: selectedEntry.id }) as payment (payment.id)}
+							<div
+								class="mb-2 flex items-center gap-4 rounded bg-gray-600 px-4 py-1 last:mb-0"
+								animate:flip>
+								{@render badge(payment)}
+								<div>{formatter.money(payment.amount)}</div>
+								<div>{formatter.date(payment.created, 'h:mm aaa eee MMM d')}</div>
+							</div>
+						{:else}
+							<div class="text-center">{m.payments_empty()}</div>
 						{/each}
-					</div>
-				{/snippet}
-			</svelte:boundary>
+					</ScrollArea>
+
+					{#snippet pending()}
+						<div class="rounded bg-slate-800 p-2">
+							{#each { length: 3 }}
+								<div class="mb-2 h-8 animate-pulse rounded bg-gray-600"></div>
+							{/each}
+						</div>
+					{/snippet}
+
+					{#snippet failed()}
+						<div class="rounded bg-slate-800 p-2">
+							<div class="text-center">{m.payments_empty()}</div>
+						</div>
+					{/snippet}
+				</svelte:boundary>
+			{/if}
 		</Dialog.Content>
 	</Dialog.Root>
 {/if}
