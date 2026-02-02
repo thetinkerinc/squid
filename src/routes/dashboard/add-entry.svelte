@@ -72,7 +72,7 @@ async function enhance({ form, submit }: EnhanceParams<typeof addEntry.enhance>)
 			{#if canBePending}
 				<div class="my-2 flex items-center gap-2">
 					<Checkbox {...addEntry.fields.pending.as('checkbox')} type="button" id="pending" />
-					<Label for="pending">Pending</Label>
+					<Label for="pending">{m.entry_pending()}</Label>
 				</div>
 			{:else}
 				<input class="hidden" {...addEntry.fields.pending.as('checkbox')} value={false} />

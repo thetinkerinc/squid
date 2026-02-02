@@ -1,5 +1,6 @@
 {
 	"$schema": "https://inlang.com/schema/inlang-message-format",
+	"delete": "Borrar",
 	"landing_title": "Ahorra tu quid con squid!",
 	"landing_description_top": "Rastrea tus ganancias y gastos y colaborar",
 	"landing_description_bottom": "para hacer un presupuesto compartido",
@@ -36,7 +37,15 @@
 	"add_entry_income_title": "Agregar ingresos a tu cuenta",
 	"add_entry_withrawal_title": "Retirar efectivo",
 	"add_entry_no_category": "Elige una categoría para esta entrada",
-	"add_child_entry_category": "pago",
+	"add_entry_no_amount": "Entrar una cantidad",
+	"add_payment_category": "pago",
+	"payments_total_received": "Recibido",
+	"payments_register_button": "Registrar pago",
+	"payments_add_button": "Guardar",
+	"payments_received_button": "Marcar como reibido",
+	"payments_title": "Pagos",
+	"payments_empty": "No pagos",
+	"payment_value_exceeded_error": " Cantidad pagada en total no puede exceder total de la entrada",
 	"partner_add_success": "Invitación mandada!",
 	"partner_add_error": "No pudimos enviar tu invitación. Asegúrate de que tu compañero tenga una cuenta y que hayas entrado bien su correo.",
 	"partner_add_button": "Agregar compañero",
@@ -50,5 +59,6 @@
 	"datetime_accept": "Aceptar",
 	"datetime_cancel": "Cancelar",
 	"account_bank": "Banco",
-	"account_cash": "Efectivo"
+	"account_cash": "Efectivo",
+	"entry_pending": "Pendiente"
 }

@@ -76,7 +76,7 @@ export const addEntry = Authenticated.form(schema.entry, async ({ ctx, data, iss
 				.where('id', '=', data.parent)
 				.executeTakeFirstOrThrow();
 			if (paid > enteredAmount) {
-				invalid(issue.enteredAmount("Total paid amount can't exceed entry total"));
+				invalid(issue.enteredAmount(m.payment_value_exceeded_error()));
 			} else if (paid === enteredAmount) {
 				await tx
 					.updateTable('entries')
@@ -127,7 +127,7 @@ export const markReceived = Authenticated.form(schema.entryId, async ({ ctx, dat
 				amount: await convert(tx, parent.enteredCurrency, remaining),
 				enteredAmount: remaining,
 				enteredCurrency: parent.enteredCurrency,
-				category: m.add_child_entry_category(),
+				category: m.add_payment_category(),
 				user: ctx.userId,
 				userEmail
 			})

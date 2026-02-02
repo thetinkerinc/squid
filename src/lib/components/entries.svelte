@@ -108,10 +108,10 @@ async function enhance({ form, submit }: EnhanceParams<typeof addEntry.enhance>)
 							<svelte:boundary>
 								{@const payments = await getPayments({ id: selectedEntry.id })}
 								{@const received = payments.reduce((a, v) => a + v.amount, 0)}
-								<div>{formatter.money(received)} Received</div>
+								<div>{formatter.money(received)} {m.payments_total_received()}</div>
 
 								{#snippet pending()}
-									<div>-- Received</div>
+									<div>-- {m.payments_total_received()}</div>
 								{/snippet}
 							</svelte:boundary>
 						</div>
@@ -127,7 +127,7 @@ async function enhance({ form, submit }: EnhanceParams<typeof addEntry.enhance>)
 			<div class="flex gap-1">
 				<div class="capitalize">{selectedEntry.category}</div>
 				<div>-</div>
-				<div class="text-gray-500">{selectedEntry.description ?? 'No description'}</div>
+				<div class="text-gray-500">{selectedEntry.description ?? m.breakdown_no_description()}</div>
 			</div>
 			<div>{selectedEntry.userEmail}</div>
 			<div class="my-2 flex items-center gap-2">
@@ -136,13 +136,13 @@ async function enhance({ form, submit }: EnhanceParams<typeof addEntry.enhance>)
 						variant="outline"
 						class="text-black"
 						onclick={() => (showReceiptControls = !showReceiptControls)}>
-						Register payment
+						{m.payments_register_button()}
 					</Button>
 				{/if}
 				{#if canDelete}
 					<form {...rmEntry.for(selectedEntry.id)}>
 						<input class="hidden" {...rmEntry.fields.id.as('text')} value={selectedEntry.id} />
-						<Button variant="destructive" type="submit">Delete</Button>
+						<Button variant="destructive" type="submit">{m.delete()}</Button>
 					</form>
 				{/if}
 			</div>
@@ -160,7 +160,7 @@ async function enhance({ form, submit }: EnhanceParams<typeof addEntry.enhance>)
 						<input
 							class="hidden"
 							{...addEntry.fields.category.as('text')}
-							value={m.add_child_entry_category()} />
+							value={m.add_payment_category()} />
 						<AmountInput currency={selectedEntry.enteredCurrency} />
 						<input
 							class="hidden"
@@ -170,7 +170,9 @@ async function enhance({ form, submit }: EnhanceParams<typeof addEntry.enhance>)
 							class="hidden"
 							{...addEntry.fields.created.as('text')}
 							value={new Date().toISOString()} />
-						<Button variant="outline" class="text-black" type="submit">Add</Button>
+						<Button variant="outline" class="text-black" type="submit">
+							{m.payments_add_button()}
+						</Button>
 					</form>
 					<div class="mb-1">
 						{#each addEntry.for(selectedEntry.id).fields.enteredAmount.issues() as issue}
@@ -179,11 +181,13 @@ async function enhance({ form, submit }: EnhanceParams<typeof addEntry.enhance>)
 					</div>
 					<form {...markReceived.for(selectedEntry.id)}>
 						<input class="hidden" {...markReceived.fields.id.as('text')} value={selectedEntry.id} />
-						<Button variant="outline" class="text-black" type="submit">Mark as received</Button>
+						<Button variant="outline" class="text-black" type="submit">
+							{m.payments_received_button()}
+						</Button>
 					</form>
 				</div>
 			{/if}
-			<div>Payments</div>
+			<div>{m.payments_title()}</div>
 			<svelte:boundary>
 				<ScrollArea class="flex max-h-[200px] flex-col rounded bg-slate-800 p-2">
 					{#each await getPayments({ id: selectedEntry.id }) as payment (payment.id)}
@@ -195,7 +199,7 @@ async function enhance({ form, submit }: EnhanceParams<typeof addEntry.enhance>)
 							<div>{formatter.date(payment.created, 'h:mm aaa eee MMM d')}</div>
 						</div>
 					{:else}
-						<div class="text-center">No payments</div>
+						<div class="text-center">{m.payments_empty()}</div>
 					{/each}
 				</ScrollArea>
 

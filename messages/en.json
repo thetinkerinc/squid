@@ -1,5 +1,6 @@
 {
 	"$schema": "https://inlang.com/schema/inlang-message-format",
+	"delete": "Delete",
 	"landing_title": "Save quid with squid!",
 	"landing_description_top": "Easily keep track of your income and expenses",
 	"landing_description_bottom": "and collaborate with others to do shared budgeting",
@@ -36,7 +37,15 @@
 	"add_entry_income_title": "Add income to your account",
 	"add_entry_withrawal_title": "Withdraw cash",
 	"add_entry_no_category": "Choose a category for this entry",
-	"add_child_entry_category": "payment",
+	"add_entry_no_amount": "Enter a payment amount",
+	"add_payment_category": "payment",
+	"payments_total_received": "Received",
+	"payments_register_button": "Register payment",
+	"payments_add_button": "Add",
+	"payments_received_button": "Mark as received",
+	"payments_title": "Payments",
+	"payments_empty": "No payments",
+	"payment_value_exceeded_error": "Total paid amount can't exceed entry total",
 	"partner_add_success": "Invitation sent!",
 	"partner_add_error": "We couldn't send your invitation. Make sure your partner has an account and that you spelled their email correctly.",
 	"partner_add_button": "Add partner",
@@ -50,5 +59,6 @@
 	"datetime_accept": "Set",
 	"datetime_cancel": "Cancel",
 	"account_bank": "Bank",
-	"account_cash": "Cash"
+	"account_cash": "Cash",
+	"entry_pending": "Pending"
 }

@@ -11,7 +11,7 @@ export const entry = v.object({
 	account: v.enum(AccountType),
 	created: rmEmpty(v.pipe(v.string(), v.isoTimestamp(), v.toDate())),
 	amount: v.pipe(v.number(), v.gtValue(0)),
-	enteredAmount: v.message(v.pipe(v.number(), v.gtValue(0)), 'Enter a payment amount'),
+	enteredAmount: v.message(v.pipe(v.number(), v.gtValue(0)), m.add_entry_no_amount()),
 	enteredCurrency: v.enum(CurrencyType),
 	category: v.pipe(v.string(), v.nonEmpty(m.add_entry_no_category()), v.toLowerCase()),
 	description: rmEmpty(v.pipe(v.string(), v.toLowerCase()))
