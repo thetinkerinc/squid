@@ -13,7 +13,7 @@ declare module '@thetinkerinc/sprout/db' {
 	export interface PartnerTable {
 		id: k.Generated<string>;
 		user: string;
-		partners: string[];
+		partner: string;
 	}
 
 	export interface EntryTable {

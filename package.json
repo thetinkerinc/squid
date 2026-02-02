@@ -20,11 +20,11 @@
 	},
 	"dependencies": {
 		"@clerk/localizations": "^3.35.3",
-		"@inlang/paraglide-js": "^2.9.1",
+		"@inlang/paraglide-js": "^2.10.0",
 		"@neondatabase/serverless": "^1.0.2",
 		"@thetinkerinc/commander": "^0.2.0",
 		"@thetinkerinc/isolocal": "^0.1.1",
-		"@thetinkerinc/sprout": "^0.2.5",
+		"@thetinkerinc/sprout": "^0.3.0",
 		"@trigger.dev/sdk": "4.3.3",
 		"date-fns": "^4.1.0",
 		"echarts": "^6.0.0",

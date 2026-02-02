@@ -3,7 +3,7 @@ import local from '@thetinkerinc/isolocal';
 import { useClerkContext } from 'svelte-clerk/client';
 import { LogOut } from '@lucide/svelte';
 
-import { getEntriesAndPartners, getPaymentsTotals, getInvitations } from '$remote/data.remote';
+import { getEntries, getPartners, getPaymentsTotals, getInvitations } from '$remote/data.remote';
 
 import Card from '$components/card.svelte';
 import CurrencySelector from '$components/currency-selector.svelte';
@@ -19,11 +19,10 @@ import Partners from './partners.svelte';
 
 const ctx = useClerkContext();
 
-const entriesAndPartners = $derived(await getEntriesAndPartners());
+const entries = $derived(await getEntries());
+const partners = $derived(await getPartners());
 const paymentsTotals = $derived(await getPaymentsTotals());
 const invitations = $derived(await getInvitations());
-const entries = $derived(entriesAndPartners.entries);
-const partners = $derived(entriesAndPartners.partners);
 
 async function logout() {
 	await ctx.clerk?.signOut();

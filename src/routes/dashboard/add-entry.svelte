@@ -4,7 +4,7 @@ let { defaultCategories, entryType, canBePending = false, title, label }: Props 
 import { toast } from 'svelte-sonner';
 
 import * as m from '$paraglide/messages';
-import { getEntriesAndPartners, addEntry } from '$remote/data.remote';
+import { getEntries, addEntry } from '$remote/data.remote';
 import * as schema from '$remote/schema';
 
 import * as AlertDialog from '$components/ui/alert-dialog';
@@ -29,8 +29,7 @@ interface Props {
 
 let open = $state<boolean>(false);
 
-let entriesAndPartners = $derived(await getEntriesAndPartners());
-let entries = $derived(entriesAndPartners.entries.filter((e) => e.type === entryType));
+let entries = $derived((await getEntries()).filter((e) => e.type === entryType));
 
 async function enhance({ form, submit }: EnhanceParams<typeof addEntry.enhance>) {
 	try {

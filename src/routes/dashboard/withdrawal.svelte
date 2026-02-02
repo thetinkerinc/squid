@@ -3,7 +3,7 @@ import { toast } from 'svelte-sonner';
 import * as _ from 'radashi';
 
 import * as m from '$paraglide/messages';
-import { getEntriesAndPartners, addEntry } from '$remote/data.remote';
+import { getEntries, addEntry } from '$remote/data.remote';
 import * as schema from '$remote/schema';
 
 import * as AlertDialog from '$components/ui/alert-dialog';
@@ -16,8 +16,7 @@ import { EntryType, AccountType } from '$types';
 
 let open = $state(false);
 
-let entriesAndPartners = $derived(await getEntriesAndPartners());
-let entries = $derived(entriesAndPartners.entries.filter((e) => e.type === EntryType.withdrawal));
+let entries = $derived((await getEntries()).filter((e) => e.type === EntryType.withdrawal));
 let descriptions = $derived(_.unique(_.sift(entries.map((e) => e.description))));
 
 async function enhance({ form, submit }: Parameters<Parameters<typeof addEntry.enhance>[0]>[0]) {

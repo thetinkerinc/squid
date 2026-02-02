@@ -7,20 +7,37 @@ import * as m from '$paraglide/messages';
 
 import * as schema from './schema';
 
-import { type Tx, type Ctx, type Db, AccountType, EntryType, type CurrencyValue } from '$types';
+import { type Tx, type Db, AccountType, EntryType, type CurrencyValue } from '$types';
 
-export const getEntriesAndPartners = Authenticated.query(async ({ ctx }) => {
-	const partners = await getPartners(ctx);
-	const entries = await getEntries(ctx, partners);
+export const getEntries = Authenticated.query(async ({ ctx }) => {
+	return await ctx.db
+		.selectFrom('entries')
+		.selectAll()
+		.where('parent', 'is', null)
+		.where((w) =>
+			w.or([
+				w('entries.user', '=', ctx.userId),
+				w(
+					'userEmail',
+					'in',
+					ctx.db.selectFrom('partners').select('partner').where('partners.user', '=', ctx.userId)
+				)
+			])
+		)
+		.orderBy('created', 'desc')
+		.execute();
+});
 
-	return {
-		partners,
-		entries
-	};
+export const getPartners = Authenticated.query(async ({ ctx }) => {
+	const resp = await ctx.db
+		.selectFrom('partners')
+		.where('user', '=', ctx.userId)
+		.select('partner')
+		.execute();
+	return resp.map((r) => r.partner);
 });
 
 export const getPaymentsTotals = Authenticated.query(async ({ ctx }) => {
-	const partners = await getPartners(ctx);
 	return await ctx.db
 		.selectFrom('entries as p')
 		.select([
@@ -34,22 +51,33 @@ export const getPaymentsTotals = Authenticated.query(async ({ ctx }) => {
 		.innerJoin('entries as c', 'p.id', 'c.parent')
 		.where('c.parent', 'is not', null)
 		.where('p.pending', '=', true)
-		.$if(partners.length === 0, (q) => q.where('c.user', '=', ctx.userId))
-		.$if(partners.length > 0, (q) =>
-			q.where((w) => w.or([w('c.user', '=', ctx.userId), w('c.userEmail', 'in', partners)]))
+		.where((w) =>
+			w.or([
+				w('p.user', '=', ctx.userId),
+				w(
+					'p.userEmail',
+					'in',
+					ctx.db.selectFrom('partners').select('partner').where('partners.user', '=', ctx.userId)
+				)
+			])
 		)
 		.executeTakeFirstOrThrow();
 });
 
 export const getPayments = Authenticated.query(schema.entryId, async ({ ctx, params }) => {
-	const partners = await getPartners(ctx);
 	return await ctx.db
 		.selectFrom('entries')
 		.selectAll()
 		.where('parent', '=', params.id)
-		.$if(partners.length === 0, (q) => q.where('user', '=', ctx.userId))
-		.$if(partners.length > 0, (q) =>
-			q.where((w) => w.or([w('user', '=', ctx.userId), w('userEmail', 'in', partners)]))
+		.where((w) =>
+			w.or([
+				w('entries.user', '=', ctx.userId),
+				w(
+					'userEmail',
+					'in',
+					ctx.db.selectFrom('partners').select('partner').where('partners.user', '=', ctx.userId)
+				)
+			])
 		)
 		.orderBy('created', 'desc')
 		.execute();
@@ -196,28 +224,6 @@ export const respond = Authenticated.form(schema.response, async ({ ctx, data })
 	});
 });
 
-async function getPartners({ db, userId }: Ctx) {
-	const resp = await db
-		.selectFrom('partners')
-		.where('user', '=', userId)
-		.select(['partners'])
-		.executeTakeFirst();
-	return resp?.partners ?? [];
-}
-
-async function getEntries({ db, userId }: Ctx, partners: string[]) {
-	return await db
-		.selectFrom('entries')
-		.selectAll()
-		.where('parent', 'is', null)
-		.$if(partners.length === 0, (q) => q.where('user', '=', userId))
-		.$if(partners.length > 0, (q) =>
-			q.where((w) => w.or([w('user', '=', userId), w('userEmail', 'in', partners)]))
-		)
-		.orderBy('created', 'desc')
-		.execute();
-}
-
 async function getAmountPaid(db: Db, id: string) {
 	const { paid } = await db
 		.selectFrom('entries')
@@ -232,13 +238,8 @@ async function addPartner(tx: Tx, user: string, partner: string) {
 		.insertInto('partners')
 		.values({
 			user,
-			partners: [partner]
+			partner
 		})
-		.onConflict((c) =>
-			c.column('user').doUpdateSet({
-				partners: sql`array_append(partners.partners, ${partner})`
-			})
-		)
 		.execute();
 }
 
