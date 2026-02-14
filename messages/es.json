@@ -42,7 +42,7 @@
 	"payments_total_received": "Recibido",
 	"payments_register_button": "Registrar pago",
 	"payments_add_button": "Guardar",
-	"payments_received_button": "Marcar como reibido",
+	"payments_received_button": "Marcar como recibido",
 	"payments_title": "Pagos",
 	"payments_empty": "No pagos",
 	"payment_value_exceeded_error": " Cantidad pagada en total no puede exceder total de la entrada",
