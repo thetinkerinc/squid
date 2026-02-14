@@ -14,7 +14,13 @@ export const entry = v.object({
 	enteredAmount: v.message(v.pipe(v.number(), v.gtValue(0)), m.add_entry_no_amount()),
 	enteredCurrency: v.enum(CurrencyType),
 	category: v.pipe(v.string(), v.nonEmpty(m.add_entry_no_category()), v.toLowerCase()),
-	description: rmEmpty(v.pipe(v.string(), v.toLowerCase()))
+	description: rmEmpty(v.pipe(v.string(), v.toLowerCase())),
+	tags: v.array(
+		v.object({
+			title: v.pipe(v.string(), v.nonEmpty(), v.toLowerCase()),
+			content: v.pipe(v.string(), v.nonEmpty(), v.toLowerCase())
+		})
+	)
 });
 
 export const entryId = v.object({

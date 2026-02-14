@@ -5,7 +5,7 @@ import { toast } from 'svelte-sonner';
 
 import * as m from '$paraglide/messages';
 import { getEntries, addEntry } from '$remote/data.remote';
-import * as schema from '$remote/schema';
+import * as schema from '$remote/data.schema';
 
 import * as AlertDialog from '$components/ui/alert-dialog';
 import { Button } from '$components/ui/button';
@@ -16,6 +16,7 @@ import AmountInput from '$components/amount-input.svelte';
 
 import DatetimeInput from './datetime-input.svelte';
 import CategoryInput from './category-input.svelte';
+import TagsInput from './tags-input.svelte';
 
 import type { EntryValue } from '$types';
 
@@ -77,6 +78,7 @@ async function enhance({ form, submit }: EnhanceParams<typeof addEntry.enhance>)
 				<input class="hidden" {...addEntry.fields.pending.as('checkbox')} value={false} />
 			{/if}
 			<CategoryInput {entries} {defaultCategories} />
+			<TagsInput />
 		</form>
 		<AlertDialog.Footer>
 			<AlertDialog.Cancel>{m.add_entry_cancel()}</AlertDialog.Cancel>

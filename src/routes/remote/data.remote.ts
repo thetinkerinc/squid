@@ -5,7 +5,7 @@ import { Authenticated } from '@thetinkerinc/sprout/commanders';
 
 import * as m from '$paraglide/messages';
 
-import * as schema from './schema';
+import * as schema from './data.schema';
 
 import { type Tx, type Db, AccountType, EntryType, type CurrencyValue } from '$types';
 
@@ -115,14 +115,25 @@ export const addEntry = Authenticated.form(schema.entry, async ({ ctx, data, iss
 					.execute();
 			}
 		}
+		const { tags, ...entry } = data;
 		const userEmail = await getEmail(ctx.userId);
-		await tx
+		const { id: entryId } = await tx
 			.insertInto('entries')
 			.values({
-				...data,
+				...entry,
 				user: ctx.userId,
 				userEmail
 			})
+			.returning('id')
+			.executeTakeFirstOrThrow();
+		await tx
+			.insertInto('tags')
+			.values(
+				tags.map((t) => ({
+					...t,
+					entryId
+				}))
+			)
 			.execute();
 	});
 });

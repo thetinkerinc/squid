@@ -4,7 +4,7 @@ import * as _ from 'radashi';
 
 import * as m from '$paraglide/messages';
 import { getEntries, addEntry } from '$remote/data.remote';
-import * as schema from '$remote/schema';
+import * as schema from '$remote/data.schema';
 
 import * as AlertDialog from '$components/ui/alert-dialog';
 import { Button } from '$components/ui/button';

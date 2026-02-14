@@ -46,6 +46,8 @@
 	"payments_title": "Pagos",
 	"payments_empty": "No pagos",
 	"payment_value_exceeded_error": " Cantidad pagada en total no puede exceder total de la entrada",
+	"tags_title_placeholder": "Título",
+	"tags_content_placeholder": "Contenido",
 	"partner_add_success": "Invitación mandada!",
 	"partner_add_error": "No pudimos enviar tu invitación. Asegúrate de que tu compañero tenga una cuenta y que hayas entrado bien su correo.",
 	"partner_add_button": "Agregar compañero",

@@ -6,6 +6,7 @@ declare module '@thetinkerinc/sprout/db' {
 	interface DB {
 		partners: PartnerTable;
 		entries: EntryTable;
+		tags: TagTable;
 		invitations: InvitationTable;
 		currencies: CurrencyTable;
 	}
@@ -30,6 +31,13 @@ declare module '@thetinkerinc/sprout/db' {
 		enteredCurrency: CurrencyValue;
 		category: string;
 		description: string | null;
+	}
+
+	export interface TagTable {
+		id: k.Generated<string>;
+		entryId: string;
+		title: string;
+		content: string;
 	}
 
 	export interface InvitationTable {
