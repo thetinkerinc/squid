@@ -18,7 +18,8 @@ const entries = [
 		category: m.expense_category_transport(),
 		description: 'uber',
 		user: 'user123',
-		userEmail: 'example@email.com'
+		userEmail: 'example@email.com',
+		tags: []
 	},
 	{
 		id: _.uid(8),
@@ -33,7 +34,8 @@ const entries = [
 		category: m.expense_category_groceries(),
 		description: null,
 		user: 'user321',
-		userEmail: 'partner@email.com'
+		userEmail: 'partner@email.com',
+		tags: []
 	},
 	{
 		id: _.uid(8),
@@ -48,7 +50,8 @@ const entries = [
 		category: m.withdrawal_category(),
 		description: null,
 		user: 'user123',
-		userEmail: 'example@email.com'
+		userEmail: 'example@email.com',
+		tags: []
 	},
 	{
 		id: _.uid(8),
@@ -63,7 +66,8 @@ const entries = [
 		category: m.expense_category_food(),
 		description: 'uber eats',
 		user: 'user123',
-		userEmail: 'example@email.com'
+		userEmail: 'example@email.com',
+		tags: []
 	},
 	{
 		id: _.uid(8),
@@ -78,7 +82,8 @@ const entries = [
 		category: m.income_category_paycheck(),
 		description: date.format(date.sub(new Date(), { days: 15.1 }), 'MMMM'),
 		user: 'user123',
-		userEmail: 'example@email.com'
+		userEmail: 'example@email.com',
+		tags: []
 	}
 ];
 

@@ -1,5 +1,6 @@
 import { error, invalid } from '@sveltejs/kit';
 import { sql } from 'kysely';
+import { jsonArrayFrom } from 'kysely/helpers/postgres';
 import { getEmail, getUserId } from '@thetinkerinc/sprout/auth';
 import { Authenticated } from '@thetinkerinc/sprout/commanders';
 
@@ -12,7 +13,15 @@ import { type Tx, type Db, AccountType, EntryType, type CurrencyValue } from '$t
 export const getEntries = Authenticated.query(async ({ ctx }) => {
 	return await ctx.db
 		.selectFrom('entries')
-		.selectAll()
+		.selectAll('entries')
+		.select((q) => [
+			jsonArrayFrom(
+				q
+					.selectFrom('tags')
+					.select(['id', 'title', 'content'])
+					.whereRef('tags.entryId', '=', 'entries.id')
+			).as('tags')
+		])
 		.where('parent', 'is', null)
 		.where((w) =>
 			w.or([

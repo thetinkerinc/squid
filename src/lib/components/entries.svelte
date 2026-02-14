@@ -5,7 +5,7 @@ import { flip } from 'svelte/animate';
 import { fade, slide } from 'svelte/transition';
 import { watch } from 'runed';
 import { toast } from 'svelte-sonner';
-import { ArrowUp, ArrowDown, Redo, Clock, Landmark, Banknote } from '@lucide/svelte';
+import { ArrowUp, ArrowDown, Redo, Clock, Landmark, Banknote, Tag } from '@lucide/svelte';
 
 import formatter from '$utils/formatter';
 
@@ -17,17 +17,17 @@ import * as Dialog from '$components/ui/dialog';
 import { Button } from '$components/ui/button';
 import AmountInput from '$components/amount-input.svelte';
 
-import { EntryType, AccountType, type Entry } from '$types';
+import { EntryType, AccountType, type Entry, type EntryWithTags } from '$types';
 
 interface Props {
-	entries: Entry[];
+	entries: EntryWithTags[];
 	canDelete?: boolean;
 }
 
 let showReceiptControls = $state(false);
 let selectedIdx = $state<number>();
 
-let selectedEntry = $derived<Entry | undefined>(
+let selectedEntry = $derived<EntryWithTags | undefined>(
 	selectedIdx == null ? undefined : entries[selectedIdx]
 );
 let entryId = $derived(selectedEntry?.id);
@@ -96,6 +96,7 @@ async function enhance({ form, submit }: EnhanceParams<typeof addEntry.enhance>)
 {#if selectedEntry}
 	<Dialog.Root onOpenChangeComplete={handleCloseDetails} open={!!selectedEntry}>
 		<Dialog.Content class="flex flex-col gap-2 bg-primary py-2 py-4 text-base text-white">
+			<!-- Amount -->
 			<div class="flex items-center gap-3">
 				{@render badge(selectedEntry)}
 				<div>
@@ -123,13 +124,33 @@ async function enhance({ form, submit }: EnhanceParams<typeof addEntry.enhance>)
 					<Banknote />
 				{/if}
 			</div>
+
+			<!-- Date -->
 			<div>{formatter.date(selectedEntry.created, 'h:mm aaa eee MMM d')}</div>
+
+			<!-- Category -->
 			<div class="flex gap-1">
 				<div class="capitalize">{selectedEntry.category}</div>
 				<div>-</div>
 				<div class="text-gray-500">{selectedEntry.description ?? m.breakdown_no_description()}</div>
 			</div>
+
+			<!-- Tags -->
+			<div class="flex flex-wrap items-center">
+				{#each selectedEntry.tags as tag}
+					<div class="flex w-fit items-center gap-1 rounded bg-slate-800 p-2">
+						<Tag size={20} />
+						<div class="font-bold">{tag.title}</div>
+						<div>-</div>
+						<div>{tag.content}</div>
+					</div>
+				{/each}
+			</div>
+
+			<!-- User -->
 			<div>{selectedEntry.userEmail}</div>
+
+			<!-- Actions -->
 			{#if selectedEntry.pending || canDelete}
 				<div class="my-2 flex items-center gap-2">
 					{#if selectedEntry.pending}
@@ -148,6 +169,8 @@ async function enhance({ form, submit }: EnhanceParams<typeof addEntry.enhance>)
 					{/if}
 				</div>
 			{/if}
+
+			<!-- Forms -->
 			{#if showReceiptControls}
 				<div class="rounded bg-slate-800 p-2" transition:slide>
 					<form
@@ -225,7 +248,7 @@ async function enhance({ form, submit }: EnhanceParams<typeof addEntry.enhance>)
 	</Dialog.Root>
 {/if}
 
-{#snippet badge(entry: Entry)}
+{#snippet badge(entry: Entry | EntryWithTags)}
 	{#if entry.type === EntryType.income}
 		<div class="badge relative from-green-300 to-green-400">
 			<ArrowUp size={20} />
