@@ -3,6 +3,7 @@ import { sql } from 'kysely';
 import { jsonArrayFrom } from 'kysely/helpers/postgres';
 import { getEmail, getUserId } from '@thetinkerinc/sprout/auth';
 import { Authenticated } from '@thetinkerinc/sprout/commanders';
+import * as _ from 'radashi';
 
 import * as m from '$paraglide/messages';
 
@@ -35,6 +36,41 @@ export const getEntries = Authenticated.query(async ({ ctx }) => {
 		)
 		.orderBy('created', 'desc')
 		.execute();
+});
+
+export const getTags = Authenticated.query(schema.entryType, async ({ ctx, params }) => {
+	const resp = await ctx.db
+		.selectFrom('tags')
+		.select(['title', 'content'])
+		.distinct()
+		.where(
+			'entryId',
+			'in',
+			ctx.db
+				.selectFrom('entries')
+				.select('id')
+				.where('type', '=', params.type)
+				.where((w) =>
+					w.or([
+						w('entries.user', '=', ctx.userId),
+						w(
+							'userEmail',
+							'in',
+							ctx.db
+								.selectFrom('partners')
+								.select('partner')
+								.where('partners.user', '=', ctx.userId)
+						)
+					])
+				)
+		)
+		.execute();
+
+	return resp.reduce((a: { [key: string]: string[] }, v) => {
+		a[v.title] = a[v.title] ?? [];
+		a[v.title].push(v.content);
+		return a;
+	}, {}) as { [key: string]: string[] };
 });
 
 export const getPartners = Authenticated.query(async ({ ctx }) => {
@@ -105,6 +141,11 @@ export const getInvitations = Authenticated.query(async ({ ctx }) => {
 
 export const addEntry = Authenticated.form(schema.entry, async ({ ctx, data, issue }) => {
 	await ctx.db.transaction().execute(async (tx) => {
+		const titles = data.tags.map((t) => t.title);
+		if (titles.length !== _.unique(titles).length) {
+			invalid(issue.tags(m.tags_duplicate_error()));
+		}
+
 		if (data.parent) {
 			const paid = (await getAmountPaid(tx, data.parent)) + data.enteredAmount;
 			const { enteredAmount } = await tx

@@ -35,6 +35,9 @@ let entries = $derived((await getEntries()).filter((e) => e.type === entryType))
 async function enhance({ form, submit }: EnhanceParams<typeof addEntry.enhance>) {
 	try {
 		await submit();
+		if (addEntry.fields.allIssues()) {
+			return;
+		}
 		form.reset();
 		open = false;
 	} catch (_err) {
@@ -78,7 +81,7 @@ async function enhance({ form, submit }: EnhanceParams<typeof addEntry.enhance>)
 				<input class="hidden" {...addEntry.fields.pending.as('checkbox')} value={false} />
 			{/if}
 			<CategoryInput {entries} {defaultCategories} />
-			<TagsInput />
+			<TagsInput {entryType} />
 		</form>
 		<AlertDialog.Footer>
 			<AlertDialog.Cancel>{m.add_entry_cancel()}</AlertDialog.Cancel>

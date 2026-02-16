@@ -15,12 +15,19 @@ export const entry = v.object({
 	enteredCurrency: v.enum(CurrencyType),
 	category: v.pipe(v.string(), v.nonEmpty(m.add_entry_no_category()), v.toLowerCase()),
 	description: rmEmpty(v.pipe(v.string(), v.toLowerCase())),
-	tags: v.array(
-		v.object({
-			title: v.pipe(v.string(), v.nonEmpty(), v.toLowerCase()),
-			content: v.pipe(v.string(), v.nonEmpty(), v.toLowerCase())
-		})
+	tags: v.optional(
+		v.array(
+			v.object({
+				title: v.pipe(v.string(), v.nonEmpty(), v.toLowerCase()),
+				content: v.pipe(v.string(), v.nonEmpty(), v.toLowerCase())
+			})
+		),
+		[]
 	)
+});
+
+export const entryType = v.object({
+	type: v.enum(EntryType)
 });
 
 export const entryId = v.object({

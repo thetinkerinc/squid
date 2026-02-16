@@ -48,6 +48,7 @@
 	"payment_value_exceeded_error": "Total paid amount can't exceed entry total",
 	"tags_title_placeholder": "Title",
 	"tags_content_placeholder": "Content",
+	"tags_duplicate_error": "You can't have duplicate tag names",
 	"partner_add_success": "Invitation sent!",
 	"partner_add_error": "We couldn't send your invitation. Make sure your partner has an account and that you spelled their email correctly.",
 	"partner_add_button": "Add partner",
