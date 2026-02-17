@@ -176,15 +176,17 @@ export const addEntry = Authenticated.form(schema.entry, async ({ ctx, data, iss
 			})
 			.returning('id')
 			.executeTakeFirstOrThrow();
-		await tx
-			.insertInto('tags')
-			.values(
-				tags.map((t) => ({
-					...t,
-					entryId
-				}))
-			)
-			.execute();
+		if (tags.length) {
+			await tx
+				.insertInto('tags')
+				.values(
+					tags.map((t) => ({
+						...t,
+						entryId
+					}))
+				)
+				.execute();
+		}
 	});
 });
 
