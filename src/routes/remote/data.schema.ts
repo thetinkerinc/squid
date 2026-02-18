@@ -13,13 +13,13 @@ export const entry = v.object({
 	amount: v.pipe(v.number(), v.gtValue(0)),
 	enteredAmount: v.message(v.pipe(v.number(), v.gtValue(0)), m.add_entry_no_amount()),
 	enteredCurrency: v.enum(CurrencyType),
-	category: v.pipe(v.string(), v.nonEmpty(m.add_entry_no_category()), v.toLowerCase()),
-	description: rmEmpty(v.pipe(v.string(), v.toLowerCase())),
+	category: v.pipe(v.string(), v.nonEmpty(m.add_entry_no_category()), v.trim(), v.toLowerCase()),
+	description: rmEmpty(v.pipe(v.string(), v.trim(), v.toLowerCase())),
 	tags: v.optional(
 		v.array(
 			v.object({
-				title: v.pipe(v.string(), v.nonEmpty(), v.toLowerCase()),
-				content: v.pipe(v.string(), v.nonEmpty(), v.toLowerCase())
+				title: v.pipe(v.string(), v.nonEmpty(), v.trim(), v.toLowerCase()),
+				content: v.pipe(v.string(), v.nonEmpty(), v.trim(), v.toLowerCase())
 			})
 		),
 		[]
@@ -35,7 +35,7 @@ export const entryId = v.object({
 });
 
 export const invitation = v.object({
-	to: v.pipe(v.string(), v.email(), v.toLowerCase())
+	to: v.pipe(v.string(), v.email(), v.trim(), v.toLowerCase())
 });
 
 export const response = v.object({
