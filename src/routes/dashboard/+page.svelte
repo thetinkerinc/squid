@@ -77,10 +77,10 @@ async function logout() {
 					<Expense />
 					<Withdrawal />
 				</div>
+				<Card>
+					<Search />
+				</Card>
 			</div>
-			<Card>
-				<Search />
-			</Card>
 			<Card>
 				<Entries entries={filteredEntries} />
 			</Card>

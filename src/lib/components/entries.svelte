@@ -70,7 +70,7 @@ async function enhance({ form, submit }: EnhanceParams<typeof addEntry.enhance>)
 <ScrollArea class="flex max-h-[300px] flex-col lg:max-h-[400px]">
 	{#each entries as entry, idx (entry.id)}
 		<div
-			class="entry mb-2 rounded bg-white/[0.7] shadow last:mb-0"
+			class="entry mb-2 rounded bg-white/[0.7] shadow"
 			animate:flip
 			transition:fade={{ duration: 200 }}>
 			<button
