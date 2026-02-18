@@ -74,16 +74,19 @@ async function enhance({ form, submit }: EnhanceParams<typeof addEntry.enhance>)
 			animate:flip
 			transition:fade={{ duration: 200 }}>
 			<button
-				class="flex w-full cursor-pointer items-center gap-4 px-4 py-1 hover:bg-gray-100/50"
+				class="flex w-full cursor-pointer items-center gap-3 px-4 py-1 hover:bg-gray-100/50"
 				onclick={() => (selectedIdx = idx)}>
-				<div class="flex flex-wrap items-center gap-2">
+				<div class="flex items-center gap-2">
 					<div class="flex items-center gap-2">
 						{@render badge(entry)}
 						<div>{formatter.money(entry.amount)}</div>
 					</div>
-					<div class="text-gray-500">{formatter.date(entry.created)}</div>
+					<div class="whitespace-nowrap text-gray-500">{formatter.date(entry.created)}</div>
 				</div>
 				<div class="capitalize">{entry.category}</div>
+				<div class="overflow-hidden text-ellipsis whitespace-nowrap text-gray-500">
+					{entry.description}
+				</div>
 			</button>
 		</div>
 	{:else}

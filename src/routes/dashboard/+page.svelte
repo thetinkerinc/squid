@@ -1,4 +1,5 @@
 <script lang="ts">
+import { page } from '$app/state';
 import local from '@thetinkerinc/isolocal';
 import { useClerkContext } from 'svelte-clerk/client';
 import { LogOut } from '@lucide/svelte';
@@ -15,14 +16,32 @@ import Breakdown from '$components/breakdown.svelte';
 import Income from './income.svelte';
 import Expense from './expense.svelte';
 import Withdrawal from './withdrawal.svelte';
+import Search from './search.svelte';
 import Partners from './partners.svelte';
 
 const ctx = useClerkContext();
 
 const entries = $derived(await getEntries());
+const filteredEntries = $derived(getFilteredEntries());
 const partners = $derived(await getPartners());
 const paymentsTotals = $derived(await getPaymentsTotals());
 const invitations = $derived(await getInvitations());
+
+function getFilteredEntries() {
+	const search = page.url.searchParams.get('search');
+	if (!search) {
+		return entries;
+	} else {
+		const normalizedSearch = search.toLocaleLowerCase();
+		return entries.filter((e) => {
+			return (
+				e.category.includes(normalizedSearch) ||
+				e.description?.includes(normalizedSearch) ||
+				e.tags.some((t) => t.content.includes(normalizedSearch))
+			);
+		});
+	}
+}
 
 async function logout() {
 	await ctx.clerk?.signOut();
@@ -60,7 +79,10 @@ async function logout() {
 				</div>
 			</div>
 			<Card>
-				<Entries {entries} />
+				<Search />
+			</Card>
+			<Card>
+				<Entries entries={filteredEntries} />
 			</Card>
 		</div>
 		<div>
