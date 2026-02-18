@@ -43,12 +43,10 @@ function setTime() {
 </script>
 
 <div class="flex items-center gap-2">
-	<div>
-		{formatter.date(value ?? new Date(), 'eee MMM d, h:mm aaa')}
-	</div>
 	<AlertDialog.Root bind:open>
-		<AlertDialog.Trigger type="button">
-			<SquarePen />
+		<AlertDialog.Trigger class="flex cursor-pointer items-center gap-1" type="button">
+			{formatter.date(value ?? new Date(), 'eee MMM d, h:mm aaa')}
+			<SquarePen size={20} />
 		</AlertDialog.Trigger>
 		<AlertDialog.Content class="w-auto">
 			<div class="mx-auto flex items-center gap-1">
