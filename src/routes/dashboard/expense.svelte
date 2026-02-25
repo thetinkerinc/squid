@@ -1,7 +1,13 @@
 <script lang="ts">
+let { project }: Props = $props();
+
 import * as m from '$paraglide/messages';
 
 import AddEntry from './add-entry.svelte';
+
+interface Props {
+	project: string;
+}
 
 const defaultCategories = [
 	m.expense_category_rent(),
@@ -16,6 +22,7 @@ const defaultCategories = [
 </script>
 
 <AddEntry
+	{project}
 	{defaultCategories}
 	entryType="expense"
 	title={m.add_entry_expense_title()}

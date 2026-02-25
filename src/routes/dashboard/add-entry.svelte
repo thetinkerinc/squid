@@ -1,5 +1,5 @@
 <script lang="ts">
-let { defaultCategories, entryType, canBePending = false, title, label }: Props = $props();
+let { project, defaultCategories, entryType, canBePending = false, title, label }: Props = $props();
 
 import { toast } from 'svelte-sonner';
 
@@ -21,6 +21,7 @@ import TagsInput from './tags-input.svelte';
 import type { EntryValue } from '$types';
 
 interface Props {
+	project: string;
 	defaultCategories: string[];
 	entryType: EntryValue;
 	canBePending?: boolean;
@@ -30,7 +31,7 @@ interface Props {
 
 let open = $state<boolean>(false);
 
-let entries = $derived((await getEntries()).filter((e) => e.type === entryType));
+let entries = $derived((await getEntries({ project })).filter((e) => e.type === entryType));
 
 async function enhance({ form, submit }: EnhanceParams<typeof addEntry.enhance>) {
 	try {

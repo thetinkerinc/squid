@@ -37,6 +37,7 @@
 		"valibot": "^1.2.0"
 	},
 	"devDependencies": {
+		"@clerk/backend": "^2.32.0",
 		"@dotenvx/dotenvx": "^1.52.0",
 		"@eslint/compat": "^2.0.2",
 		"@eslint/js": "^10.0.1",

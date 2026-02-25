@@ -5,6 +5,7 @@ import type { EntryValue, AccountValue, CurrencyValue } from '$types';
 declare module '@thetinkerinc/sprout/db' {
 	interface DB {
 		partners: PartnerTable;
+		projects: ProjectTable;
 		entries: EntryTable;
 		tags: TagTable;
 		invitations: InvitationTable;
@@ -14,11 +15,21 @@ declare module '@thetinkerinc/sprout/db' {
 	export interface PartnerTable {
 		id: k.Generated<string>;
 		user: string;
+		userEmail: string;
 		partner: string;
+		partnerEmail: string;
+		project: string;
+	}
+
+	export interface ProjectTable {
+		id: k.Generated<string>;
+		user: string;
+		name: string;
 	}
 
 	export interface EntryTable {
 		id: k.Generated<string>;
+		project: string;
 		parent: string | null;
 		user: string;
 		userEmail: string;

@@ -38,7 +38,8 @@ export const handle: Handle = sequence(
 		secretKey: CLERK_SECRET_KEY
 	}),
 	addLocalStorage({
-		currency: CurrencyType.CAD
+		currency: CurrencyType.CAD,
+		project: undefined
 	}),
 	handleRedirect
 );

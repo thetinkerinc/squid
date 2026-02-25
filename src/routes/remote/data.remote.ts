@@ -11,7 +11,31 @@ import * as schema from './data.schema';
 
 import { type Tx, type Db, AccountType, EntryType, type CurrencyValue } from '$types';
 
-export const getEntries = Authenticated.query(async ({ ctx }) => {
+export const getProjects = Authenticated.query(async ({ ctx }) => {
+	return await ctx.db
+		.selectFrom('projects')
+		.innerJoin('partners', (j) =>
+			j.onRef('projects.id', '=', 'partners.project').onRef('projects.user', '=', 'partners.user')
+		)
+		.selectAll('projects')
+		.select('partners.userEmail as email')
+		.where((w) =>
+			w.or([
+				w('projects.user', '=', ctx.userId),
+				w(
+					'projects.id',
+					'in',
+					ctx.db
+						.selectFrom('partners')
+						.select('partners.project')
+						.where('partners.partner', '=', ctx.userId)
+				)
+			])
+		)
+		.execute();
+});
+
+export const getEntries = Authenticated.query(schema.projectId, async ({ ctx, params }) => {
 	return await ctx.db
 		.selectFrom('entries')
 		.selectAll('entries')
@@ -24,6 +48,7 @@ export const getEntries = Authenticated.query(async ({ ctx }) => {
 			).as('tags')
 		])
 		.where('parent', 'is', null)
+		.where('project', '=', params.project)
 		.where((w) =>
 			w.or([
 				w('entries.user', '=', ctx.userId),
@@ -73,16 +98,17 @@ export const getTags = Authenticated.query(schema.entryType, async ({ ctx, param
 	}, {}) as { [key: string]: string[] };
 });
 
-export const getPartners = Authenticated.query(async ({ ctx }) => {
+export const getPartners = Authenticated.query(schema.projectId, async ({ ctx, params }) => {
 	const resp = await ctx.db
 		.selectFrom('partners')
 		.where('user', '=', ctx.userId)
+		.where('project', '=', params.project)
 		.select('partner')
 		.execute();
 	return resp.map((r) => r.partner);
 });
 
-export const getPaymentsTotals = Authenticated.query(async ({ ctx }) => {
+export const getPaymentsTotals = Authenticated.query(schema.projectId, async ({ ctx, params }) => {
 	return await ctx.db
 		.selectFrom('entries as p')
 		.select([
@@ -96,6 +122,7 @@ export const getPaymentsTotals = Authenticated.query(async ({ ctx }) => {
 		.innerJoin('entries as c', 'p.id', 'c.parent')
 		.where('c.parent', 'is not', null)
 		.where('p.pending', '=', true)
+		.where('p.project', '=', params.project)
 		.where((w) =>
 			w.or([
 				w('p.user', '=', ctx.userId),

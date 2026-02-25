@@ -1,4 +1,6 @@
 <script lang="ts">
+let { project }: Props = $props();
+
 import { toast } from 'svelte-sonner';
 import * as _ from 'radashi';
 
@@ -14,9 +16,15 @@ import DescriptionInput from './description-input.svelte';
 
 import { EntryType, AccountType } from '$types';
 
+interface Props {
+	project: string;
+}
+
 let open = $state(false);
 
-let entries = $derived((await getEntries()).filter((e) => e.type === EntryType.withdrawal));
+let entries = $derived(
+	(await getEntries({ project })).filter((e) => e.type === EntryType.withdrawal)
+);
 let descriptions = $derived(_.unique(_.sift(entries.map((e) => e.description))));
 
 async function enhance({ form, submit }: Parameters<Parameters<typeof addEntry.enhance>[0]>[0]) {

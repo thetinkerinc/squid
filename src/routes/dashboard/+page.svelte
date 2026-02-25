@@ -4,7 +4,13 @@ import local from '@thetinkerinc/isolocal';
 import { useClerkContext } from 'svelte-clerk/client';
 import { LogOut } from '@lucide/svelte';
 
-import { getEntries, getPartners, getPaymentsTotals, getInvitations } from '$remote/data.remote';
+import {
+	getProjects,
+	getEntries,
+	getPartners,
+	getPaymentsTotals,
+	getInvitations
+} from '$remote/data.remote';
 
 import Card from '$components/card.svelte';
 import CurrencySelector from '$components/currency-selector.svelte';
@@ -13,6 +19,7 @@ import Totals from '$components/totals.svelte';
 import Entries from '$components/entries.svelte';
 import Breakdown from '$components/breakdown.svelte';
 
+import Projects from './projects.svelte';
 import Income from './income.svelte';
 import Expense from './expense.svelte';
 import Withdrawal from './withdrawal.svelte';
@@ -21,10 +28,12 @@ import Partners from './partners.svelte';
 
 const ctx = useClerkContext();
 
-const entries = $derived(await getEntries());
+const projects = $derived(await getProjects());
+const project = $derived(local.project ?? projects[0].id);
+const entries = $derived(await getEntries({ project }));
 const filteredEntries = $derived(getFilteredEntries());
-const partners = $derived(await getPartners());
-const paymentsTotals = $derived(await getPaymentsTotals());
+const partners = $derived(await getPartners({ project }));
+const paymentsTotals = $derived(await getPaymentsTotals({ project }));
 const invitations = $derived(await getInvitations());
 
 function getFilteredEntries() {
@@ -53,8 +62,9 @@ async function logout() {
 </svelte:head>
 <div class="px-8 pt-4 pb-10">
 	<div class="mb-4 flex items-center">
-		<div class="flex-auto">
+		<div class="flex flex-auto items-center gap-4">
 			<img src="/logo.png" alt="Cartoon squid with money" class="w-[70px]" />
+			<Projects />
 		</div>
 		<div class="flex items-center gap-4">
 			<CurrencySelector bind:currency={local.currency} />
@@ -73,9 +83,9 @@ async function logout() {
 					<Totals {entries} {paymentsTotals} />
 				</Card>
 				<div class="my-4 flex justify-around">
-					<Income />
-					<Expense />
-					<Withdrawal />
+					<Income {project} />
+					<Expense {project} />
+					<Withdrawal {project} />
 				</div>
 				<Card>
 					<Search />

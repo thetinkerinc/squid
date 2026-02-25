@@ -16,6 +16,7 @@ declare global {
 		interface Locals {
 			localStorage: Local & {
 				currency: CurrencyValue;
+				project: string | undefined;
 			};
 		}
 	}

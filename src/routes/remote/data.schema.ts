@@ -30,6 +30,10 @@ export const entryType = v.object({
 	type: v.enum(EntryType)
 });
 
+export const projectId = v.object({
+	project: v.pipe(v.string(), v.uuid())
+});
+
 export const entryId = v.object({
 	id: v.pipe(v.string(), v.uuid())
 });
