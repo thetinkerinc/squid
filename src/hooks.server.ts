@@ -39,7 +39,8 @@ export const handle: Handle = sequence(
 	}),
 	addLocalStorage({
 		currency: CurrencyType.CAD,
-		project: undefined
+		project: undefined,
+		search: ''
 	}),
 	handleRedirect
 );

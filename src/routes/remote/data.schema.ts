@@ -5,6 +5,7 @@ import * as m from '$paraglide/messages';
 import { EntryType, AccountType, CurrencyType } from '$types';
 
 export const entry = v.object({
+	project: v.pipe(v.string(), v.uuid()),
 	parent: v.optional(v.pipe(v.string(), v.uuid())),
 	type: v.enum(EntryType),
 	pending: v.optional(v.boolean(), false),
@@ -24,6 +25,15 @@ export const entry = v.object({
 		),
 		[]
 	)
+});
+
+export const project = v.object({
+	id: v.pipe(v.string(), v.uuid()),
+	name: v.pipe(v.string(), v.nonEmpty(), v.trim())
+});
+
+export const newProject = v.object({
+	name: v.pipe(v.string(), v.nonEmpty(), v.trim())
 });
 
 export const entryType = v.object({

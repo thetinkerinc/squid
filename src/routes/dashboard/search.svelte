@@ -1,24 +1,16 @@
 <script lang="ts">
 import { page } from '$app/state';
-import { updateSearch } from '@thetinkerinc/sprout/navigation';
-import { watch } from 'runed';
+import local from '@thetinkerinc/isolocal';
 import { Search, X } from '@lucide/svelte';
-import * as _ from 'radashi';
 
 import { Input } from '$components/ui/input';
-
-const update = _.debounce({ delay: 300 }, _update);
 
 let elem = $state<HTMLInputElement | null>(null);
 let search = $state(page.url.searchParams.get('search') ?? '');
 
-watch(() => search, update);
-
-function _update() {
-	updateSearch({
-		search
-	});
-}
+$effect(() => {
+	local.search = search;
+});
 
 function clear() {
 	search = '';

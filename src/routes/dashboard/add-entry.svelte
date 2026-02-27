@@ -56,6 +56,7 @@ async function enhance({ form, submit }: EnhanceParams<typeof addEntry.enhance>)
 	<AlertDialog.Content class="border border-white/[0.8] bg-white/[0.3] backdrop-blur">
 		<AlertDialog.Title>{title}</AlertDialog.Title>
 		<form {...addEntry.preflight(schema.entry).enhance(enhance)} id="add-entry">
+			<input class="hidden" {...addEntry.fields.project.as('text')} value={project} />
 			<input class="hidden" {...addEntry.fields.type.as('text')} value={entryType} />
 			<AmountInput />
 			<div class="my-2 flex flex-wrap items-center gap-4">

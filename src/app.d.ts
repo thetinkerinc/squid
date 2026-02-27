@@ -17,6 +17,7 @@ declare global {
 			localStorage: Local & {
 				currency: CurrencyValue;
 				project: string | undefined;
+				search: string;
 			};
 		}
 	}

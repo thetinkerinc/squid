@@ -12,11 +12,9 @@ import * as schema from './data.schema';
 import { type Tx, type Db, AccountType, EntryType, type CurrencyValue } from '$types';
 
 export const getProjects = Authenticated.query(async ({ ctx }) => {
-	return await ctx.db
+	const projects = await ctx.db
 		.selectFrom('projects')
-		.innerJoin('partners', (j) =>
-			j.onRef('projects.id', '=', 'partners.project').onRef('projects.user', '=', 'partners.user')
-		)
+		.innerJoin('partners', 'projects.user', 'partners.user')
 		.selectAll('projects')
 		.select('partners.userEmail as email')
 		.where((w) =>
@@ -33,6 +31,9 @@ export const getProjects = Authenticated.query(async ({ ctx }) => {
 			])
 		)
 		.execute();
+
+	const split = _.fork(projects, (p) => p.user === ctx.userId);
+	return [..._.alphabetical(split[0], (p) => p.name), ..._.alphabetical(split[1], (p) => p.name)];
 });
 
 export const getEntries = Authenticated.query(schema.projectId, async ({ ctx, params }) => {
@@ -103,9 +104,9 @@ export const getPartners = Authenticated.query(schema.projectId, async ({ ctx, p
 		.selectFrom('partners')
 		.where('user', '=', ctx.userId)
 		.where('project', '=', params.project)
-		.select('partner')
+		.select('partnerEmail')
 		.execute();
-	return resp.map((r) => r.partner);
+	return resp.map((r) => r.partnerEmail);
 });
 
 export const getPaymentsTotals = Authenticated.query(schema.projectId, async ({ ctx, params }) => {
@@ -163,6 +164,27 @@ export const getInvitations = Authenticated.query(async ({ ctx }) => {
 		.where('to', '=', email)
 		.where('accepted', 'is', null)
 		.orderBy('sent', 'desc')
+		.execute();
+});
+
+export const addProject = Authenticated.form(schema.newProject, async ({ ctx, data }) => {
+	await ctx.db
+		.insertInto('projects')
+		.values({
+			...data,
+			user: ctx.userId
+		})
+		.execute();
+});
+
+export const editProject = Authenticated.form(schema.project, async ({ ctx, data }) => {
+	await ctx.db
+		.updateTable('projects')
+		.where('id', '=', data.id)
+		.where('user', '=', ctx.userId)
+		.set({
+			name: data.name
+		})
 		.execute();
 });
 
@@ -228,7 +250,7 @@ export const markReceived = Authenticated.form(schema.entryId, async ({ ctx, dat
 			.set({
 				pending: false
 			})
-			.returning(['account', 'enteredAmount', 'enteredCurrency'])
+			.returning(['project', 'account', 'enteredAmount', 'enteredCurrency'])
 			.executeTakeFirstOrThrow();
 
 		const paid = await getAmountPaid(tx, data.id);
@@ -238,6 +260,7 @@ export const markReceived = Authenticated.form(schema.entryId, async ({ ctx, dat
 			.insertInto('entries')
 			.values({
 				parent: data.id,
+				project: parent.project,
 				type: EntryType.income,
 				pending: false,
 				account: parent.account,

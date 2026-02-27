@@ -1,5 +1,4 @@
 <script lang="ts">
-import { page } from '$app/state';
 import local from '@thetinkerinc/isolocal';
 import { useClerkContext } from 'svelte-clerk/client';
 import { LogOut } from '@lucide/svelte';
@@ -37,7 +36,7 @@ const paymentsTotals = $derived(await getPaymentsTotals({ project }));
 const invitations = $derived(await getInvitations());
 
 function getFilteredEntries() {
-	const search = page.url.searchParams.get('search');
+	const search = local.search;
 	if (!search) {
 		return entries;
 	} else {

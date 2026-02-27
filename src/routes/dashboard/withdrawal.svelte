@@ -47,6 +47,7 @@ async function enhance({ form, submit }: Parameters<Parameters<typeof addEntry.e
 	<AlertDialog.Content class="border border-white/[0.8] bg-white/[0.3] backdrop-blur">
 		<AlertDialog.Title>{m.add_entry_withrawal_title()}</AlertDialog.Title>
 		<form id="add-entry" {...addEntry.preflight(schema.entry).enhance(enhance)}>
+			<input class="hidden" {...addEntry.fields.project.as('text')} value={project} />
 			<input class="hidden" {...addEntry.fields.type.as('text')} value={EntryType.withdrawal} />
 			<input class="hidden" {...addEntry.fields.pending.as('checkbox')} value={false} />
 			<input class="hidden" {...addEntry.fields.account.as('text')} value={AccountType.bank} />
