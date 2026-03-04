@@ -60,6 +60,7 @@ async function enhance({ form, submit }: EnhanceParams<typeof invite.enhance>) {
 					</AlertDialog.Description>
 				</AlertDialog.Header>
 				<form id="invite-partner" {...invite.enhance(enhance)}>
+					<input class="hidden" {...invite.fields.project.as('text')} value={selectedProject?.id} />
 					<Input
 						placeholder={m.partner_add_email_placeholder()}
 						{...invite.fields.to.as('email')} />

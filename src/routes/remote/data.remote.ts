@@ -321,9 +321,9 @@ export const invite = Authenticated.form(schema.invitation, async ({ ctx, data }
 	await ctx.db
 		.insertInto('invitations')
 		.values({
+			...data,
 			from: ctx.userId,
-			fromEmail,
-			to: data.to
+			fromEmail
 		})
 		.execute();
 });
