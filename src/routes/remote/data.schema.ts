@@ -49,6 +49,7 @@ export const entryId = v.object({
 });
 
 export const invitation = v.object({
+	project: v.pipe(v.string(), v.uuid()),
 	to: v.pipe(v.string(), v.email(), v.trim(), v.toLowerCase())
 });
 

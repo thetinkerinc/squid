@@ -298,6 +298,16 @@ export const invite = Authenticated.form(schema.invitation, async ({ ctx, data }
 	} catch (_err) {
 		return;
 	}
+
+	const owner = await ctx.db
+		.selectFrom('projects')
+		.select('user')
+		.where('id', '=', data.project)
+		.executeTakeFirstOrThrow();
+	if (ctx.userId !== owner.user) {
+		error(400, 'You can not invite users to this project');
+	}
+
 	const fromEmail = await getEmail(ctx.userId);
 	const exists = await ctx.db
 		.selectFrom('invitations')

@@ -1,11 +1,13 @@
 <script lang="ts">
 let { invitations, partners }: Props = $props();
 
+import local from '@thetinkerinc/isolocal';
+import { useClerkContext } from 'svelte-clerk/client';
 import { toast } from 'svelte-sonner';
 import { UserPlus, Check, X } from '@lucide/svelte';
 
 import * as m from '$paraglide/messages';
-import { invite, respond } from '$remote/data.remote';
+import { getProjects, invite, respond } from '$remote/data.remote';
 
 import formatter from '$utils/formatter';
 
@@ -20,7 +22,12 @@ interface Props {
 	partners: string[];
 }
 
+const ctx = useClerkContext();
+
 let open = $state<boolean>(false);
+
+const projects = $derived(await getProjects());
+const selectedProject = $derived(projects.find((p) => p.id === local.project));
 
 async function enhance({ form, submit }: EnhanceParams<typeof invite.enhance>) {
 	try {
@@ -35,36 +42,44 @@ async function enhance({ form, submit }: EnhanceParams<typeof invite.enhance>) {
 </script>
 
 <div class="flex flex-wrap items-center gap-3">
-	<AlertDialog.Root bind:open>
-		<AlertDialog.Trigger>
-			{#snippet child({ props })}
-				<Button {...props}>
-					<UserPlus />
-					{m.partner_add_button()}
-				</Button>
-			{/snippet}
-		</AlertDialog.Trigger>
-		<AlertDialog.Content class="border border-white/[0.8] bg-white/[0.3] backdrop-blur">
-			<AlertDialog.Header>
-				<AlertDialog.Title>{m.partner_add_title()}</AlertDialog.Title>
-				<AlertDialog.Description>
-					{m.partner_add_description()}
-				</AlertDialog.Description>
-			</AlertDialog.Header>
-			<form id="invite-partner" {...invite.enhance(enhance)}>
-				<Input placeholder={m.partner_add_email_placeholder()} {...invite.fields.to.as('email')} />
-			</form>
-			<AlertDialog.Footer>
-				<AlertDialog.Cancel>Cancel</AlertDialog.Cancel>
-				<AlertDialog.Action form="invite-partner">
-					{m.partner_add_invite()}
-				</AlertDialog.Action>
-			</AlertDialog.Footer>
-		</AlertDialog.Content>
-	</AlertDialog.Root>
+	{#if ctx.user?.id === selectedProject?.user}
+		<AlertDialog.Root bind:open>
+			<AlertDialog.Trigger>
+				{#snippet child({ props })}
+					<Button {...props}>
+						<UserPlus />
+						{m.partner_add_button()}
+					</Button>
+				{/snippet}
+			</AlertDialog.Trigger>
+			<AlertDialog.Content class="border border-white/[0.8] bg-white/[0.3] backdrop-blur">
+				<AlertDialog.Header>
+					<AlertDialog.Title>{m.partner_add_title()}</AlertDialog.Title>
+					<AlertDialog.Description>
+						{m.partner_add_description()}
+					</AlertDialog.Description>
+				</AlertDialog.Header>
+				<form id="invite-partner" {...invite.enhance(enhance)}>
+					<Input
+						placeholder={m.partner_add_email_placeholder()}
+						{...invite.fields.to.as('email')} />
+				</form>
+				<AlertDialog.Footer>
+					<AlertDialog.Cancel>Cancel</AlertDialog.Cancel>
+					<AlertDialog.Action form="invite-partner">
+						{m.partner_add_invite()}
+					</AlertDialog.Action>
+				</AlertDialog.Footer>
+			</AlertDialog.Content>
+		</AlertDialog.Root>
+	{/if}
 	{#each partners as partner}
 		<div class="inline-block rounded bg-white/[0.7] px-4 py-1 shadow">
 			{partner}
+		</div>
+	{:else}
+		<div class="text-gray-500 italic">
+			{m.partner_empty()}
 		</div>
 	{/each}
 </div>
