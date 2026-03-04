@@ -9,7 +9,7 @@ import * as m from '$paraglide/messages';
 
 import * as schema from './data.schema';
 
-import { type Tx, type Db, AccountType, EntryType, type CurrencyValue } from '$types';
+import { type Db, AccountType, EntryType, type CurrencyValue } from '$types';
 
 export const getProjects = Authenticated.query(async ({ ctx }) => {
 	const projects = await ctx.db
@@ -344,13 +344,19 @@ export const respond = Authenticated.form(schema.response, async ({ ctx, data })
 			error(400, 'You can not respond to this invitation');
 		}
 
+		const partnerId = await getUserId(invitation.to);
+
 		if (data.accepted && invitation) {
-			const fromEmail = await getEmail(invitation.from);
-			const fromId = invitation.from;
-			const toEmail = invitation.to;
-			const toId = await getUserId(invitation.to);
-			await addPartner(tx, fromId, toEmail);
-			await addPartner(tx, toId, fromEmail);
+			await tx
+				.insertInto('partners')
+				.values({
+					user: invitation.from,
+					userEmail: invitation.fromEmail,
+					partner: partnerId,
+					partnerEmail: invitation.to,
+					project: invitation.project
+				})
+				.execute();
 		}
 	});
 });
@@ -362,16 +368,6 @@ async function getAmountPaid(db: Db, id: string) {
 		.where('parent', '=', id)
 		.executeTakeFirstOrThrow();
 	return paid ?? 0;
-}
-
-async function addPartner(tx: Tx, user: string, partner: string) {
-	await tx
-		.insertInto('partners')
-		.values({
-			user,
-			partner
-		})
-		.execute();
 }
 
 async function convert(db: Db, currency: CurrencyValue, amount: number) {
