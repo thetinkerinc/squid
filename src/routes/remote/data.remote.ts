@@ -33,6 +33,21 @@ export const getProjects = Authenticated.query(async ({ ctx }) => {
 		.execute();
 
 	const split = _.fork(projects, (p) => p.user === ctx.userId);
+	if (split[0].length === 0) {
+		const defaultProject = await ctx.db
+			.insertInto('projects')
+			.values({
+				user: ctx.userId,
+				name: 'default'
+			})
+			.returningAll()
+			.executeTakeFirstOrThrow();
+		split[0].push({
+			...defaultProject,
+			email: null
+		});
+	}
+
 	return [..._.alphabetical(split[0], (p) => p.name), ..._.alphabetical(split[1], (p) => p.name)];
 });
 
