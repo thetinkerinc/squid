@@ -53,6 +53,7 @@ declare module '@thetinkerinc/sprout/db' {
 
 	export interface InvitationTable {
 		id: k.Generated<string>;
+		project: string;
 		from: string;
 		fromEmail: string;
 		to: string;

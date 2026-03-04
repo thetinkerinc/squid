@@ -14,7 +14,7 @@ import { type Tx, type Db, AccountType, EntryType, type CurrencyValue } from '$t
 export const getProjects = Authenticated.query(async ({ ctx }) => {
 	const projects = await ctx.db
 		.selectFrom('projects')
-		.innerJoin('partners', 'projects.user', 'partners.user')
+		.leftJoin('partners', 'projects.user', 'partners.user')
 		.selectAll('projects')
 		.select('partners.userEmail as email')
 		.where((w) =>
@@ -100,13 +100,21 @@ export const getTags = Authenticated.query(schema.entryType, async ({ ctx, param
 });
 
 export const getPartners = Authenticated.query(schema.projectId, async ({ ctx, params }) => {
-	const resp = await ctx.db
+	const invited = await ctx.db
 		.selectFrom('partners')
-		.where('user', '=', ctx.userId)
 		.where('project', '=', params.project)
+		.where('user', '=', ctx.userId)
 		.select('partnerEmail')
 		.execute();
-	return resp.map((r) => r.partnerEmail);
+
+	const invitees = await ctx.db
+		.selectFrom('partners')
+		.where('project', '=', params.project)
+		.where('partner', '=', ctx.userId)
+		.select('userEmail')
+		.execute();
+
+	return [...invited.map((r) => r.partnerEmail), ...invitees.map((r) => r.userEmail)];
 });
 
 export const getPaymentsTotals = Authenticated.query(schema.projectId, async ({ ctx, params }) => {
@@ -297,7 +305,7 @@ export const invite = Authenticated.form(schema.invitation, async ({ ctx, data }
 		.where('to', '=', data.to)
 		.select(({ fn }) => [fn.count<number>('id').as('count')])
 		.executeTakeFirst();
-	if (exists?.count ?? 0 > 0) {
+	if (exists?.count) {
 		return;
 	}
 	await ctx.db
